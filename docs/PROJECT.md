@@ -3,7 +3,7 @@
 > 本文件是项目的单一事实来源。清理上下文后、执行任何动作前，先读本文件，
 > 再读 [OUTLINE.md](OUTLINE.md)（课程结构）与 [DECISIONS.md](DECISIONS.md)（已定决策）。
 >
-> 最后更新：v0.3 扩课完成（23 课全部上线，8 篇新写课 + 3 个 L1 lab + 附录 A 术语表）。
+> 最后更新：v0.3 内容收口（23 课 + 附录 A/B 全部上线，9 个 L1 lab 可跑）。
 
 ---
 
@@ -17,7 +17,7 @@
 | 许可证 | 内容 CC BY-SA 4.0 / 代码 MIT（双许可） |
 | 站点框架 | Astro Starlight + GitHub Pages |
 | 默认语言 | 中文（英文站推迟到 v2，README 双语） |
-| 当前版本 | v0.3（23 课 + 附录 A 上线；L1 lab 9 个可跑，L2 三个排到 v0.4） |
+| 当前版本 | v0.3（23 课 + 附录 A/B 上线；L1 lab 9 个可跑，L2 三个排到 v0.4） |
 
 ### 一句话定位
 
@@ -130,7 +130,7 @@ labs/NN-<slug>/
 | M2 v0.2 可跑 | 首批 L1 lab + `.devcontainer` + labs CI<br>（已完成：00-setup / 01-traffic-model / 02-pfc-sim / 04-nccl-trace / 06-gnmi-mock / 10-rca ✅ / devcontainer ✅ / labs CI ✅） | 4-6 天（已完成） |
 | M3 v0.3 扩课 | 新增 8 篇（00 导读、01 环境、10 超节点、12 INT、14 管道、15 指标体系、19 MTTR、21 端到端）+ 3 个 L1 lab<br>（已完成：✅ 8 篇 / ✅ 07-int-path / ✅ 08-pipeline / ✅ 09-slo / ✅ 站点收口） | 5-6 天（已完成） |
 | M4 v0.4 进阶 | containerlab 拓扑 + 故障注入 + 端到端剧本 | 5-7 天 |
-| M5 v1.0 打磨 | 附录 B 参考清单、链接检查、双语 README、宣传稿<br>（附录 A 术语表已在 v0.3 提前落地） | 2-3 天 |
+| M5 v1.0 打磨 | 全站链接体检脚本、双语 README、宣传稿<br>（附录 A/B 已在 v0.3 提前落地） | 2-3 天 |
 
 **发布策略：先发 v0.1 再补 lab。** 内容上线才有反馈；lab 是最重的部分，不要憋大招。
 v1.0 后冻结课程结构，只接受纠错类 PR。

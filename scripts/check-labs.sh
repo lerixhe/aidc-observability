@@ -39,8 +39,9 @@ for lab in 01-traffic-model 02-pfc-sim 04-nccl-trace; do
   dir="labs/$lab"
   [ -d "$dir/expected" ] || continue
   printf '  %-18s ' "$lab"
-  if ! ( cd "$dir" && make -s expected >/dev/null 2>&1 ); then
+  if ! out="$( cd "$dir" && make -s expected 2>&1 )"; then
     note "❌ 生成失败"
+    printf '%s\n' "$out" | tail -5 | sed 's/^/      /'
     fail=1
     continue
   fi

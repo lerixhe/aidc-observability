@@ -11,6 +11,8 @@ reference/archive-aidc/
 labs/**/out/
 labs/**/data/
 *.log
+# 例外：lab 的样本日志是课程素材，必须入库
+!labs/**/samples/*.log
 
 # ===== 系统与编辑器 =====
 .DS_Store

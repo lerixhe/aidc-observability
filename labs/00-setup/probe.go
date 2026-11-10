@@ -26,14 +26,14 @@ var knownLabs = []Lab{
 	{"01-traffic-model", "L1", []string{"go"}, "02", "IDC 小流 vs AllReduce 同步突发", true},
 	{"02-pfc-sim", "L1", []string{"go"}, "05,06", "PFC / ECN / DCQCN 参数化队列模型", true},
 	{"04-nccl-trace", "L1", []string{"go"}, "08", "从 NCCL 日志还原流量矩阵与 straggler", true},
-	{"03-fault-inject", "L2", []string{"go", "docker"}, "07", "tc/netem 复现 HoL 与 incast", false},
-	{"05-clos-topo", "L2", []string{"go", "docker", "containerlab"}, "09", "2 spine / 4 leaf 的 ECMP 极化", false},
+	{"03-fault-inject", "L2", []string{"go", "docker", "containerlab"}, "07", "四大故障的注入剧本与遥测指纹判读", true},
+	{"05-clos-topo", "L2", []string{"go", "docker", "containerlab"}, "09", "2 spine / 4 leaf 的 ECMP 极化", true},
 	{"06-gnmi-mock", "L1", []string{"go"}, "11", "OpenConfig 路径树 + 订阅策略保真度对照", true},
 	{"07-int-path", "L1", []string{"go"}, "12", "INT 逐跳元数据的编码与判读", true},
 	{"08-pipeline", "L1", []string{"go"}, "14", "秒级遥测落盘与查询保真度对比", true},
 	{"09-slo", "L1", []string{"go"}, "15", "三种 SLO 口径与错误预算对照", true},
 	{"10-rca", "L1", []string{"go"}, "16", "告警收敛 + 图打分做根因定位", true},
-	{"11-case-study", "L2", []string{"go", "docker"}, "21", "端到端排障剧本：从告警到定位到验证", false},
+	{"11-case-study", "L1", []string{"go"}, "21", "端到端排障剧本 + MTTR 时间账", true},
 }
 
 // Discovery 是一次环境探测的结果。

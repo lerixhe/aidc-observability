@@ -31,11 +31,12 @@ for mod in labs/*/go.mod; do
   fi
 done
 
-# ---- 2. expected/ 自校验 ----
+# ---- 2. expected/ 与 samples/ 自校验 ----
 note ""
 note "== expected/ 自校验 =="
 # 00-setup 的输出含主机信息（工具版本、平台），不适合跨机器比对，跳过
-for lab in 01-traffic-model 02-pfc-sim 04-nccl-trace 06-gnmi-mock 07-int-path 08-pipeline 09-slo 10-rca; do
+for lab in 01-traffic-model 02-pfc-sim 03-fault-inject 04-nccl-trace 05-clos-topo \
+           06-gnmi-mock 07-int-path 08-pipeline 09-slo 10-rca 11-case-study; do
   dir="labs/$lab"
   [ -d "$dir/expected" ] || continue
   printf '  %-18s ' "$lab"
@@ -45,13 +46,37 @@ for lab in 01-traffic-model 02-pfc-sim 04-nccl-trace 06-gnmi-mock 07-int-path 08
     fail=1
     continue
   fi
-  if git diff --quiet -- "$dir/expected"; then
+
+  # 03-fault-inject 的模型样本落在 samples/，与 expected/ 一样要锁住
+  watched="$dir/expected"
+  [ -d "$dir/samples" ] && watched="$watched $dir/samples"
+
+  if git diff --quiet -- $watched; then
     note "✅"
   else
-    note "❌ 与 expected/ 不一致"
-    git diff -- "$dir/expected" | sed 's/^/      /'
-    note "      确认是有意改动后：git add $dir/expected"
+    note "❌ 与 expected/ 或 samples/ 不一致"
+    git diff -- $watched | sed 's/^/      /'
+    note "      确认是有意改动后：git add $watched"
     fail=1
+  fi
+done
+
+# ---- 2b. L2 lab 的拓扑文件结构检查 ----
+# 真拓扑要 Docker 才能 deploy，但 YAML 与计划的一致性用测试就能守住，
+# 这部分在第一步的 go test 里已经跑过（topo_test.go）。
+note ""
+note "== L2 拓扑文件 =="
+for f in labs/03-fault-inject/topo.clab.yml labs/05-clos-topo/topo.clab.yml; do
+  [ -f "$f" ] || continue
+  printf '  %-40s ' "$f"
+  if grep -q $'\t' "$f"; then
+    note "❌ 含 tab，containerlab 会读错缩进"
+    fail=1
+  elif ! grep -q '^name:' "$f"; then
+    note "❌ 缺 name 字段"
+    fail=1
+  else
+    note "✅"
   fi
 done
 

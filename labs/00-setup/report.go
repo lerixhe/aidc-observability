@@ -121,7 +121,7 @@ func printNextSteps(w io.Writer, d *Discovery) {
 	fmt.Fprintf(w, "  1. cd labs/%s && make run\n", first.Dir)
 	fmt.Fprintln(w, "  2. 想一次跑完所有检查：go run . -try")
 	if !d.Docker.OK {
-		fmt.Fprintln(w, "  3. Docker 缺失不影响 L1 lab，只影响 v0.4 的 L2 拓扑实验")
+		fmt.Fprintln(w, "  3. Docker 缺失不影响 L1 lab；L2 拓扑实验的剧本与模型部分仍可跑，只是注入要 Docker")
 	}
 }
 

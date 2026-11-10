@@ -22,7 +22,7 @@
 | `upstream` | 队列 640 KB + 利用率 55% | 多股流在抢出口，问题在上游分布 |
 | `forwarding` | 队列 16 KB + 利用率 40% + 停留 40 µs | 开销在转发面，调水线没用 |
 
-对应课程：[12 INT 带内遥测](../../site/src/content/docs/04-telemetry/12-int.mdx)。
+对应课程：[12 INT 带内遥测](../../site/docs/04-telemetry/12-int.md)。
 
 ## 2. 跑起来
 

@@ -1,0 +1,4 @@
+# pnpm 10+ 默认不执行依赖的 postinstall，esbuild 装不上二进制会构建失败。
+# 这一行是站点能 `pnpm install` 的前提（CI 固定 pnpm 12，读的就是这个键）。
+allowBuilds:
+  esbuild: true

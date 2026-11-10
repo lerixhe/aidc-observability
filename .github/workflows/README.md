@@ -4,7 +4,7 @@
 
 | 文件 | 触发 | 内容 |
 |---|---|---|
-| `deploy.yml` | push `main` 且改动 `site/**`（可手动触发） | `withastro/action@v3` 构建 `site/` → `deploy-pages` |
+| `deploy.yml` | push `main` 且改动 `site/**`（可手动触发） | `pnpm build`（VitePress）构建 `site/` → `upload-pages-artifact` → `deploy-pages` |
 | `labs.yml` | `labs/**` 变更 | 跑 `scripts/check-labs.sh`：vet + test + `expected/` 自校验 |
 | `docs.yml` | PR 与 `site/**`、`docs/**`、`labs/**/README.md`、`scripts/**` 变更 | 链接体检 + 文风体检 + 脱敏扫描 + 站点构建 |
 
@@ -35,11 +35,25 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site
     steps:
       - uses: actions/checkout@v4
-      - uses: withastro/action@v3
+      - uses: pnpm/action-setup@v4
         with:
-          path: ./site
+          version: latest
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: site/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/.vitepress/dist
   deploy:
     needs: build
     runs-on: ubuntu-latest

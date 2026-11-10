@@ -2,7 +2,7 @@
 """列出超长句与含分号的行，便于逐课精修。
 
 用法：
-    python3 scripts/long-sents.py site/src/content/docs/01-paradigm/02-why-different.mdx
+    python3 scripts/long-sents.py site/docs/01-paradigm/02-why-different.md
     python3 scripts/long-sents.py --semi-only <file>   # 只列分号行
 """
 

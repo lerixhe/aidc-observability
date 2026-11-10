@@ -3,7 +3,7 @@
 > 本文件是项目的单一事实来源。清理上下文后、执行任何动作前，先读本文件，
 > 再读 [OUTLINE.md](OUTLINE.md)（课程结构）与 [DECISIONS.md](DECISIONS.md)（已定决策）。
 >
-> 最后更新：v1.0 交付（23 课 + 附录 A/B 冻结；12 个 lab；链接体检 + Docs CI + 双语 README）。
+> 最后更新：v1.x（23 课 + 附录 A/B 冻结；站点底层由 Astro Starlight 切到 VitePress）。
 
 ---
 
@@ -15,7 +15,7 @@
 | 中文名 | 智算网络可观测指南 |
 | 副标题 | 从有损 IDC 到无损智算：机制、遥测与可运行的实验室 |
 | 许可证 | 内容 CC BY-SA 4.0 / 代码 MIT（双许可） |
-| 站点框架 | Astro Starlight + GitHub Pages |
+| 站点框架 | VitePress + GitHub Pages |
 | 默认语言 | 中文（英文站推迟到 v2，README 双语：`README.md` / `README.en.md`） |
 | 当前版本 | v1.0（课程结构冻结；10 个 L1 lab + 2 个 L2 lab；Docs CI 三道检查） |
 
@@ -55,24 +55,26 @@
 
 | 层 | 选型 | 理由 |
 |---|---|---|
-| 文档站 | Astro 5 + Starlight | 内置 Pagefind 搜索、Markdown/MDX 单源、PR diff 可读、CI 简单 |
-| 部署 | GitHub Pages + `withastro/action` | 零成本、零服务器 |
+| 文档站 | VitePress 1.x（Vue 3） | 内置本地搜索、Markdown 单源、纯静态产出、PR diff 可读、CI 简单 |
+| 部署 | GitHub Pages + `pnpm build` + `upload-pages-artifact` | 零成本、零服务器 |
 | 部署分支 | `gh-pages`（Actions 推送） | 保持 `main` 干净 |
-| 内容格式 | Markdown + 少量 MDX（Aside / details） | 降低贡献门槛 |
+| 内容格式 | 纯 Markdown + 容器语法（`::: tip` / `::: details`） | 降低贡献门槛，不需要 MDX 编译链 |
 | Lab 语言 | Go（主）+ Python（数据脚本）+ YAML（拓扑） | Go 与目标读者栈匹配，Python 便于数据处理 |
 | Lab 分层 | L1 无门槛（`go run`）/ L2 需 Docker | 见第四节 |
 | 开发环境 | `.devcontainer/` + GitHub Codespaces | 解决 macOS 跑容器网络的痛点 |
 | 包管理 | pnpm（site）、go modules（labs） | — |
 
-### Starlight 结构约定
+### VitePress 结构约定
 
-- 目录带数字前缀（如 `01-paradigm/`），侧边栏用 `autogenerate`，新增课不改配置
+- 内容根是 `site/docs/`（`srcDir`），配置与主题在 `site/.vitepress/`
+- 目录带数字前缀（如 `01-paradigm/`），侧边栏在 `config.mts` 里按目录自动生成，新增课不改配置
 - 原 `.card` → 普通小节；`hero` → frontmatter `title` + `description`
-- `🔗 关联你的经验` → `<Aside type="note" title="经验映射">`
-- `.keycard` 要点卡 → `<Aside type="tip" title="本课要点">`
+- `🔗 关联你的经验` → `::: info 经验映射`
+- `.keycard` 要点卡 → `::: tip 本课要点`
 - `.compare` 双栏对比 → Markdown 表格（移动端更友好）
-- 折叠答案 → MDX 原生 `<details>`，**保留**（核心互动设计）
-- 手写前后课 nav → 删除，改用 Starlight 内置 pagination
+- 折叠答案 → `::: details 参考答案与评分维度`（核心互动设计，**保留**）
+- 手写前后课 nav → 删除，改用内置上一课/下一课分页
+- 站内链接写 `.md` 相对路径，`cleanUrls: true` 产出无后缀 URL
 
 ---
 
@@ -130,7 +132,7 @@ labs/NN-<slug>/
 | 阶段 | 交付物 | 估时 |
 |---|---|---|
 | M0 v0.0 立项 | 定名、双许可、目录骨架、规划文档、原型归档 | 0.5-1 天（已完成） |
-| M1 v0.1 上线 | 17 课迁移 MDX + 去个人化 + Starlight 导航 + Pages 上线<br>（已完成：站点 ✅ / html2mdx.py ✅ / 16 课迁移 ✅ / Pages 上线 ✅） | 3-4 天（已完成） |
+| M1 v0.1 上线 | 17 课迁移 Markdown + 去个人化 + 站点导航 + Pages 上线<br>（已完成：站点 ✅ / html2mdx.py ✅ / 16 课迁移 ✅ / Pages 上线 ✅） | 3-4 天（已完成） |
 | M2 v0.2 可跑 | 首批 L1 lab + `.devcontainer` + labs CI<br>（已完成：00-setup / 01-traffic-model / 02-pfc-sim / 04-nccl-trace / 06-gnmi-mock / 10-rca ✅ / devcontainer ✅ / labs CI ✅） | 4-6 天（已完成） |
 | M3 v0.3 扩课 | 新增 8 篇（00 导读、01 环境、10 超节点、12 INT、14 管道、15 指标体系、19 MTTR、21 端到端）+ 3 个 L1 lab<br>（已完成：✅ 8 篇 / ✅ 07-int-path / ✅ 08-pipeline / ✅ 09-slo / ✅ 站点收口） | 5-6 天（已完成） |
 | M4 v0.4 进阶 | containerlab 拓扑 + 故障注入 + 端到端剧本<br>（已完成：✅ 03-fault-inject / ✅ 05-clos-topo / ✅ 11-case-study / ✅ 双模式与 CI 校验 / ✅ 课程入口接线） | 5-7 天（已完成） |
@@ -145,7 +147,7 @@ v1.0 后冻结课程结构，只接受纠错类 PR。
 
 | 风险 | 严重度 | 应对 |
 |---|---|---|
-| Pagefind 中文分词弱，站内搜索差 | 中 | v0.1 起用 Pagefind，v1.0 保留；不满意再换 Algolia DocSearch（开源项目免费），待实测 |
+| 内置本地搜索中文分词弱，站内搜索差 | 中 | VitePress local search（minisearch）分词偏字级；不满意再换 Algolia DocSearch（开源项目免费），待实测 |
 | containerlab 在 macOS 需特权 / 虚拟机 | 高 | 主推 Codespaces + `.devcontainer`；macOS 文档指向 Lima / OrbStack；L2 的默认模式零依赖，缺 Docker 只降级不阻塞 |
 | 软件仿真 PFC 的教学真实性受质疑 | 中 | 每个 lab 开头声明「非硬件等价」+ 给真机验证路径 |
 | 机制细节准确性 | 高 | 每课 `参考资料`；PR 模板要求标注来源；设 `content-fix` issue 模板 |
@@ -161,8 +163,8 @@ v1.0 后冻结课程结构，只接受纠错类 PR。
 - [x] L2 lab 是否接受「主推 GitHub Codespaces」：接受，但 L2 默认模式不依赖它（D8）
 - [ ] v1.0 是否同步出英文站：否，英文站推迟到 v2，v1.0 只做双语 README
 - [ ] 是否公开署名作者身份（影响脱敏尺度）
-- [ ] P4 搜索方案最终态：v1.0 保留 Pagefind，理由见下
-  - 取舍：Pagefind 零依赖、离线、随构建产出，换 DocSearch 要引入外部服务与密钥
+- [ ] P4 搜索方案最终态：v1.0 保留内置本地搜索，理由见下
+  - 取舍：local search 零依赖、离线、随构建产出，换 DocSearch 要引入外部服务与密钥
   - 已知短板：中文按字切分，长词精确度一般，「无损网络」这类查询召回偏高
   - 触发换的条件：出现三次以上「搜不到某个具体名词」的读者反馈
-  - 换的成本：加 Algolia 账号 + CI 索引步骤 + `astro.config.mjs` 装配，约半天
+  - 换的成本：加 Algolia 账号 + CI 索引步骤 + `.vitepress/config.mts` 装配，约半天

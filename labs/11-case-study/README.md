@@ -19,8 +19,8 @@
 
 差距不是「查得慢」，是「方向错」。这条对照比任何说教都直接。
 
-对应课程：[21 端到端实战：训练慢任务排障](../../site/src/content/docs/06-selection/21-case-study.mdx)、
-[19 MTTR 拆解](../../site/src/content/docs/05-analysis/19-mttr.mdx)。
+对应课程：[21 端到端实战：训练慢任务排障](../../site/docs/06-selection/21-case-study.md)、
+[19 MTTR 拆解](../../site/docs/05-analysis/19-mttr.md)。
 
 ## 2. 跑起来
 

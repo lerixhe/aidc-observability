@@ -1,0 +1,129 @@
+/**
+ * 全站主题微调（经 theme/index.ts 引入，对所有页面生效）。
+ *
+ * 1) --lp-* 设计变量：首页 hero / 首页内容组件用它取值，明暗各一套；
+ * 2) --sl-* 兼容层：内容组件沿用了 Starlight 的字号与等宽字体变量名，
+ *    这里映射到 VitePress 的 token，避免组件里满屏改名；
+ * 3) 默认主题的针对性微调：hero 版式、容器宽度、代码块。
+ */
+
+:root {
+	/* ---------- --sl-* 兼容层 ---------- */
+	--sl-text-2xs: 11px;
+	--sl-text-xs: 12px;
+	--sl-text-sm: 14px;
+	--sl-text-base: 16px;
+	--sl-text-lg: 18px;
+	--sl-font-mono: var(--vp-font-family-mono);
+
+	/* ---------- 基础色板：默认跟随 VitePress 的 light 主题 ---------- */
+	--lp-fg: hsl(222 47% 11%);
+	--lp-muted: hsl(220 14% 40%);
+	--lp-surface: hsl(220 40% 100% / 0.85);
+	--lp-surface-solid: hsl(0 0% 100%);
+	--lp-border: hsl(222 40% 14% / 0.1);
+	--lp-border-strong: hsl(222 40% 14% / 0.22);
+	--lp-accent: hsl(196 95% 38%);
+	--lp-accent-alt: hsl(266 72% 52%);
+	--lp-grid: hsl(222 40% 14% / 0.07);
+	--lp-title-from: hsl(222 47% 9%);
+	--lp-title-to: hsl(220 16% 34%);
+	--lp-glow-a: hsl(196 95% 48% / 0.26);
+	--lp-glow-b: hsl(266 80% 58% / 0.2);
+	--lp-shadow: 0 26px 50px -32px hsl(222 40% 22% / 0.28);
+
+	/* 尺寸与节奏 */
+	--lp-radius: 18px;
+
+	/* 首页 hero 标题允许全宽（默认主题限 392/576px，中文长标题会过早换行） */
+	--vp-home-hero-name-color: var(--lp-title-from);
+	--vp-home-hero-name-background: linear-gradient(172deg, var(--lp-title-from) 18%, var(--lp-title-to) 96%);
+}
+
+html.dark {
+	--lp-fg: hsl(220 40% 98%);
+	--lp-muted: hsl(220 14% 68%);
+	--lp-surface: hsl(224 16% 13% / 0.72);
+	--lp-surface-solid: hsl(224 16% 13%);
+	--lp-border: hsl(220 30% 100% / 0.09);
+	--lp-border-strong: hsl(220 30% 100% / 0.2);
+	--lp-accent: hsl(188 92% 55%);
+	--lp-accent-alt: hsl(262 88% 68%);
+	--lp-grid: hsl(220 40% 100% / 0.045);
+	--lp-title-from: hsl(0 0% 100%);
+	--lp-title-to: hsl(219 18% 66%);
+	--lp-glow-a: hsl(192 95% 58% / 0.15);
+	--lp-glow-b: hsl(266 90% 68% / 0.15);
+	--lp-shadow: 0 28px 60px -34px hsl(220 60% 4% / 0.85);
+
+	--vp-home-hero-name-color: var(--lp-title-from);
+}
+
+/* ==========================================================================
+   首页 hero：居中版式 + 光晕 + 细网格
+   默认主题在无配图时靠左排版，这里改成整块居中，并补上背景层。
+   ========================================================================== */
+
+.VPHero {
+	position: relative;
+	isolation: isolate;
+	overflow-x: clip;
+	background:
+		radial-gradient(46rem 26rem at 10% -12%, var(--lp-glow-a), transparent 72%),
+		radial-gradient(40rem 24rem at 90% -14%, var(--lp-glow-b), transparent 74%);
+}
+
+/* 细网格，向上收拢淡出；出血到视口宽度 */
+.VPHero::before {
+	content: '';
+	position: absolute;
+	inset-block: 0;
+	inset-inline: calc(50% - 50vw);
+	z-index: -1;
+	pointer-events: none;
+	background-image:
+		linear-gradient(to right, var(--lp-grid) 1px, transparent 1px),
+		linear-gradient(to bottom, var(--lp-grid) 1px, transparent 1px);
+	background-size: 64px 64px;
+	mask-image: radial-gradient(ellipse 78% 62% at 50% 0%, #000 20%, transparent 76%);
+}
+
+.VPHero:not(.has-image) .container {
+	text-align: center;
+}
+
+.VPHero:not(.has-image) .heading {
+	align-items: center;
+}
+
+.VPHero:not(.has-image) .name,
+.VPHero:not(.has-image) .text,
+.VPHero:not(.has-image) .tagline {
+	margin-inline: auto;
+	max-width: 46rem;
+}
+
+.VPHero .name .clip {
+	background: var(--vp-home-hero-name-background);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+.VPHero:not(.has-image) .actions {
+	justify-content: center;
+}
+
+/* ==========================================================================
+   正文：中文长文档的可读性微调
+   ========================================================================== */
+
+.vp-doc h2 {
+	margin-top: 3rem;
+	padding-top: 1.5rem;
+}
+
+/* 表格在窄屏横向滚动（默认 display: block），左对齐即可 */
+.vp-doc table {
+	margin-inline: 0;
+}

@@ -5,19 +5,19 @@
     python3 scripts/check-links.py              # 查站内（路由、相对路径、锚点）
     python3 scripts/check-links.py --external   # additionally 跑外链 HEAD 检查
     python3 scripts/check-links.py --files      # 只列文件级汇总
-    python3 scripts/check-links.py path/to/x.mdx
+    python3 scripts/check-links.py path/to/x.md
 
 退出码：0 没有问题；1 有断链或死锚点。
 
 为什么要单独一个脚本：链接是这类文档站最先腐坏的东西。改目录名、改课时标题、
-拆模块，都会让链接悄悄失效，而构建本身不报错（Astro 对相对链接不做校验）。
-CI 里跑这个，断链在 PR 阶段就红，而不是等读者点到 404。
+拆模块，都会让链接悄悄失效。VitePress 构建能抓到一部分，但抓不到 lab README 与
+项目文档里的链接。CI 里跑这个，断链在 PR 阶段就红，而不是等读者点到 404。
 
 判定口径：
     外部链接      http(s):// 开头。默认不查（慢、会因对方站点抖动而误报），--external 才查
-    站内路由      / 开头。映射到 site/src/content/docs 下的文件
+    站内路由      / 开头。映射到 site/docs 下的文件
     相对路径      相对当前文件解析，必须存在于仓库
-    锚点          #slug。用 github-slugger 的规则近似还原标题 slug
+    锚点          #slug。用 VitePress（markdown-it-anchor）的规则近似还原标题 slug
 """
 
 import argparse
@@ -29,12 +29,12 @@ import urllib.error
 import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DOCS = os.path.join(ROOT, "site/src/content/docs")
-BASE = "/aidc-observability"  # astro.config.mjs 里的 base
+DOCS = os.path.join(ROOT, "site/docs")
+BASE = "/aidc-observability"  # .vitepress/config.mts 里的 base
 
 # 扫哪些文件：站内课程、lab 说明、项目文档、根 README
 PATTERNS = (
-    ("site/src/content/docs", ".mdx"),
+    ("site/docs", ".md"),
     ("labs", "README.md"),
     ("docs", ".md"),
     ("", "README.md"),
@@ -59,9 +59,9 @@ def targets() -> list:
         if not os.path.isdir(d):
             continue
         for dirpath, dirnames, filenames in os.walk(d):
-            dirnames[:] = [x for x in dirnames if x not in {".git", "node_modules", "dist", ".astro", "out"}]
+            dirnames[:] = [x for x in dirnames if x not in {".git", "node_modules", "dist", ".vitepress", "out"}]
             for fn in filenames:
-                if fn.endswith(suffix) and (suffix != ".md" or base == "docs"):
+                if fn.endswith(suffix):
                     out.append(os.path.join(dirpath, fn))
     return sorted(set(out))
 
@@ -75,10 +75,10 @@ def strip_code(text: str) -> str:
 
 
 def slugify(heading: str) -> str:
-    """近似 github-slugger：转小写、去标点、空格变连字符、保留中文。
+    """近似 markdown-it-anchor 的 slugify：转小写、去标点、空格变连字符、保留中文。
 
-    Starlight 用 github-slugger 生成锚点，规则与这里一致到「够用」为止：
-    去掉的是一组固定 ASCII 标点，中文与数字原样保留。发现误报时先在这里加字符。
+    VitePress 用 markdown-it-anchor 生成锚点，规则与这里一致到「够用」为止：
+    去掉的是标点与符号，中日韩文字与数字原样保留。发现误报时先在这里加字符。
     """
     s = heading.strip().lower()
     s = re.sub(r"!\[[^\]]*\]\([^)]*\)", "", s)          # 图片
@@ -95,7 +95,7 @@ def anchors_of(path: str) -> set:
             text = strip_code(f.read())
     except OSError:
         return set()
-    # frontmatter 里的 title 也会成为页面锚点（Starlight 的 h1 就是 title）
+    # frontmatter 里的 title 也会成为页面锚点（课程页的 h1 由 title 渲染）
     out = set()
     fm = re.match(r"^---\n(.*?)\n---\n", text, re.S)
     if fm:
@@ -121,11 +121,10 @@ def route_to_path(route: str) -> str:
         clean = clean[len(BASE):]
     clean = clean.strip("/")
     if clean == "":
-        return os.path.join(DOCS, "index.mdx") if os.path.exists(os.path.join(DOCS, "index.mdx")) else ""
+        return os.path.join(DOCS, "index.md") if os.path.exists(os.path.join(DOCS, "index.md")) else ""
     for cand in (
-        os.path.join(DOCS, clean + ".mdx"),
         os.path.join(DOCS, clean + ".md"),
-        os.path.join(DOCS, clean, "index.mdx"),
+        os.path.join(DOCS, clean, "index.md"),
     ):
         if os.path.exists(cand):
             return cand
@@ -135,12 +134,12 @@ def route_to_path(route: str) -> str:
 def resolve_relative(cur_file: str, route: str) -> str:
     """把相对链接解析成仓库内的文件路径。
 
-    站内课程互相引用时写的是目录形式（`../02-lossless/05-pfc/`），
-    那也是 Starlight 的真实路由，所以要按 .mdx / index.mdx 补齐再判。
+    站内课程互相引用时写的是 `.md` 后缀形式（`../02-lossless/05-pfc.md`），
+    VitePress 会把它编译成干净 URL；也允许省掉后缀与目录形式，一并补齐再判。
     """
     base = os.path.normpath(os.path.join(os.path.dirname(cur_file), route.rstrip("/")))
-    for cand in (base, base + ".mdx", base + ".md",
-                 os.path.join(base, "index.mdx"), os.path.join(base, "index.md"),
+    for cand in (base, base + ".md",
+                 os.path.join(base, "index.md"),
                  os.path.join(base, "README.md")):
         if os.path.isfile(cand):
             return cand
@@ -240,7 +239,7 @@ def check_file(path: str, external: bool):
                 problems.append((line_of(m.start()), target, "相对路径不存在"))
                 continue
 
-        if anchor and dest.endswith((".mdx", ".md")):
+        if anchor and dest.endswith(".md"):
             if anchor not in anchors_of(dest):
                 problems.append((line_of(m.start()), target, f"目标文件里没有锚点 {anchor}"))
     return problems, warnings

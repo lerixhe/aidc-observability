@@ -28,11 +28,11 @@ archive-aidc/
 | 课头 | `header.hero` + `.lesson-no` | frontmatter `title` / `description` |
 | 正文 | `div.card` + `h2` 分级小节 | `##` / `###` |
 | 对比 | `div.compare`（old/new 双栏） | Markdown 表格 |
-| 经验映射 | `div.link-exp` | `<Aside type="note" title="经验映射">` |
-| 警示 | `div.warn` | `<Aside type="caution">` |
-| 练习 | 2 必答 + 2 自测，`<details>` 折叠答案 | 保留 details，改「参考答案 + 评分维度」 |
-| 要点卡 | `div.keycard`（深色块） | `<Aside type="tip" title="本课要点">` |
-| 导航 | `div.nav` 上下课 | 删除，用 Starlight pagination |
+| 经验映射 | `div.link-exp` | `::: info 经验映射` |
+| 警示 | `div.warn` | `::: warning` |
+| 练习 | 2 必答 + 2 自测，`<details>` 折叠答案 | `::: details` 折叠，改「参考答案 + 评分维度」 |
+| 要点卡 | `div.keycard`（深色块） | `::: tip 本课要点` |
+| 导航 | `div.nav` 上下课 | 删除，用站点内置分页 |
 
 原型课目一览（→ 新编号见 [../docs/OUTLINE.md](../docs/OUTLINE.md)）：
 

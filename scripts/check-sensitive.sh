@@ -23,7 +23,7 @@ fi
 
 # 排除依赖与构建产物，避免命中第三方英文文本
 HITS="$(grep -rniE "$PATTERN" "$TARGET" \
-  --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.astro \
+  --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=cache \
   --exclude-dir=.git 2>/dev/null || true)"
 
 if [[ -n "$HITS" ]]; then

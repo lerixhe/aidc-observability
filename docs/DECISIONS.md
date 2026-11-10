@@ -16,7 +16,7 @@
 
 ## D2 · 站点框架选 Astro Starlight
 
-- **状态**：已定（v0.0）
+- **状态**：已被 D11 取代（v1.x 切到 VitePress）
 - **选项**：Astro Starlight / VitePress / GitBook / 纯 HTML
 - **决策**：Astro Starlight + GitHub Pages。
 - **理由**：视觉更现代、内置 Pagefind 搜索、Markdown 单源便于 PR、静态部署零成本。
@@ -111,3 +111,24 @@
   硬项才有约束力。
 - **代价**：放弃把 ≤10 字分句占比从 41% 拉到 45%。这个改动要逐句重写 25 篇，
   收益是 4 个百分点，代价是内容风险。
+
+## D11 · 站点底层从 Astro Starlight 切到 VitePress
+
+- **状态**：已定（v1.x）
+- **背景**：站点只需要「Markdown 单源 + 侧边栏 + 搜索 + 静态部署」四件事，
+  而 Starlight 带来的 Astro 分层（.astro 组件、content collections、MDX 编译链）在维护上偏重：
+  改一处首页版式要动 Astro 组件与 TS schema，贡献者还得懂 Astro 语法。
+- **选项**：A 继续 Starlight；B 切 VitePress；C 纯 HTML 模板
+- **决策**：选 B。内容改为纯 Markdown + 容器语法，配置收敛到 `.vitepress/config.mts` 与 `theme/`。
+- **理由**：
+  - 内容不再需要 MDX：Aside → `::: tip/info/warning`，折叠答案 → `::: details`，
+    PR diff 更接近纯文本，贡献门槛从「会 MDX」降到「会 Markdown」
+  - 侧边栏在 `config.mts` 里按目录 + frontmatter 自动生成，仍是「新增课不改配置」
+  - 部署链更短：`pnpm build` + `upload-pages-artifact`，不再依赖 `withastro/action`
+  - 首页仍是自定义视觉（hero 光晕/指标条 + 7 张模块卡），只是从 `.astro` 换成 Vue 组件
+- **代价**：
+  - URL 从 `/00-intro/00-what-problem/` 变为 `/00-intro/00-what-problem`（`cleanUrls`），
+    旧外链需要靠 404 兜底
+  - 搜索从 Pagefind 换成 minisearch 本地搜索，中文分词都一般（D7 的结论不变）
+  - 一次性迁移成本：79 处 Aside、95 处 `<details>` 的语法改写，脚本可完成
+- **被否决**：C —— 无搜索、无侧边栏，回归到要自己维护站点的状态。

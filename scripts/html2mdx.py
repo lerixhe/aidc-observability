@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
-"""原型 HTML → Starlight MDX 骨架转换器。
+"""原型 HTML → VitePress Markdown 骨架转换器。
 
 定位：只做**机械转换**（约 70%），语义改写、脱敏、补参考资料必须人工完成。
 转换完成后脚本会打印一份「待人工处理清单」。
 
 映射规则见 docs/MIGRATION.md「结构映射表」：
     header.hero              -> frontmatter title / description
-    div.breadcrumb / div.nav -> 丢弃（Starlight 自带面包屑与上下课分页）
+    div.breadcrumb / div.nav -> 丢弃（VitePress 自带导航与上一课/下一课分页）
     div.card + h2            -> ## 小节
     div.compare（old/new）   -> Markdown 表格
-    div.link-exp             -> <Aside type="note" title="经验映射">
-    div.warn                 -> <Aside type="caution">
-    div.goal                 -> <Aside type="tip" title="本节目标">
-    div.keycard              -> <Aside type="tip" title="本课要点">
-    .quiz-item + <details>   -> 保留 <details>，summary 改「参考答案与评分维度」
+    div.link-exp             -> ::: info 经验映射
+    div.warn                 -> ::: warning
+    div.goal                 -> ::: tip 本节目标
+    div.keycard              -> ::: tip 本课要点
+    .quiz-item + <details>   -> ::: details 参考答案与评分维度
     <style> / <footer>       -> 丢弃
 
 用法：
-    python3 scripts/html2mdx.py reference/archive-aidc/lesson-01.html -o /tmp/l1.mdx
+    python3 scripts/html2mdx.py reference/archive-aidc/lesson-01.html -o /tmp/l1.md
     python3 scripts/html2mdx.py reference/archive-aidc/lesson-03.html -o ... --title "RoCEv2：把 RDMA 搬到以太网"
 
 注意：原型目录含个人化叙述与前雇主信息（.gitignore 已排除），
@@ -209,7 +209,7 @@ def render_compare(node: Node) -> str:
             *rows,
         ]
     )
-    return "{/* MIGRATION: 双栏对比已转成表格，行语义请人工核对 */}\n" + table
+    return "<!-- MIGRATION: 双栏对比已转成表格，行语义请人工核对 -->\n" + table
 
 
 def render_details(node: Node) -> str:
@@ -220,7 +220,7 @@ def render_details(node: Node) -> str:
 
     body_parts = [render_block(c) for c in node.children if not (isinstance(c, Node) and c.tag == "summary")]
     body = "\n\n".join(p for p in body_parts if p.strip())
-    return f"<details>\n<summary>参考答案与评分维度</summary>\n\n{body}\n\n</details>"
+    return f"::: details 参考答案与评分维度\n\n{body}\n\n:::"
 
 
 def render_quiz_item(node: Node) -> str:
@@ -260,11 +260,14 @@ def render_quiz_item(node: Node) -> str:
     return "\n\n".join(out)
 
 
+CONTAINER = {"tip": "tip", "note": "info", "caution": "warning", "danger": "danger"}
+
+
 def render_aside(node: Node, kind: str, title: str | None) -> str:
     body = render_plain(node)
     body = re.sub(r"^[⚠️❗️📌\s]+", "", body)
-    title_attr = f' title="{title}"' if title else ""
-    return f'<Aside type="{kind}"{title_attr}>\n{body}\n</Aside>'
+    head = f"::: {CONTAINER[kind]} {title}" if title else f"::: {CONTAINER[kind]}"
+    return f"{head}\n\n{body}\n\n:::"
 
 
 BLOCK_TAGS = {
@@ -312,10 +315,10 @@ def render_keycard(node: Node) -> str:
     parts = []
     for child in node.children:
         if isinstance(child, Node) and child.tag in ("h2", "h3"):
-            continue  # 标题由 Aside title 承担
+            continue  # 标题由容器 title 承担
         parts.append(render_block(child))
     body = "\n\n".join(p for p in parts if p.strip())
-    return f'<Aside type="tip" title="本课要点">\n{body}\n</Aside>'
+    return f"::: tip 本课要点\n\n{body}\n\n:::"
 
 
 def render_block(node) -> str:
@@ -352,7 +355,7 @@ def render_block(node) -> str:
     if tag in ("h1", "h2", "h3", "h4"):
         level = {"h1": "#", "h2": "##", "h3": "###", "h4": "####"}[tag]
         text = normalize(render_inline(node))
-        # 去掉原型里的 emoji 前缀（Starlight 侧由 Aside 图标承担）
+        # 去掉原型里的 emoji 前缀（站点侧由容器图标承担）
         text = re.sub(r"^[📝🎓🔗⚠️\s]+", "", text)
         return f"{level} {text}"
 
@@ -397,7 +400,7 @@ def collect_sections(root: Node) -> list[str]:
     return [b for b in blocks if b and b.strip()]
 
 
-def build_mdx(title: str, description: str, blocks: list[str]) -> str:
+def build_markdown(title: str, description: str, blocks: list[str]) -> str:
     body = "\n\n".join(blocks)
     def yaml(value: str) -> str:
         return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
@@ -406,31 +409,30 @@ def build_mdx(title: str, description: str, blocks: list[str]) -> str:
         "---\n"
         f"title: {yaml(title)}\n"
         f"description: {yaml(description)}\n"
-        "---\n\n"
-        "import { Aside } from '@astrojs/starlight/components';\n"
+        "---\n"
     )
     return frontmatter + "\n" + body + "\n"
 
 
-def audit(mdx: str) -> list[str]:
+def audit(md: str) -> list[str]:
     """检查每课统一结构的缺口，供人工补齐。"""
     todos = []
     for section in REQUIRED_SECTIONS:
-        if not re.search(rf"^##\s+{re.escape(section)}", mdx, re.MULTILINE):
+        if not re.search(rf"^##\s+{re.escape(section)}", md, re.MULTILINE):
             todos.append(f"缺少小节：## {section}")
-    if "发给 AI" in mdx or "发给AI" in mdx:
+    if "发给 AI" in md or "发给AI" in md:
         todos.append("练习说明仍含「发给 AI 批改」，改为自答 + 自评")
-    if "面试" in mdx or "一面" in mdx or "二面" in mdx:
+    if "面试" in md or "一面" in md or "二面" in md:
         todos.append("仍含面试语境，按 docs/MIGRATION.md 第二节改写")
-    if re.search(r"^\{/\* MIGRATION", mdx, re.MULTILINE):
-        todos.append("存在 {/* MIGRATION */} 标记，需人工核对")
+    if re.search(r"^<!-- MIGRATION", md, re.MULTILINE):
+        todos.append("存在 <!-- MIGRATION --> 标记，需人工核对")
     return todos
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="原型 HTML → Starlight MDX 骨架")
+    parser = argparse.ArgumentParser(description="原型 HTML → VitePress Markdown 骨架")
     parser.add_argument("source", type=Path, help="原型 HTML 文件，如 reference/archive-aidc/lesson-01.html")
-    parser.add_argument("-o", "--output", type=Path, help="输出 MDX 路径（默认打印到 stdout）")
+    parser.add_argument("-o", "--output", type=Path, help="输出 Markdown 路径（默认打印到 stdout）")
     parser.add_argument("--title", help="覆盖 frontmatter title（建议用 docs/OUTLINE.md 的新课标题）")
     args = parser.parse_args(argv)
 
@@ -441,23 +443,23 @@ def main(argv: list[str] | None = None) -> int:
     root = parse_html(args.source.read_text(encoding="utf-8"))
     title, description = hero_info(root)
     blocks = collect_sections(root)
-    mdx = build_mdx(args.title or title, description, blocks)
+    md = build_markdown(args.title or title, description, blocks)
 
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(mdx, encoding="utf-8")
+        args.output.write_text(md, encoding="utf-8")
 
-    todos = audit(mdx)
+    todos = audit(md)
     print(f"源文件：{args.source}")
     print(f"标题：{args.title or title}")
-    print(f"产出：{args.output or '(stdout)'}  行数：{mdx.count(chr(10))}")
+    print(f"产出：{args.output or '(stdout)'}  行数：{md.count(chr(10))}")
     if todos:
         print("\n待人工处理：")
         for item in todos:
             print(f"  - {item}")
     if not args.output:
         print("\n" + "-" * 60 + "\n")
-        print(mdx)
+        print(md)
     return 0
 
 

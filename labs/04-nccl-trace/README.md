@@ -11,7 +11,7 @@
 2. **核算带宽**：algbw → busbw，和端口线速对账
 3. **定位 straggler**：哪一步慢、慢多少、归因到哪个 rank
 
-对应课程：[08 NCCL 与集合通信](../../site/src/content/docs/03-traffic-topo/08-nccl.mdx)。
+对应课程：[08 NCCL 与集合通信](../../site/docs/03-traffic-topo/08-nccl.md)。
 
 这门课的核心观念之一是「流量矩阵已知」。这个 lab 就是把它变成可算的东西：
 **从日志反推出本该已知的账本，然后拿实际值去对账。**

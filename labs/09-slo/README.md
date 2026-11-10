@@ -16,7 +16,7 @@
 
 三个数都叫「可用率」。**不说口径就报可用率，等于没说。**
 
-对应课程：[15 指标体系与口径](../../site/src/content/docs/05-analysis/15-metrics-slo.mdx)。
+对应课程：[15 指标体系与口径](../../site/docs/05-analysis/15-metrics-slo.md)。
 
 ## 2. 跑起来
 

@@ -10,7 +10,7 @@
 import glob
 import sys
 
-DOCS = "site/src/content/docs"
+DOCS = "site/docs"
 
 
 def convert(path: str) -> tuple[str, int]:
@@ -31,7 +31,7 @@ def convert(path: str) -> tuple[str, int]:
 def main() -> int:
     dry = "--dry-run" in sys.argv
     total = 0
-    for f in sorted(glob.glob(f"{DOCS}/**/*.mdx", recursive=True)):
+    for f in sorted(glob.glob(f"{DOCS}/**/*.md", recursive=True)):
         text, hits = convert(f)
         if not hits:
             continue

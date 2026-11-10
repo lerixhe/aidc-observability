@@ -12,9 +12,9 @@
 - 队头阻塞怎么让无辜流陪绑
 - pause 帧传播延迟怎么吃掉缓冲余量
 
-对应课程：[05 PFC](../../site/src/content/docs/02-lossless/05-pfc.mdx)、
-[06 ECN + DCQCN](../../site/src/content/docs/02-lossless/06-ecn-dcqcn.mdx)、
-[07 四大典型故障](../../site/src/content/docs/02-lossless/07-fault-modes.mdx)。
+对应课程：[05 PFC](../../site/docs/02-lossless/05-pfc.md)、
+[06 ECN + DCQCN](../../site/docs/02-lossless/06-ecn-dcqcn.md)、
+[07 四大典型故障](../../site/docs/02-lossless/07-fault-modes.md)。
 
 ## 2. 跑起来
 

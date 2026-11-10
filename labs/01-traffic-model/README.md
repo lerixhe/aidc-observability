@@ -12,7 +12,7 @@
 
 同样 20 GB/s，两种流量的瞬时形态差 5 倍。你要亲手算一遍「分钟级轮询能看见什么」。
 
-对应课程：[02 为什么 AI 训练网络和 IDC 网络不一样](../../site/src/content/docs/01-paradigm/02-why-different.mdx)。
+对应课程：[02 为什么 AI 训练网络和 IDC 网络不一样](../../site/docs/01-paradigm/02-why-different.md)。
 
 ## 2. 跑起来
 

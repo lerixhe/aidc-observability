@@ -13,7 +13,7 @@
 
 最后算出**保真度**：观测到的峰值 / 真实峰值。这张表就是「为什么分钟级轮询看不见 PFC 风暴」的量化版。
 
-对应课程：[11 gNMI + OpenConfig 遥测](../../site/src/content/docs/04-telemetry/11-gnmi.mdx)。
+对应课程：[11 gNMI + OpenConfig 遥测](../../site/docs/04-telemetry/11-gnmi.md)。
 
 ## 2. 传输层说明（重要）
 

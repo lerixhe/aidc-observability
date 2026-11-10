@@ -17,7 +17,7 @@ Clos 上联做到 1:1 无收拢，不代表两条上行会各吃一半。
 | 二 | hash 口径 L3 vs L4 | 三层口径下同一对主机的连接全撞一条路 |
 | 三 | 同质大象流 | 5 元组一模一样时，任何口径都救不了，得靠拓扑结构 |
 
-对应课程：[09 万卡集群拓扑](../../site/src/content/docs/03-traffic-topo/09-topology.mdx)。
+对应课程：[09 万卡集群拓扑](../../site/docs/03-traffic-topo/09-topology.md)。
 那一课讲 rail-optimized 拓扑为什么这样设计，这个 lab 给出量化理由。
 
 ## 2. 跑起来

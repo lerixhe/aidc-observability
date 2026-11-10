@@ -41,7 +41,7 @@ AI 训练网络（智算中心 / AIDC）把网络可观测的基本假设全部�
 │   ├── OUTLINE.md         23 课大纲 + 与课程原型的映射关系
 │   ├── MIGRATION.md       原型迁移与去个人化/脱敏规则
 │   └── DECISIONS.md       关键决策记录（ADR）
-├── site/                  Astro Starlight 文档站（v0.1 已上线，见 site/README.md）
+├── site/                  VitePress 文档站（v0.1 已上线，见 site/README.md）
 ├── labs/                  Go / 容器化实验代码（12 个 lab：10 L1 + 2 L2）
 ├── reference/             课程原型参考（本地用，不入库，见下）
 └── scripts/               迁移脚本、链接体检、文风体检、脱敏扫描
@@ -52,7 +52,7 @@ AI 训练网络（智算中心 / AIDC）把网络可观测的基本假设全部�
 | 版本 | 内容 | 状态 |
 |---|---|---|
 | v0.0 | 立项：规划文档、目录骨架、原型归档 | 已完成 |
-| v0.1 | 内容上线：16 课迁移 MDX + Starlight 站点 + GitHub Pages | 已完成 |
+| v0.1 | 内容上线：16 课迁移 Markdown + 站点 + GitHub Pages | 已完成 |
 | v0.2 | 可运行：首批 6 个 L1 lab（无特权依赖）+ devcontainer + labs CI | 已完成 |
 | v0.3 | 扩课：新增 8 篇（导读、环境、超节点、INT、管道、指标体系、MTTR、端到端案例）+ 3 个 L1 lab（07/08/09）+ 附录 A 术语表与 B 参考清单 | 已完成 |
 | v0.4 | 进阶 lab：containerlab 真实拓扑（05-clos-topo）+ 故障注入（03-fault-inject）+ 端到端剧本（11-case-study） | 已完成 |

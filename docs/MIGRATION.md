@@ -8,7 +8,7 @@
 
 ## 一、迁移流程（每课四步）
 
-1. **结构转换**：`scripts/html2mdx.py` 解析原 HTML 的 `.card` 结构，产出 MDX 骨架
+1. **结构转换**：`scripts/html2mdx.py` 解析原 HTML 的 `.card` 结构，产出 Markdown 骨架
    （脚本只解决 70% 的机械转换，语义改写必须人工做）
 2. **叙事重写**：按第三节规则逐块改写，特别是 `link-exp`（经验映射）与练习说明
 3. **脱敏扫描**：按第四节白名单 grep 核查通过
@@ -16,19 +16,19 @@
 
 ### 结构映射表
 
-| 原 HTML | MDX / Starlight |
+| 原 HTML | Markdown / VitePress |
 |---|---|
 | `<header class="hero">` + `.lesson-no` + `<h1>` | frontmatter `title` + `description` |
-| `div.breadcrumb` | 删除（Starlight 自带面包屑） |
+| `div.breadcrumb` | 删除（站点自带面包屑式导航） |
 | `div.card` + `<h2>` | `##` 小节 |
 | `div.compare`（old / new 双栏） | Markdown 表格 |
-| `div.link-exp` | `<Aside type="note" title="经验映射">` |
-| `div.warn` | `<Aside type="caution">` |
-| `div.goal` | `<Aside type="tip">` 或列表 |
-| `div.keycard` | `<Aside type="tip" title="本课要点">` |
-| `quiz-item` + `<details>` | 保留 `<details>`，改标题为「参考答案 + 评分维度」 |
-| `div.nav` 上下课链接 | 删除（Starlight pagination） |
-| 内联 `<style>` | 删除（Starlight 主题） |
+| `div.link-exp` | `::: info 经验映射` |
+| `div.warn` | `::: warning` |
+| `div.goal` | `::: tip` 或列表 |
+| `div.keycard` | `::: tip 本课要点` |
+| `quiz-item` + `<details>` | `::: details 参考答案与评分维度` |
+| `div.nav` 上下课链接 | 删除（内置上一课/下一课分页） |
+| 内联 `<style>` | 删除（`theme/style.css` 统一管） |
 | `<code>` / `<pre>` | 原生 Markdown 代码块（带语言标记） |
 
 ---
@@ -97,22 +97,22 @@ v0.1 已完成 16 课迁移（L7 取消，题目下沉为各模块综合题）�
 
 | 原型课 | 新编号 | 文件 | 状态 |
 |---|---|---|---|
-| L1 | 02 | `01-paradigm/02-why-different.mdx` | ✅ |
-| L2 | 03 | `01-paradigm/03-rdma.mdx` | ✅ |
-| L3 | 04 | `01-paradigm/04-rocev2.mdx` | ✅ |
-| L4 | 05 | `02-lossless/05-pfc.mdx` | ✅ |
-| L5 | 06 | `02-lossless/06-ecn-dcqcn.mdx` | ✅ |
-| L6 | 07 | `02-lossless/07-fault-modes.mdx` | ✅ |
+| L1 | 02 | `01-paradigm/02-why-different.md` | ✅ |
+| L2 | 03 | `01-paradigm/03-rdma.md` | ✅ |
+| L3 | 04 | `01-paradigm/04-rocev2.md` | ✅ |
+| L4 | 05 | `02-lossless/05-pfc.md` | ✅ |
+| L5 | 06 | `02-lossless/06-ecn-dcqcn.md` | ✅ |
+| L6 | 07 | `02-lossless/07-fault-modes.md` | ✅ |
 | L7 | — | 题目下沉为 22 课的「模块综合题」 | ✅ 取消独立课 |
-| L8 | 08 | `03-traffic-topo/08-nccl.mdx` | ✅ |
-| L9 | 09 | `03-traffic-topo/09-topology.mdx` | ✅ |
-| L10 | 11 | `04-telemetry/11-gnmi.mdx` | ✅ |
-| L11 | 13 | `04-telemetry/13-optics.mdx` | ✅ |
-| L12 | 20 | `06-selection/20-ib-vs-roce.mdx` | ✅ |
-| L13 | 16 | `05-analysis/16-aiops.mdx` | ✅ |
-| L14 | 18 | `05-analysis/18-llm-ops.mdx` | ✅ |
-| L15 | 17 | `05-analysis/17-storage.mdx` | ✅ 泛化为时序存储选型 |
-| L16 | 22 | `06-selection/22-self-assessment.mdx` | ✅ 与 L17 合并 |
+| L8 | 08 | `03-traffic-topo/08-nccl.md` | ✅ |
+| L9 | 09 | `03-traffic-topo/09-topology.md` | ✅ |
+| L10 | 11 | `04-telemetry/11-gnmi.md` | ✅ |
+| L11 | 13 | `04-telemetry/13-optics.md` | ✅ |
+| L12 | 20 | `06-selection/20-ib-vs-roce.md` | ✅ |
+| L13 | 16 | `05-analysis/16-aiops.md` | ✅ |
+| L14 | 18 | `05-analysis/18-llm-ops.md` | ✅ |
+| L15 | 17 | `05-analysis/17-storage.md` | ✅ 泛化为时序存储选型 |
+| L16 | 22 | `06-selection/22-self-assessment.md` | ✅ 与 L17 合并 |
 | L17 | 22 | 同上 | ✅ |
 
 尚未落地（由后续里程碑新增，非迁移）：00、01、10、12、14、15、19、21 与附录 A/B。
@@ -121,21 +121,21 @@ v0.1 已完成 16 课迁移（L7 取消，题目下沉为各模块综合题）�
 
 ## 六、试点结论（L1 → 02）
 
-先迁移一课验证 Starlight 语汇是否够用，避免 17 课返工。实际结论：
+先迁移一课验证站点语汇是否够用，避免 17 课返工。实际结论（v1.x 已把 Aside 换成容器语法）：
 
-| 原型单元 | MDX 实现 | 是否够用 |
+| 原型单元 | 站点实现 | 是否够用 |
 |---|---|---|
-| `.link-exp` 经验映射 | `<Aside type="note" title="经验映射（IDC → AIDC）">` | ✅ 够用，且比原卡片更紧凑 |
-| `.warn` 警示 | `<Aside type="caution" title="关键推论">` | ✅ |
-| `.goal` 目标 | 列表 + `<Aside type="tip">` | ✅ |
-| `.keycard` 要点卡 | `<Aside type="tip" title="本课要点">` | ✅ 深色块视觉由主题承担，可接受 |
+| `.link-exp` 经验映射 | `::: info 经验映射（IDC → AIDC）` | ✅ 够用，且比原卡片更紧凑 |
+| `.warn` 警示 | `::: warning 关键推论` | ✅ |
+| `.goal` 目标 | 列表 + `::: tip` | ✅ |
+| `.keycard` 要点卡 | `::: tip 本课要点` | ✅ 深色块视觉由主题承担，可接受 |
 | `.compare` 双栏 | Markdown 表格 | ✅ 移动端更好；但「行语义」需人工重排（两栏并不是逐行对应） |
-| `quiz-item` + `<details>` | `**必答 Q1**：` + `<details><summary>参考答案与评分维度</summary>` | ✅ details 内可正常写 Markdown、列表、加粗 |
-| `nav` 上下课 / 面包屑 / 内联 CSS | 删除 | ✅ 由 Starlight 分页与主题接管 |
-| `hero` | frontmatter `title` + `description` + Splash 首页 | ✅ 但原 hero 副标题多含面试语境，**必须重写** |
+| `quiz-item` + `<details>` | `**必答 Q1**：` + `::: details 参考答案与评分维度` | ✅ 容器内可正常写 Markdown、列表、加粗 |
+| `nav` 上下课 / 面包屑 / 内联 CSS | 删除 | ✅ 由内置分页与主题接管 |
+| `hero` | frontmatter `title` + `description` + `layout: home` 首页 | ✅ 但原 hero 副标题多含面试语境，**必须重写** |
 
 需要注意的三件事（铺开时逐课检查）：
 
 1. **行内加粗的边界**：`**文字**` 后面紧跟中文时，CommonMark 可能不识别。脚本已在必要处补空格；人工改稿时也注意 `**…** ` 后面留空格或标点。
-2. **绝对路径链接不会加 `base`**：站内链接一律用相对路径（`./03-rdma/`、`../02-lossless/05-pfc/`）。
+2. **站内链接一律用 `.md` 相对路径**（`./03-rdma.md`、`../02-lossless/05-pfc.md`），VitePress 会编译成干净 URL；首页组件里的链接要过 `withBase()`。
 3. **原型里的「L2 / L10」旧课号引用要换成新课号**（L2→03、L4→05、L5→06、L6→07、L10→11）。

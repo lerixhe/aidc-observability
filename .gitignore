@@ -1,8 +1,9 @@
 # ===== 依赖与构建 =====
 node_modules/
 dist/
-.astro/
 .pnpm-store/
+.vitepress/dist/
+.vitepress/cache/
 
 # ===== 课程原型参考（含个人化叙述与前雇主信息，禁止入库）=====
 reference/archive-aidc/

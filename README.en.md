@@ -49,7 +49,7 @@ is what this project tries to fill.
 │   ├── OUTLINE.md         23-lesson outline + mapping to the original prototype
 │   ├── MIGRATION.md       Migration and de-identification rules
 │   └── DECISIONS.md       ADR log
-├── site/                  Astro Starlight site (live since v0.1)
+├── site/                  VitePress site (live since v0.1)
 ├── labs/                  Go / container labs (12: 10 L1 + 2 L2)
 ├── reference/             Original prototype (local only, not committed)
 └── scripts/               Migration, link check, style check
@@ -60,7 +60,7 @@ is what this project tries to fill.
 | Version | Content | Status |
 |---|---|---|
 | v0.0 | Planning docs, directory skeleton, prototype archived | Done |
-| v0.1 | 16 lessons as MDX, Starlight site, GitHub Pages live | Done |
+| v0.1 | 16 lessons as Markdown, docs site, GitHub Pages live | Done |
 | v0.2 | First 6 L1 labs (no privileged deps), devcontainer, labs CI | Done |
 | v0.3 | 8 new lessons (intro, environment, superpod, INT, pipeline, SLI/SLO, MTTR, end-to-end case) + 3 L1 labs + appendices A/B | Done |
 | v0.4 | Advanced labs: containerlab topology (05-clos-topo), fault injection (03-fault-inject), end-to-end runbook (11-case-study) | **Current** |

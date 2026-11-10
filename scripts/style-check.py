@@ -4,7 +4,7 @@
 用法：
     python3 scripts/style-check.py                 # 汇总报表 + 逐课明细
     python3 scripts/style-check.py --files         # 只看每课一行
-    python3 scripts/style-check.py path/to/xx.mdx  # 单文件
+    python3 scripts/style-check.py path/to/xx.md   # 单文件
 
 退出码：0 全部达标；1 有指标标红（CI 可用）。
 
@@ -17,7 +17,7 @@ import re
 import statistics as st
 import sys
 
-DOCS = "site/src/content/docs"
+DOCS = "site/docs"
 
 # --- 目标值（COURSE-STYLE §2 / §2.1 / §7）---
 # 口径：只统计正文的 6 类句读符号（，。、；：？！），已剔除 frontmatter / 代码块 / 表格
@@ -150,8 +150,8 @@ def ok(key: str, val: float) -> bool:
 def main() -> int:
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     files = args or [
-        f for f in sorted(glob.glob(f"{DOCS}/**/*.mdx", recursive=True))
-        if not f.endswith("index.mdx")          # 首页是 Splash，不属课程正文
+        f for f in sorted(glob.glob(f"{DOCS}/**/*.md", recursive=True))
+        if not f.endswith("index.md")           # 首页是 Hero 版式，不属课程正文
     ]
     per_file, red = {}, []
 

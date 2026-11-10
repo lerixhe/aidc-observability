@@ -11,7 +11,7 @@
 2. **收敛**：把几百条告警压成几个 incident
 3. **RCA**：用图打分找根因，和两个朴素基线对比 200 轮
 
-对应课程：[16 告警收敛与根因定位](../../site/src/content/docs/05-analysis/16-aiops.mdx)。
+对应课程：[16 告警收敛与根因定位](../../site/docs/05-analysis/16-aiops.md)。
 
 ## 2. 跑起来
 

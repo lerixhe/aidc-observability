@@ -1,0 +1,219 @@
+# 05-clos-topo · 2 spine / 4 leaf 的 ECMP 极化
+#
+#   spine1        spine2
+#     │ │           │ │
+#   ┌─┴─┴───────────┴─┴─┐
+# leaf1  leaf2  leaf3  leaf4
+#   │      │      │      │
+# h1 h2  h3 h4  h5 h6  h7 h8
+#
+# 每台 leaf 两条等价上行，1:1 无收拢。散列均分时每条吃 50%，
+# 只有少量大象流时会偏到 100:0 —— 这就是极化，也是本 lab 要量的东西。
+#
+# 地址：
+#   下行  leafN br0 10.11.N.1/24   host 10.11.N.10 与 10.11.N.11
+#   上行  leafN:eth3 10.12.N.1/30 ↔ spine1:ethN 10.12.N.2
+#         leafN:eth4 10.13.N.1/30 ↔ spine2:ethN 10.13.N.2
+#
+# leaf 下挂的两台主机做二层桥（br0），上行做三层 ECMP。
+# 桥是为了省地址，三层是为了让 ECMP 真的发生在 leaf 上。
+#
+# 接口名与 flows.go 里的 Uplinks() 一一对应，改一处必改另一处。
+
+name: clos-topo
+
+mgmt:
+  network: clos-topo-mgmt
+  ipv4-subnet: 172.31.32.0/24
+
+topology:
+  nodes:
+    # ---- hosts ----
+    h1:
+      kind: linux
+      image: ghcr.io/nicolaka/netshoot:v0.13
+      exec:
+        - ip addr add 10.11.1.10/24 dev eth1
+        - ip link set eth1 up
+        - ip route add default via 10.11.1.1
+    h2:
+      kind: linux
+      image: ghcr.io/nicolaka/netshoot:v0.13
+      exec:
+        - ip addr add 10.11.1.11/24 dev eth1
+        - ip link set eth1 up
+        - ip route add default via 10.11.1.1
+    h3:
+      kind: linux
+      image: ghcr.io/nicolaka/netshoot:v0.13
+      exec:
+        - ip addr add 10.11.2.10/24 dev eth1
+        - ip link set eth1 up
+        - ip route add default via 10.11.2.1
+    h4:
+      kind: linux
+      image: ghcr.io/nicolaka/netshoot:v0.13
+      exec:
+        - ip addr add 10.11.2.11/24 dev eth1
+        - ip link set eth1 up
+        - ip route add default via 10.11.2.1
+    h5:
+      kind: linux
+      image: ghcr.io/nicolaka/netshoot:v0.13
+      exec:
+        - ip addr add 10.11.3.10/24 dev eth1
+        - ip link set eth1 up
+        - ip route add default via 10.11.3.1
+    h6:
+      kind: linux
+      image: ghcr.io/nicolaka/netshoot:v0.13
+      exec:
+        - ip addr add 10.11.3.11/24 dev eth1
+        - ip link set eth1 up
+        - ip route add default via 10.11.3.1
+    h7:
+      kind: linux
+      image: ghcr.io/nicolaka/netshoot:v0.13
+      exec:
+        - ip addr add 10.11.4.10/24 dev eth1
+        - ip link set eth1 up
+        - ip route add default via 10.11.4.1
+    h8:
+      kind: linux
+      image: ghcr.io/nicolaka/netshoot:v0.13
+      exec:
+        - ip addr add 10.11.4.11/24 dev eth1
+        - ip link set eth1 up
+        - ip route add default via 10.11.4.1
+
+    # ---- leaf ----
+    leaf1:
+      kind: linux
+      image: ghcr.io/nicolaka/netshoot:v0.13
+      exec:
+        - sysctl -w net.ipv4.ip_forward=1
+        - sysctl -w net.ipv4.fib_multipath_hash_policy=1
+        - ip link add br0 type bridge
+        - ip link set eth1 master br0
+        - ip link set eth2 master br0
+        - ip link set br0 up
+        - ip link set eth1 up
+        - ip link set eth2 up
+        - ip addr add 10.11.1.1/24 dev br0
+        - ip addr add 10.12.1.1/30 dev eth3
+        - ip addr add 10.13.1.1/30 dev eth4
+        - ip link set eth3 up
+        - ip link set eth4 up
+        - ip route add 10.11.0.0/16 nexthop via 10.12.1.2 dev eth3 weight 1 nexthop via 10.13.1.2 dev eth4 weight 1
+
+    leaf2:
+      kind: linux
+      image: ghcr.io/nicolaka/netshoot:v0.13
+      exec:
+        - sysctl -w net.ipv4.ip_forward=1
+        - sysctl -w net.ipv4.fib_multipath_hash_policy=1
+        - ip link add br0 type bridge
+        - ip link set eth1 master br0
+        - ip link set eth2 master br0
+        - ip link set br0 up
+        - ip link set eth1 up
+        - ip link set eth2 up
+        - ip addr add 10.11.2.1/24 dev br0
+        - ip addr add 10.12.2.1/30 dev eth3
+        - ip addr add 10.13.2.1/30 dev eth4
+        - ip link set eth3 up
+        - ip link set eth4 up
+        - ip route add 10.11.0.0/16 nexthop via 10.12.2.2 dev eth3 weight 1 nexthop via 10.13.2.2 dev eth4 weight 1
+
+    leaf3:
+      kind: linux
+      image: ghcr.io/nicolaka/netshoot:v0.13
+      exec:
+        - sysctl -w net.ipv4.ip_forward=1
+        - sysctl -w net.ipv4.fib_multipath_hash_policy=1
+        - ip link add br0 type bridge
+        - ip link set eth1 master br0
+        - ip link set eth2 master br0
+        - ip link set br0 up
+        - ip link set eth1 up
+        - ip link set eth2 up
+        - ip addr add 10.11.3.1/24 dev br0
+        - ip addr add 10.12.3.1/30 dev eth3
+        - ip addr add 10.13.3.1/30 dev eth4
+        - ip link set eth3 up
+        - ip link set eth4 up
+        - ip route add 10.11.0.0/16 nexthop via 10.12.3.2 dev eth3 weight 1 nexthop via 10.13.3.2 dev eth4 weight 1
+
+    leaf4:
+      kind: linux
+      image: ghcr.io/nicolaka/netshoot:v0.13
+      exec:
+        - sysctl -w net.ipv4.ip_forward=1
+        - sysctl -w net.ipv4.fib_multipath_hash_policy=1
+        - ip link add br0 type bridge
+        - ip link set eth1 master br0
+        - ip link set eth2 master br0
+        - ip link set br0 up
+        - ip link set eth1 up
+        - ip link set eth2 up
+        - ip addr add 10.11.4.1/24 dev br0
+        - ip addr add 10.12.4.1/30 dev eth3
+        - ip addr add 10.13.4.1/30 dev eth4
+        - ip link set eth3 up
+        - ip link set eth4 up
+        - ip route add 10.11.0.0/16 nexthop via 10.12.4.2 dev eth3 weight 1 nexthop via 10.13.4.2 dev eth4 weight 1
+
+    # ---- spine ----
+    spine1:
+      kind: linux
+      image: ghcr.io/nicolaka/netshoot:v0.13
+      exec:
+        - sysctl -w net.ipv4.ip_forward=1
+        - ip addr add 10.12.1.2/30 dev eth1
+        - ip addr add 10.12.2.2/30 dev eth2
+        - ip addr add 10.12.3.2/30 dev eth3
+        - ip addr add 10.12.4.2/30 dev eth4
+        - ip link set eth1 up
+        - ip link set eth2 up
+        - ip link set eth3 up
+        - ip link set eth4 up
+        - ip route add 10.11.1.0/24 via 10.12.1.1
+        - ip route add 10.11.2.0/24 via 10.12.2.1
+        - ip route add 10.11.3.0/24 via 10.12.3.1
+        - ip route add 10.11.4.0/24 via 10.12.4.1
+
+    spine2:
+      kind: linux
+      image: ghcr.io/nicolaka/netshoot:v0.13
+      exec:
+        - sysctl -w net.ipv4.ip_forward=1
+        - ip addr add 10.13.1.2/30 dev eth1
+        - ip addr add 10.13.2.2/30 dev eth2
+        - ip addr add 10.13.3.2/30 dev eth3
+        - ip addr add 10.13.4.2/30 dev eth4
+        - ip link set eth1 up
+        - ip link set eth2 up
+        - ip link set eth3 up
+        - ip link set eth4 up
+        - ip route add 10.11.1.0/24 via 10.13.1.1
+        - ip route add 10.11.2.0/24 via 10.13.2.1
+        - ip route add 10.11.3.0/24 via 10.13.3.1
+        - ip route add 10.11.4.0/24 via 10.13.4.1
+
+  links:
+    - endpoints: ["h1:eth1", "leaf1:eth1"]
+    - endpoints: ["h2:eth1", "leaf1:eth2"]
+    - endpoints: ["h3:eth1", "leaf2:eth1"]
+    - endpoints: ["h4:eth1", "leaf2:eth2"]
+    - endpoints: ["h5:eth1", "leaf3:eth1"]
+    - endpoints: ["h6:eth1", "leaf3:eth2"]
+    - endpoints: ["h7:eth1", "leaf4:eth1"]
+    - endpoints: ["h8:eth1", "leaf4:eth2"]
+    - endpoints: ["leaf1:eth3", "spine1:eth1"]
+    - endpoints: ["leaf2:eth3", "spine1:eth2"]
+    - endpoints: ["leaf3:eth3", "spine1:eth3"]
+    - endpoints: ["leaf4:eth3", "spine1:eth4"]
+    - endpoints: ["leaf1:eth4", "spine2:eth1"]
+    - endpoints: ["leaf2:eth4", "spine2:eth2"]
+    - endpoints: ["leaf3:eth4", "spine2:eth3"]
+    - endpoints: ["leaf4:eth4", "spine2:eth4"]

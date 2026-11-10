@@ -35,8 +35,7 @@ export default defineConfig({
 			customCss: ['./src/styles/theme.css'],
 			// 侧边栏：模块级手写 label，模块内 autogenerate。
 			// 新增课（目录内加文件）无需改本文件；新增模块才需要加一行。
-			// 只挂载已有内容的模块，避免侧边栏出现空分组：
-			// 附录（appendix）留到 v1.0 有内容时再加。
+			// 只挂载已有内容的模块，避免侧边栏出现空分组。
 			// 模块内新增课时无需改本文件。
 			sidebar: [
 				// 导航栏已去掉站名，回首页入口放这里
@@ -48,6 +47,7 @@ export default defineConfig({
 				{ label: 'M4 · 遥测数据面', items: [{ autogenerate: { directory: '04-telemetry' } }] },
 				{ label: 'M5 · 分析与自动化', items: [{ autogenerate: { directory: '05-analysis' } }] },
 				{ label: 'M6 · 选型与收口', items: [{ autogenerate: { directory: '06-selection' } }] },
+				{ label: '附录', items: [{ autogenerate: { directory: 'appendix' } }] },
 			],
 			head: [
 				// 中文站：显式声明语言，利于搜索引擎与阅读器

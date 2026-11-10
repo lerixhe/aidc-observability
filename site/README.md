@@ -1,6 +1,6 @@
 # site/ — Astro Starlight 文档站
 
-> 状态：**v0.3**（23 课全部上线，M0–M6 七个模块齐全；附录待 v1.0）
+> 状态：**v0.3**（23 课 + 附录 A 上线，M0–M6 七个模块齐全；附录 B 待 v1.0）
 
 ## 本地运行
 
@@ -43,7 +43,7 @@ site/src/content/docs/
 ├── 04-telemetry/                # 课 11-14
 ├── 05-analysis/                 # 课 15-19
 ├── 06-selection/                # 课 20-22
-└── appendix/                    # 术语表 / 参考资料
+└── appendix/                    # 附录 A 术语表（附录 B 待补）
 ```
 
 - 目录数字前缀与文件名数字前缀都只影响侧边栏排序，**会出现在 URL 里**（`/01-paradigm/02-why-different/`）。

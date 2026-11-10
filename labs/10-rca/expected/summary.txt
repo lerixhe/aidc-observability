@@ -1,0 +1,49 @@
+== 10-rca · 图打分 vs 朴素基线 ==
+拓扑 2 spine × 4 leaf × 2 host = 14 节点 · 200 轮随机故障 · 收敛窗口 150ms
+
+方法                        Top-1      Top-3         平均排名
+--------------------------------------------------------
+按告警条数排序                     56%        88%        2.75
+按最早时间排序                     82%       100%        1.18
+图打分（本 lab）                  93%       100%        1.07
+
+告警收敛：4013 条告警 → 661 个 incident，压缩比 6.1×
+
+一轮明细（第 1 轮）
+真值：leaf1（leaf 层）· optics-degrade · t0=1543ms
+告警 17 条 → 3 个 incident；取包含真值的那个，含 4 个实体
+
+  告警流（前 8 条）
+       1545ms  spine1   neighbor-down            warning
+  *    1573ms  leaf1    pfc-pause-high           critical
+  *    1594ms  leaf1    queue-watermark-high     critical
+       1652ms  host2    path-latency-high        warning
+       1656ms  host2    nccl-timeout             warning
+       1659ms  host3    path-latency-high        warning
+       1666ms  host3    path-latency-high        warning
+       1672ms  host3    nccl-timeout             warning
+  ...（共 17 条）
+
+  候选根因（图打分）
+  #   实体         score  coverage  precision      时间  说明
+  1   leaf1      0.876       94%       100%    0.84  ← 命中真值
+  2   spine1     0.471      100%        31%    1.00  
+  3   host3      0.293       31%       100%    0.36  
+  4   spine0     0.259       94%        23%    0.50  
+  5   host2      0.256       25%       100%    0.40  
+
+  三个方法的 Top-3
+  图打分                  leaf1 > spine1 > host3
+  按告警条数                host3 > host2 > leaf1
+  按最早时间                spine1 > leaf1 > host2
+
+  读法
+  * 标出的是真值。图打分把 leaf1 排在第 1 名。
+  coverage 高说明它解释得了多数告警，precision 高说明它没有靠「什么都覆盖」蒙分。
+  spine 覆盖全部节点但 precision 低，所以不会被误判成根因 —— 这正是图打分的价值。
+
+读法：
+  1. 按告警条数排序最差 —— 一个故障的派生告警最多，根因往往不是告警最多的那个
+  2. 按最早时间排序中等 —— 会被上游反向告警和早到的噪声带偏
+  3. 图打分靠 precision 压住「覆盖面最大的顶层节点」，这才是共同祖先搜索的关键
+  4. 压缩 6 倍左右：四千条告警压成六百多个 incident，RCA 才有得算

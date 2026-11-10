@@ -1,6 +1,6 @@
 # labs/ — 可运行的实验代码
 
-> 状态：**v0.2 进行中**。L1 层已落地 4 个 lab，全部 `go run .` 即跑，无特权、无 Docker。
+> 状态：**v0.2 已达成**。L1 层 6 个 lab 全部落地，`go run .` 即跑，无特权、无 Docker。
 
 ## 快速开始
 
@@ -36,11 +36,11 @@ PFC / ECN 是硬件行为，纯软件仿真无法做到行为等价。因此 lab
 | `04-nccl-trace` | L1 | 08 | 解析 NCCL 日志，还原流量矩阵、核算 busbw、定位 straggler | ✅ v0.2 |
 | `03-fault-inject` | L2 | 07 | tc/netem + 伪造 pause 帧复现 HoL 与 incast | ⬜ v0.4 |
 | `05-clos-topo` | L2 | 09 | containerlab 2 spine / 4 leaf，ECMP hash 极化演示 | ⬜ v0.4 |
-| `06-gnmi-mock` | L1 | 11 | 可被 gNMI 客户端订阅的 mock server（OpenConfig 路径） | ⬜ v0.3 |
+| `06-gnmi-mock` | L1 | 11 | OpenConfig 路径树 + SAMPLE / ON_CHANGE 保真度对照 | ✅ v0.2 |
 | `07-int-path` | L1 | 12 | INT 逐跳元数据的编码/解析玩具实现 | ⬜ v0.3 |
 | `08-pipeline` | L1 | 14 | 秒级遥测 → 本地落盘（DuckDB）→ 查询保真度对比 | ⬜ v0.3 |
 | `09-slo` | L1 | 15 | 由模拟指标流计算 SLI，对比三种 SLO 口径 | ⬜ v0.3 |
-| `10-rca` | L1 | 16 | 吃模拟告警跑图算法做根因排序 | ⬜ v0.3 |
+| `10-rca` | L1 | 16 | 告警收敛 + 图打分做根因定位，对比两种朴素基线 | ✅ v0.2 |
 | `11-case-study` | L2 | 21 | 端到端排障剧本：从告警到定位到验证 | ⬜ v0.4 |
 
 编号留空是给规划留位，不代表顺序执行。`00-setup` 建议先跑，其余互不依赖。

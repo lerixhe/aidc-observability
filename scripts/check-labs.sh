@@ -35,7 +35,7 @@ done
 note ""
 note "== expected/ 自校验 =="
 # 00-setup 的输出含主机信息（工具版本、平台），不适合跨机器比对，跳过
-for lab in 01-traffic-model 02-pfc-sim 04-nccl-trace; do
+for lab in 01-traffic-model 02-pfc-sim 04-nccl-trace 06-gnmi-mock 10-rca; do
   dir="labs/$lab"
   [ -d "$dir/expected" ] || continue
   printf '  %-18s ' "$lab"

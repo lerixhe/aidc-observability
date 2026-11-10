@@ -9,7 +9,7 @@ Docker           —            ❌      未安装，或不在 PATH 里
 containerlab     —            ❌      未安装，L2 lab 需要
 python3          <ver>       ✅      
 
-lab 盘点（4 个已落地 / 共登记 9 个）
+lab 盘点（6 个已落地 / 共登记 9 个）
   目录                 层    需要工具                 对应课      可跑     说明
 ------------------------------------------------------------------------------------------------
   00-setup           L1   go                   01       ✅      环境自检：这台机器能跑哪些 lab
@@ -18,9 +18,9 @@ lab 盘点（4 个已落地 / 共登记 9 个）
   04-nccl-trace      L1   go                   08       ✅      从 NCCL 日志还原流量矩阵与 straggler
   03-fault-inject    L2   go+docker            07       —      规划中 · tc/netem 复现 HoL 与 incast
   05-clos-topo       L2   go+docker+clab       09       —      规划中 · 2 spine / 4 leaf 的 ECMP 极化
-  06-gnmi-mock       L1   go                   11       —      规划中 · 可被 gNMI 客户端订阅的 mock server
+  06-gnmi-mock       L1   go                   11       ✅      OpenConfig 路径树 + 订阅策略保真度对照
   08-pipeline        L1   go                   14       —      规划中 · 秒级遥测落盘与查询保真度对比
-  10-rca             L1   go                   16       —      规划中 · 告警图算法做根因排序
+  10-rca             L1   go                   16       ✅      告警收敛 + 图打分做根因定位
 
 下一步
   1. cd labs/02-pfc-sim && make run

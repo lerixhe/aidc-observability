@@ -1,0 +1,29 @@
+== incast · 注入计划 ==
+incast：多打一，汇聚口周期性冲高，丢包与 ECN 同时出现
+
+窗口 40 秒 · 采样 0.5 秒 · 劣化起点 10% 处（第 4 秒）
+
+拓扑：h1 h2 ── leaf1 ── spine1 ── leaf2 ── h3(慢) h4(健康)
+
+次序  节点     动作                                                  命令
+----  -------  ----------------------------------------------------  ----
+ 1    leaf2    汇聚口限速：多打一时这里必然溢出                                      tc qdisc replace dev eth2 root tbf rate 25mbit burst 32kb latency 20ms
+ 2    h3       接收端起服务                                                iperf3 -s -1 -D
+ 3    h1       两个发送端同一时刻打同一个目的地                                      iperf3 -c 10.0.3.2 -t 40 -b 20M -l 4K -D
+ 4    h2       第二条汇聚流                                                iperf3 -c 10.0.3.2 -t 40 -b 20M -l 4K -D
+ 5    leaf2    看 dropped 与 backlog 的周期性：与 iperf3 的突发节奏同步             tc -s qdisc show dev eth2
+ 6    h1       从发送端看：重传与 RTT 的周期性尖刺                                  ss -tin dst 10.0.3.2
+
+判读要点（真机上该看到什么）：
+  - 丢包率非零，只在尖刺窗口里非零，这是与 PFC 家族的分水岭
+  - 队列与 ECN 尖刺的周期等于训练步的周期，可用日志对齐验证
+  - 受影响路径集合随时间稳定，指向少数汇聚点，不是成片蔓延
+  - 汇聚点上游的全部发送端都被波及，但各自的问题程度不同
+
+真机等价做法（容器里造不出来的部分）：
+  - 汇聚设备上按队列看 ECN 标记率、PFC 触发次数、discard
+  - 与训练 step 时间线对齐：能对齐的是 incast，不能的是风暴
+  - 调小上行突发：`-l 4K` 改小、增加并发数，观察尖刺是否变陡
+
+清理：make destroy   # 或 docker exec <节点> tc qdisc del dev <if> root
+

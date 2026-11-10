@@ -1,0 +1,117 @@
+# 03-fault-inject · 拓扑定义
+#
+# 形状刻意做窄：两条接入、一台核心、一台慢目的、一台健康目的。
+# 四个故障场景都在这个形状里，只是注入点不同。
+#
+#   h1 ─┐                   ┌─ h3  慢目的地（下游被限速）
+#       ├─ leaf1 ─ spine1 ─ leaf2
+#   h2 ─┘                   └─ h4  健康目的地
+#
+# 地址用 30 位掩码，一段一个 /30，省掉交换机做二层桥的麻烦：
+# 三层转发能直接暴露「哪一跳排队」，二层桥会把队列藏起来。
+#
+#   10.0.1.0/30   h1   .2      leaf1 eth1 .1
+#   10.0.2.0/30   h2   .2      leaf1 eth2 .1
+#   10.0.10.0/30  spine1 eth1 .2   leaf1 eth3 .1
+#   10.0.11.0/30  spine1 eth2 .2   leaf2 eth1 .1
+#   10.0.3.0/30   h3   .2      leaf2 eth2 .1
+#   10.0.4.0/30   h4   .2      leaf2 eth3 .1
+#
+# 接口名与 plan.go 里的命令一一对应，改拓扑必改计划，反之亦然。
+
+name: fault-inject
+
+mgmt:
+  network: fault-inject-mgmt
+  ipv4-subnet: 172.31.31.0/24
+
+topology:
+  nodes:
+    h1:
+      kind: linux
+      image: ghcr.io/nicolaka/netshoot:v0.13
+      exec:
+        - ip addr add 10.0.1.2/30 dev eth1
+        - ip link set eth1 up
+        - ip route add default via 10.0.1.1
+
+    h2:
+      kind: linux
+      image: ghcr.io/nicolaka/netshoot:v0.13
+      exec:
+        - ip addr add 10.0.2.2/30 dev eth1
+        - ip link set eth1 up
+        - ip route add default via 10.0.2.1
+
+    h3:
+      # 慢目的地：接收能力被人为压住的角色
+      kind: linux
+      image: ghcr.io/nicolaka/netshoot:v0.13
+      exec:
+        - ip addr add 10.0.3.2/30 dev eth1
+        - ip link set eth1 up
+        - ip route add default via 10.0.3.1
+
+    h4:
+      # 健康目的地：用来证明「不是全网都慢」
+      kind: linux
+      image: ghcr.io/nicolaka/netshoot:v0.13
+      exec:
+        - ip addr add 10.0.4.2/30 dev eth1
+        - ip link set eth1 up
+        - ip route add default via 10.0.4.1
+
+    leaf1:
+      kind: linux
+      image: ghcr.io/nicolaka/netshoot:v0.13
+      exec:
+        - sysctl -w net.ipv4.ip_forward=1
+        - sysctl -w net.ipv4.conf.all.rp_filter=0
+        - ip addr add 10.0.1.1/30 dev eth1
+        - ip addr add 10.0.2.1/30 dev eth2
+        - ip addr add 10.0.10.1/30 dev eth3
+        - ip link set eth1 up
+        - ip link set eth2 up
+        - ip link set eth3 up
+        - ip route add 10.0.3.0/30 via 10.0.10.2
+        - ip route add 10.0.4.0/30 via 10.0.10.2
+        - ip route add 10.0.11.0/30 via 10.0.10.2
+
+    leaf2:
+      kind: linux
+      image: ghcr.io/nicolaka/netshoot:v0.13
+      exec:
+        - sysctl -w net.ipv4.ip_forward=1
+        - sysctl -w net.ipv4.conf.all.rp_filter=0
+        - ip addr add 10.0.11.1/30 dev eth1
+        - ip addr add 10.0.3.1/30 dev eth2
+        - ip addr add 10.0.4.1/30 dev eth3
+        - ip link set eth1 up
+        - ip link set eth2 up
+        - ip link set eth3 up
+        - ip route add 10.0.1.0/30 via 10.0.11.2
+        - ip route add 10.0.2.0/30 via 10.0.11.2
+        - ip route add 10.0.10.0/30 via 10.0.11.2
+
+    spine1:
+      kind: linux
+      image: ghcr.io/nicolaka/netshoot:v0.13
+      exec:
+        - sysctl -w net.ipv4.ip_forward=1
+        - sysctl -w net.ipv4.conf.all.rp_filter=0
+        - ip addr add 10.0.10.2/30 dev eth1
+        - ip addr add 10.0.11.2/30 dev eth2
+        - ip link set eth1 up
+        - ip link set eth2 up
+        - ip route add 10.0.1.0/30 via 10.0.10.1
+        - ip route add 10.0.2.0/30 via 10.0.10.1
+        - ip route add 10.0.3.0/30 via 10.0.11.1
+        - ip route add 10.0.4.0/30 via 10.0.11.1
+
+  links:
+    - endpoints: ["h1:eth1", "leaf1:eth1"]
+    - endpoints: ["h2:eth1", "leaf1:eth2"]
+    - endpoints: ["leaf1:eth3", "spine1:eth1"]
+    - endpoints: ["spine1:eth2", "leaf2:eth1"]
+    - endpoints: ["leaf2:eth2", "h3:eth1"]
+    - endpoints: ["leaf2:eth3", "h4:eth1"]

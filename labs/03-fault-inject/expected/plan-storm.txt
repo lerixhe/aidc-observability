@@ -1,0 +1,29 @@
+== storm · 注入计划 ==
+PFC 风暴：反压沿拓扑向上游蔓延，零丢包但区域性变慢
+
+窗口 240 秒 · 采样 8.0 秒 · 劣化起点 25% 处（第 60 秒）
+
+拓扑：h1 h2 ── leaf1 ── spine1 ── leaf2 ── h3(慢) h4(健康)
+
+次序  节点     动作                                                  命令
+----  -------  ----------------------------------------------------  ----
+ 1    leaf2    上行口做成大缓冲 + 低于需求的带宽：丢包被换成堆积，等效 PFC 的反压效果               tc qdisc replace dev eth1 root tbf rate 40mbit burst 256kb latency 400ms
+ 2    h3       接收端起服务                                                iperf3 -s -1 -D
+ 3    h1       两条大象流合起来超过上行带宽，队列开始常驻高位                               iperf3 -c 10.0.3.2 -t 240 -b 30M -l 64K -D
+ 4    h2       第二条流，把过载推过阈值                                          iperf3 -c 10.0.3.2 -t 240 -b 30M -l 64K -D
+ 5    leaf2    看 backlog 与 drops：无 drops、backlog 常驻高位就是「丢包被换成堆积」     tc -s qdisc show dev eth1
+ 6    leaf1    上游侧看到的是出口排队引起的时延抬升                                    tc -s qdisc show dev eth3
+
+判读要点（真机上该看到什么）：
+  - 丢包率全程为 0，这是 PFC 家族的第一指纹
+  - pause 时长在多个端口同时抬到 5% 以上，且方向沿拓扑向上游扩散
+  - 时延台阶式抬升后不回落到基线，说明根因没消除
+  - 队列水线常驻 80% 以上，与 pause 同步而非滞后
+
+真机等价做法（容器里造不出来的部分）：
+  - 上游交换机按优先级开 PFC，XOFF 阈值设 40–50% 缓冲
+  - `show priority-flow-control interface <intf> counters` 看 per-priority pause 帧数与时长
+  - 把 pause 时长换算成占空比：10 分钟窗口里超过 10 秒即为严重
+
+清理：make destroy   # 或 docker exec <节点> tc qdisc del dev <if> root
+

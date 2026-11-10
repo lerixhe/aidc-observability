@@ -1,0 +1,30 @@
+== deadlock · 注入计划 ==
+PFC 死锁：双向互等，报文卡在队列里永远出不去
+
+窗口 120 秒 · 采样 4.0 秒 · 劣化起点 25% 处（第 30 秒）
+
+拓扑：h1 h2 ── leaf1 ── spine1 ── leaf2 ── h3(慢) h4(健康)
+
+次序  节点     动作                                                  命令
+----  -------  ----------------------------------------------------  ----
+ 1    leaf2    上行限到极低带宽，逼出持久反压                                       tc qdisc replace dev eth1 root tbf rate 2mbit burst 32kb latency 10s
+ 2    leaf1    反方向也压，形成互相等待的环                                        tc qdisc replace dev eth3 root tbf rate 2mbit burst 32kb latency 10s
+ 3    h3       接收端起服务                                                iperf3 -s -1 -D
+ 4    h1       正向流与被压的反向流同时占着缓冲                                      iperf3 -c 10.0.3.2 -t 120 -b 20M -l 64K -D || true
+ 5    h3       反向流：谁也不让，谁也不走                                         iperf3 -c 10.0.1.2 -t 120 -b 20M -l 64K -D || true
+ 6    leaf2    看队列是否卡死在满水位、drops 是否为 0                               tc -s qdisc show dev eth1
+ 7    h1       应用侧表现是全部超时，不是部分丢包                                     ping -c 5 -W 2 10.0.3.2 || true
+
+判读要点（真机上该看到什么）：
+  - 时延直接超时，报文根本没被丢，而是排队排到永远
+  - 丢包率为 0 与超时并存，这是无损网络特有的矛盾组合
+  - pause 占空比顶到 90% 以上，ECN 归零（流已经不动了，没人再被标记）
+  - 下游还没死，健康端口照常工作：故障范围由环决定，不是由流量决定
+
+真机等价做法（容器里造不出来的部分）：
+  - `show priority-flow-control watchdog` 确认死锁检测是否开启
+  - 交换机上查 stuck 队列与永久 XOFF 的端口
+  - 环检测：把「暂停方向」画成有向图，找强连通分量
+
+清理：make destroy   # 或 docker exec <节点> tc qdisc del dev <if> root
+

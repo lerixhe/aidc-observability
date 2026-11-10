@@ -1,12 +1,22 @@
 # workflows/
 
-> 状态：`deploy.yml` 已就绪（v0.1）；`ci.yml` / `sensitive.yml` 待 v0.2。
+> 状态：三个 workflow 全部就绪（v1.0）。
 
 | 文件 | 触发 | 内容 |
 |---|---|---|
-| `deploy.yml` | ✅ push `main` 且改动 `site/**`（可手动触发） | `withastro/action@v3` 构建 `site/` → `deploy-pages` |
-| `ci.yml` | push / PR | markdownlint + `astro check` + `go test ./labs/...` + `docker compose config` |
-| `sensitive.yml` | PR | 跑 `scripts/check-sensitive.sh`（用内置最小词表） |
+| `deploy.yml` | push `main` 且改动 `site/**`（可手动触发） | `withastro/action@v3` 构建 `site/` → `deploy-pages` |
+| `labs.yml` | `labs/**` 变更 | 跑 `scripts/check-labs.sh`：vet + test + `expected/` 自校验 |
+| `docs.yml` | PR 与 `site/**`、`docs/**`、`labs/**/README.md`、`scripts/**` 变更 | 链接体检 + 文风体检 + 脱敏扫描 + 站点构建 |
+
+三个 workflow 按路径分开触发，互不阻塞：改 lab 不会跑站点构建，改课程不会跑 Go 测试。
+
+`docs.yml` 分层说明：
+
+- **链接体检**只查站内。外链会因反爬（ACM、DOI 常返回 403）与网络抖动误报，
+  脚本把这类降级为警告，只有 404 / 410 / 域名解析失败才算断链
+- **文风体检**按 COURSE-STYLE §2.1 分两档：硬项（分号、感叹号、超长句、句长区间、标点配额底线）
+  阻塞合并；观察项（≤10 字分句占比、整句 P90）只打印
+- **脱敏扫描**在 CI 用内置最小词表，本地跑才用完整词表（词表不入库）
 
 `deploy.yml` 骨架（已落地，实际文件含 pnpm 版本固定与 `workflow_dispatch`）：
 

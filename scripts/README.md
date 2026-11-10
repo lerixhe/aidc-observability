@@ -2,10 +2,13 @@
 
 | 脚本 | 状态 | 用途 |
 |---|---|---|
+| `check-labs.sh` | 可用（v0.2） | labs 统一检查：每个 lab 过 `go vet` + `go test`，再核对 `expected/` 与 `samples/` |
+| `check-links.py` | 可用（v1.0） | 链接体检：站内路由、相对路径、锚点；`--external` 加查外链 |
+| `style-check.py` | 可用（v0.2，v1.0 分档） | 文风体检：COURSE-STYLE 的硬项阻塞，观察项只打印 |
 | `check-sensitive.sh` | 可用 | 脱敏扫描：检查 `site/` 下是否混入敏感词 |
-| `check-labs.sh` | 可用（v0.2） | labs 统一检查：每个 lab 过 `go vet` + `go test`，再核对 `expected/` 是否与当前输出一致 |
-| `html2mdx.py` | 可用（v0.1） | 解析原型 HTML，产出 MDX 骨架（只做机械转换，语义改写人工完成）；跑完会打印「待人工处理清单」 |
-| `check-links.sh` | v1.0 实现 | 全站外链与站内锚点检查 |
+| `html2mdx.py` | 可用（v0.1） | 解析原型 HTML，产出 MDX 骨架（只做机械转换，语义改写人工完成） |
+| `normalize-quotes.py` | 可用 | 引号统一为 `""`（COURSE-STYLE §10-D） |
+| `long-sents.py` | 可用 | 列出超长句，配合 §10-B 改造 |
 | `sensitive-words.txt` | 本地，不入库 | 敏感词表，从 `.example` 复制后按需扩充 |
 
 ## 用法
@@ -19,6 +22,14 @@ cp scripts/sensitive-words.txt.example scripts/sensitive-words.txt
 
 # labs 检查（CI 也跑这个）
 ./scripts/check-labs.sh
+
+# 链接体检（CI 只跑站内；外链手工跑，结果里的「拒绝访问」是噪声不是断链）
+python3 scripts/check-links.py
+python3 scripts/check-links.py --external --verbose
+
+# 文风体检（硬项不达标退出码 1）
+python3 scripts/style-check.py
+python3 scripts/style-check.py --files
 
 # 单课转换（原型 → MDX 骨架，输出到 /tmp 校对后再手工重写）
 python3 scripts/html2mdx.py reference/archive-aidc/lesson-01.html -o /tmp/l1.mdx
@@ -38,5 +49,9 @@ python3 scripts/html2mdx.py reference/archive-aidc/lesson-03.html \
 `check-labs.sh` 会重新生成 `expected/` 再 `git diff`。改了模型就有 diff，
 确认是有意改动后 `git add labs/<lab>/expected` 一起提交。
 它由 `.github/workflows/labs.yml` 在 `labs/**` 变更时触发。
+
+`check-links.py` 与 `style-check.py` 由 `.github/workflows/docs.yml` 在内容变更时触发。
+链接体检只查站内：外链会因对方反爬（ACM、DOI 常见 403）与网络抖动误报，
+所以判定分两级 —— 404/410/域名解析失败算断链，403/429/拒连只记警告。
 
 `check-sensitive.sh` 在 CI 中可选启用（词表不进库，故 CI 用内置的最小词表）。

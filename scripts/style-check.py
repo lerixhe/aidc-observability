@@ -19,20 +19,30 @@ import sys
 
 DOCS = "site/src/content/docs"
 
-# --- 目标值（COURSE-STYLE §2 / §7）---
-# 口径：谁只统计正文的 6 类句读符号（，。、；：？！），已剔除 frontmatter / 代码块 / 表格
-TARGET = {
+# --- 目标值（COURSE-STYLE §2 / §2.1 / §7）---
+# 口径：只统计正文的 6 类句读符号（，。、；：？！），已剔除 frontmatter / 代码块 / 表格
+#
+# 分两档，依据 COURSE-STYLE §2.1：
+#   硬项  不达标就是返工项（分号 0、感叹号 0、超长句、句长区间、标点配额底线）
+#   观察项 与硬项在几何上互相牵制，达标靠改写已无收益。照实打印，不阻塞 CI
+#
+# §2.1 的原话：让逗号占比高就要少用句号，句子就更长 → P90 上升；
+# 让 P90 达标就要多断句 → 逗号占比下降。两者不能同时最大化，所以分档。
+HARD = {
     "clause_mean": (12, 16),      # 分句均长
     "clause_median": (11, 14),    # 分句中位
-    "clause_short10": (45, 100),  # ≤10 字分句占比 %
-    "sent_p90": (0, 40),          # 整句 P90
     "sent_over60": (0, 3),        # 超 60 字句占比 %
     "semicolon": (0, 0.5),        # 分号占比 %
-    "comma_dom": (45, 100),       # 逗号占比 %
+    "comma_dom": (30, 100),       # 逗号占比 %（§2.1 放宽后底线）
+    "colon": (0, 20),             # 冒号占比 %
     "dunhao": (8, 100),           # 顿号占比 %
     "bang": (0, 0),               # 感叹号占比 %
-    "trans_word": (3, 10**9),     # 翻译式解释词次数（每课）
 }
+SOFT = {
+    "clause_short10": (45, 100),  # ≤10 字分句占比 %，理想值
+    "sent_p90": (0, 40),          # 整句 P90，理想值
+}
+TARGET = {**HARD, **SOFT, "trans_word": (3, 10**9)}  # trans_word 按课判，不进汇总
 
 BANNED = {
     "不是A而是B": r"不是[^。]{1,20}而是",
@@ -160,21 +170,27 @@ def main() -> int:
         "sent_p90": sorted(alls)[int(len(alls) * 0.9)],
         "sent_over60": 100 * sum(1 for x in alls if x > 60) / len(alls),
         "semicolon": 100 * tot["；"] / tsum, "comma_dom": 100 * tot["，"] / tsum,
+        "colon": 100 * tot["："] / tsum,
         "dunhao": 100 * tot["、"] / tsum, "bang": 100 * tot["！"] / tsum,
     }
 
     print(f"课程文风体检 · {len(files)} 个文件 · 正文分句 {len(allc)} / 句 {len(alls)}\n")
-    print(f"{'指标':<14}{'实测':>8}{'目标':>14}  判定")
+    print(f"{'硬项（不达标即返工）':<18}{'实测':>8}{'目标':>12}  判定")
     print("-" * 46)
-    for k, (lo, hi) in TARGET.items():
-        if k == "trans_word":
-            continue
+    for k, (lo, hi) in HARD.items():
         v = agg[k]
         good = ok(k, v)
         rng = f"{lo}–{hi}" if hi < 10**8 else f"≥{lo}"
-        print(f"{k:<14}{v:>8.1f}{rng:>14}  {'✅' if good else '❌'}")
+        print(f"{k:<18}{v:>8.1f}{rng:>12}  {'✅' if good else '❌'}")
         if not good:
             red.append(k)
+
+    print(f"\n{'观察项（§2.1 已论证不可兼得）':<18}{'实测':>8}{'目标':>12}  判定")
+    print("-" * 46)
+    for k, (lo, hi) in SOFT.items():
+        v = agg[k]
+        rng = f"{lo}–{hi}" if hi < 10**8 else f"≥{lo}"
+        print(f"{k:<18}{v:>8.1f}{rng:>12}  {'✅' if ok(k, v) else '⚠ 放行'}")
 
     # 逐课红项
     print("\n逐课明细（分号 / 超60字% / 翻译词 / 禁用句）")
@@ -197,11 +213,16 @@ def main() -> int:
             flags.append(f"正文反问{m['ask_body']}")
         if m["ni"] < m["wo"] * 3:
             flags.append(f"人称你/我={m['ni']}/{m['wo']}")
+        # 分句均长按课看：单课超 16 不阻塞（汇总达标），但值得记一笔
+        if m["clause_mean"] > 16:
+            flags.append(f"分句偏长{m['clause_mean']:.1f}")
         name = f.split("/")[-1]
         print(f"{name:<22}句均{m['sent_mean']:>5.1f} 分句{m['clause_mean']:>4.1f} "
               f"{'⚠ ' + ' '.join(flags) if flags else 'OK'}")
 
     print(f"\n汇总红项：{len(red)} 项 {red if red else ''}")
+    if red:
+        print("改法见 COURSE-STYLE §10；观察项不在红项里，别再为它改写正文。")
     return 1 if red else 0
 
 

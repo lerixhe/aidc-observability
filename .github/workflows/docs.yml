@@ -1,0 +1,72 @@
+name: Docs CI
+
+# 内容侧的守门员。三件事：
+#   1. 链接体检 —— 目录改名、课时标题改动会让相对链接与锚点悄悄失效
+#   2. 文风体检 —— COURSE-STYLE 的硬项，不达标即红
+#   3. 脱敏扫描 —— 红线词不进站点
+# 最后跑一次站点构建，确保 MDX 本身能编译。
+#
+# labs 的代码检查在 labs.yml，两边按路径分开触发，互不阻塞。
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - 'labs/**/README.md'
+      - 'docs/**'
+      - 'README.md'
+      - 'README.en.md'
+      - 'scripts/**'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  text:
+    name: 链接 / 文风 / 脱敏
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # 只查站内：外链会因对方反爬与网络抖动误报，留给本地 --external 手工跑
+      - name: 链接体检（站内路由 / 相对路径 / 锚点）
+        run: python3 scripts/check-links.py
+
+      - name: 文风体检（COURSE-STYLE 硬项）
+        run: python3 scripts/style-check.py --files
+
+      - name: 脱敏扫描
+        run: ./scripts/check-sensitive.sh
+
+  build:
+    name: 站点构建
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: site/pnpm-lock.yaml
+
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 构建
+        run: pnpm build

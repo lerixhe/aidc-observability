@@ -23,3 +23,7 @@ scripts/sensitive-words.txt
 
 # ===== 文风语料库：原始语料含内部痕迹，不入库；保留 style/ 与 README =====
 corpus/sources/
+
+# Python 缓存
+__pycache__/
+*.pyc

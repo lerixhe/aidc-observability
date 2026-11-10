@@ -17,6 +17,7 @@ def clean(text: str) -> str:
     text = re.sub(r"```.*?```", "", text, flags=re.S)
     text = re.sub(r"^\s*\|.*$", "", text, flags=re.M)
     text = re.sub(r"^\s*import .*$", "", text, flags=re.M)
+    text = re.sub(r"\n## 参考资料.*?(?=\n## |\Z)", "\n", text, flags=re.S)
     return text
 
 

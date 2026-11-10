@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""课程文风体检：对照 corpus/style/COURSE-STYLE.md §2 的六条硬指标。
+"""课程文风体检：对照 corpus/style/COURSE-STYLE.md §2 的十条硬指标。
 
 用法：
     python3 scripts/style-check.py                 # 汇总报表 + 逐课明细
@@ -8,7 +8,8 @@
 
 退出码：0 全部达标；1 有指标标红（CI 可用）。
 
-统计范围：已剔除 frontmatter、代码块、表格、import —— 只量正文。
+统计范围：已剔除 frontmatter、代码块、表格、import、参考资料 —— 只量正文。
+分句口径：逗号与句末之间的一段（同 COURSE-STYLE §4 规则一），顿号、冒号不切分。
 """
 
 import glob
@@ -64,6 +65,7 @@ def clean(text: str) -> str:
     text = re.sub(r"```.*?```", "", text, flags=re.S)          # 代码块
     text = re.sub(r"^\s*\|.*$", "", text, flags=re.M)          # 表格
     text = re.sub(r"^\s*import .*$", "", text, flags=re.M)      # import
+    text = re.sub(r"\n## 参考资料.*?(?=\n## |\Z)", "\n", text, flags=re.S)  # 书目不算正文
     return text
 
 
@@ -86,7 +88,8 @@ def measure(text: str) -> dict:
         s = strip_md(s)
         if len(s) > 3:
             sents.append(len(s))
-    for c in re.split(r"[，。、；：？！\n]", body):
+    # 分句口径按 COURSE-STYLE §4：逗号（或句末）之间的一段；顿号、冒号是段内元素，不切分
+    for c in re.split(r"[，。；？！\n]", body):
         c = strip_md(c)
         if len(c) > 1:
             clauses.append(len(c))

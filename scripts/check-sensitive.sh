@@ -15,12 +15,16 @@ if [[ -f "$WORDS_FILE" ]]; then
   PATTERN="$(grep -v '^\s*#' "$WORDS_FILE" | grep -v '^\s*$' | paste -sd'|' -)"
   echo "使用本地词表：$WORDS_FILE"
 else
-  # CI 无词表时的兜底最小集
-  PATTERN='京东|蚂蚁|阿里云|谛听|阿福|阿宝|灵光|面试官|一面|二面'
+  # CI 无词表时的兜底最小集：只含可用于公开的通用词
+  # （前雇主名 / 内部系统名属于红线词，只写本地 sensitive-words.txt 或 CI secret）
+  PATTERN='面试官|一面|二面|三面|薪资|JD 要求'
   echo "未找到本地词表，使用内置最小词表"
 fi
 
-HITS="$(grep -rniE "$PATTERN" "$TARGET" 2>/dev/null || true)"
+# 排除依赖与构建产物，避免命中第三方英文文本
+HITS="$(grep -rniE "$PATTERN" "$TARGET" \
+  --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.astro \
+  --exclude-dir=.git 2>/dev/null || true)"
 
 if [[ -n "$HITS" ]]; then
   echo "❌ 发现敏感词，请修正后再提交："

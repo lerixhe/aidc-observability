@@ -1,15 +1,10 @@
-# 脱敏扫描词表（复制为 sensitive-words.txt 后使用，该文件不入库）
-# 一行一个，支持正则；区分大小写用 grep -i 关闭即可
-京东
-蚂蚁
-阿里云
-支付宝
-谛听
-阿福
-阿宝
-灵光
-ODPS
-MaxCompute
+# 脱敏扫描词表模板：
+#   cp scripts/sensitive-words.txt.example scripts/sensitive-words.txt
+# sensitive-words.txt 已在 .gitignore 中排除，请把**真实的**前雇主名、内部系统名
+# 填进本地文件，不要写回本模板、不要提交。
+#
+# 一行一个，支持正则（grep -iE）。
+# --- 面试语境（可入库的通用词）---
 面试官
 一面
 二面
@@ -17,3 +12,6 @@ MaxCompute
 薪资
 offer
 JD 要求
+# --- 前雇主 / 内部系统 / 平台代号（本地自行补充）---
+# 示例：公司A
+# 示例：内部系统X

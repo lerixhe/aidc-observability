@@ -52,7 +52,7 @@ archive-aidc/
 | L12 | IB vs RoCE 路线之争 |
 | L13 | AIOps：告警收敛、RCA 与图计算 |
 | L14 | LLM 运维 Agent 落地方式 |
-| L15 | ODPS(MaxCompute) vs ClickHouse |
+| L15 | 某内部数仓 vs ClickHouse |
 | L16 | 自测 + 能力迁移对照表（原「毕业拷问第二轮」） |
 | L17 | 课程收尾 |
 

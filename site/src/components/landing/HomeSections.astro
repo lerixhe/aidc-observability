@@ -8,6 +8,13 @@ const BASE = import.meta.env.BASE_URL;
 
 const modules = [
 	{
+		id: 'M0',
+		title: '导读与实验室环境',
+		count: '2 课',
+		desc: '核心问题、读者前置与三种读法，再加一条五分钟跑通的实验环境：三条路线，L1 只需要 Go。',
+		href: `${BASE}00-intro/00-what-problem/`,
+	},
+	{
 		id: 'M1',
 		title: '范式转换',
 		count: '3 课',
@@ -24,29 +31,29 @@ const modules = [
 	{
 		id: 'M3',
 		title: '流量与拓扑',
-		count: '2 课',
-		desc: 'AllReduce 把流量矩阵变成「已知量」，Clos 与多 Rail 决定了为什么拓扑必须进数据模型。',
+		count: '3 课',
+		desc: 'AllReduce 把流量矩阵变成「已知量」，Clos 与多 Rail 决定拓扑必须进数据模型，超节点又把一半流量私有化。',
 		href: `${BASE}03-traffic-topo/08-nccl/`,
 	},
 	{
 		id: 'M4',
 		title: '遥测数据面',
-		count: '2 课',
-		desc: 'gNMI 流式订阅替代 SNMP 轮询，OpenConfig 统一口径，光模块劣化如何被路径级探测捞出。',
+		count: '4 课',
+		desc: 'gNMI 流式订阅、INT 路径级元数据、光模块劣化信号，以及从设备到可查询的那条数据管道。',
 		href: `${BASE}04-telemetry/11-gnmi/`,
 	},
 	{
 		id: 'M5',
 		title: '分析与自动化',
-		count: '3 课',
-		desc: '告警收敛与图计算 RCA、时序库选型的基数陷阱、LLM 在运维链路的三级落地点与护栏。',
-		href: `${BASE}05-analysis/16-aiops/`,
+		count: '5 课',
+		desc: '指标口径与 SLO、告警收敛与图计算 RCA、时序库选型、LLM 的边界，以及 MTTR 的四段拆解。',
+		href: `${BASE}05-analysis/15-metrics-slo/`,
 	},
 	{
 		id: 'M6',
 		title: '选型与收口',
-		count: '2 课',
-		desc: 'IB 与 RoCE 的路线之争，最后落到一张能自己打分的能力自评表。',
+		count: '3 课',
+		desc: 'IB 与 RoCE 的路线之争，一条端到端排障主线，最后落到一张能自己打分的能力自评表。',
 		href: `${BASE}06-selection/20-ib-vs-roce/`,
 	},
 ];
@@ -74,7 +81,7 @@ const facts = [
 	<section class="lp-section" aria-labelledby="lp-path">
 		<header class="lp-head">
 			<p class="lp-kicker">学习路径</p>
-			<h2 id="lp-path">六个模块，一条因果链</h2>
+			<h2 id="lp-path">七个模块，一条因果链</h2>
 			<p class="lp-lede">从「网络为什么变慢」到「哪颗光模块在劣化」，每一层都接着上一层的结论往下走。</p>
 		</header>
 
@@ -119,10 +126,10 @@ const facts = [
 
 	<section class="lp-cta" aria-labelledby="lp-start">
 		<div class="lp-cta__text">
-			<h2 id="lp-start">从范式转换开始</h2>
-			<p>先看清「AI 训练网络和 IDC 网络为什么不一样」，后面每一课都建立在这四组差异之上。</p>
+			<h2 id="lp-start">从导读开始</h2>
+			<p>先看清「这门课解决什么问题」与「环境怎么跑」，后面的每一课都建立在这两件事上。</p>
 		</div>
-		<a class="lp-cta__btn" href={`${BASE}01-paradigm/02-why-different/`}>
+		<a class="lp-cta__btn" href={`${BASE}00-intro/00-what-problem/`}>
 			进入第一课
 			<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
 				<path

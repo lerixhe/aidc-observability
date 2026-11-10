@@ -1,6 +1,6 @@
 # site/ — Astro Starlight 文档站
 
-> 状态：**v0.1 试点中**（站点骨架已就绪，已迁移 1 课试点，其余 16 课待铺开）
+> 状态：**v0.3**（23 课全部上线，M0–M6 七个模块齐全；附录待 v1.0）
 
 ## 本地运行
 
@@ -29,15 +29,15 @@ pnpm preview    # 预览构建产物
 1. **`autogenerate` 不能带 `label`**（Starlight ≥ 0.39 已移除该写法）。
    正确写法是 `{ label: 'M1 · 范式转换', items: [{ autogenerate: { directory: '01-paradigm' } }] }`。
 2. **frontmatter 里的绝对路径链接不会自动加 `base`**（hero `actions.link` 也一样）。
-   站内链接请用**相对路径**：课程之间 `./03-rdma/`、`../02-lossless/05-pfc/`，首页用 `01-paradigm/02-why-different/`。
+   站内链接请用**相对路径**：课程之间 `./03-rdma/`、`../02-lossless/05-pfc/`，首页用 `00-intro/00-what-problem/`。
 
 ## 目录规划
 
 ```
 site/src/content/docs/
 ├── index.mdx                    # 首页（splash 模板，正文只有一个 <HomeSections />）
-├── 00-intro/                    # 课 00-01（v0.3 新写）
-├── 01-paradigm/                 # 课 02-04  ← 试点已落地 02
+├── 00-intro/                    # 课 00-01（导读与环境）
+├── 01-paradigm/                 # 课 02-04
 ├── 02-lossless/                 # 课 05-07
 ├── 03-traffic-topo/             # 课 08-10
 ├── 04-telemetry/                # 课 11-14

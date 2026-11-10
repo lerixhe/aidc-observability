@@ -93,25 +93,29 @@ PATTERN="$(grep -v '^\s*#' scripts/sensitive-words.txt | paste -sd'|' -)"  # 本
 
 ## 五、迁移进度
 
-| 原型课 | 新编号 | 状态 |
-|---|---|---|
-| L1 | 02 | ✅ 试点完成（`01-paradigm/02-why-different.mdx`） |
-| L2 | 03 | ⬜ |
-| L3 | 04 | ⬜ |
-| L4 | 05 | ⬜ |
-| L5 | 06 | ⬜ |
-| L6 | 07 | ⬜ |
-| L7 | — | ⬜ 拆分为自测卷 |
-| L8 | 08 | ⬜ |
-| L9 | 09 | ⬜ |
-| L10 | 11 | ⬜ |
-| L11 | 13 | ⬜ |
-| L12 | 20 | ⬜ |
-| L13 | 16 | ⬜ |
-| L14 | 18 | ⬜ |
-| L15 | 17 | ⬜ |
-| L16 | 22 | ⬜ |
-| L17 | 22 | ⬜ |
+v0.1 已完成 16 课迁移（L7 取消，题目下沉为各模块综合题）：
+
+| 原型课 | 新编号 | 文件 | 状态 |
+|---|---|---|---|
+| L1 | 02 | `01-paradigm/02-why-different.mdx` | ✅ |
+| L2 | 03 | `01-paradigm/03-rdma.mdx` | ✅ |
+| L3 | 04 | `01-paradigm/04-rocev2.mdx` | ✅ |
+| L4 | 05 | `02-lossless/05-pfc.mdx` | ✅ |
+| L5 | 06 | `02-lossless/06-ecn-dcqcn.mdx` | ✅ |
+| L6 | 07 | `02-lossless/07-fault-modes.mdx` | ✅ |
+| L7 | — | 题目下沉为 22 课的「模块综合题」 | ✅ 取消独立课 |
+| L8 | 08 | `03-traffic-topo/08-nccl.mdx` | ✅ |
+| L9 | 09 | `03-traffic-topo/09-topology.mdx` | ✅ |
+| L10 | 11 | `04-telemetry/11-gnmi.mdx` | ✅ |
+| L11 | 13 | `04-telemetry/13-optics.mdx` | ✅ |
+| L12 | 20 | `06-selection/20-ib-vs-roce.mdx` | ✅ |
+| L13 | 16 | `05-analysis/16-aiops.mdx` | ✅ |
+| L14 | 18 | `05-analysis/18-llm-ops.mdx` | ✅ |
+| L15 | 17 | `05-analysis/17-storage.mdx` | ✅ 泛化为时序存储选型 |
+| L16 | 22 | `06-selection/22-self-assessment.mdx` | ✅ 与 L17 合并 |
+| L17 | 22 | 同上 | ✅ |
+
+尚未落地（由后续里程碑新增，非迁移）：00、01、10、12、14、15、19、21 与附录 A/B。
 
 ---
 

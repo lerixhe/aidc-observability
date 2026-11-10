@@ -27,13 +27,16 @@ export default defineConfig({
 			lastUpdated: true,
 			// 侧边栏：模块级手写 label，模块内 autogenerate。
 			// 新增课（目录内加文件）无需改本文件；新增模块才需要加一行。
-			// v0.1 试点：只挂载已有内容的模块，避免侧边栏出现空分组。
-			// 迁移铺开时把其余模块按下面注释里的顺序加回来即可（模块内新增课无需改配置）。
-			//
-			// M0 00-intro / M1 01-paradigm / M2 02-lossless / M3 03-traffic-topo
-			// M4 04-telemetry / M5 05-analysis / M6 06-selection / appendix
+			// 只挂载已有内容的模块，避免侧边栏出现空分组：
+			// M0（00-intro）与附录（appendix）留到 v0.3 / v1.0 有内容时再加。
+			// 模块内新增课时无需改本文件。
 			sidebar: [
 				{ label: 'M1 · 范式转换', items: [{ autogenerate: { directory: '01-paradigm' } }] },
+				{ label: 'M2 · 无损网络机制与失败模式', items: [{ autogenerate: { directory: '02-lossless' } }] },
+				{ label: 'M3 · 流量与拓扑', items: [{ autogenerate: { directory: '03-traffic-topo' } }] },
+				{ label: 'M4 · 遥测数据面', items: [{ autogenerate: { directory: '04-telemetry' } }] },
+				{ label: 'M5 · 分析与自动化', items: [{ autogenerate: { directory: '05-analysis' } }] },
+				{ label: 'M6 · 选型与收口', items: [{ autogenerate: { directory: '06-selection' } }] },
 			],
 			head: [
 				// 中文站：显式声明语言，利于搜索引擎与阅读器

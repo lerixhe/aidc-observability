@@ -1,0 +1,47 @@
+---
+title: 智算网络可观测指南
+description: 从有损 IDC 到无损智算：机制、遥测与可运行的实验室
+template: splash
+hero:
+  tagline: 从有损 IDC 到无损智算：机制、遥测与可运行的实验室。面向有传统 IDC 网络背景、正在接手智算集群的工程师。
+  actions:
+    - text: 从第一课开始
+      link: 01-paradigm/02-why-different/
+      icon: right-arrow
+    - text: 课程大纲
+      link: 01-paradigm/02-why-different/
+      icon: open-book
+      variant: minimal
+---
+
+import { Card, CardGrid, Aside } from '@astrojs/starlight/components';
+
+## 这套材料讲什么
+
+它只讲一件事：**AI 训练网络该看什么、为什么看、怎么看**。不是 RoCE / PFC 的协议综述，
+而是「采集 → 指标 → 判读 → 定位」的完整链路，并且每个机制都配可复现的最小实验。
+
+## 适合谁
+
+<CardGrid>
+  <Card title="IDC / 云网络转智算" icon="seti:shell">
+    你熟悉有损网络与小流模型，需要知道无损网络把哪些默认假设推翻了。
+  </Card>
+  <Card title="监管控平台开发者" icon="pencil">
+    你在做可观测 / AIOps 平台，需要智算场景下的指标口径与数据结构。
+  </Card>
+  <Card title="基础设施工程师" icon="setting">
+    你想弄清 RoCE 无损体系到底怎么运转，以及它为什么这么容易坏。
+  </Card>
+</CardGrid>
+
+## 怎么用
+
+- **顺序读**：M1 → M2 是机制地基，跳读会让后面的判读部分变成背书。
+- **动手**：标注了 lab 的课程配可跑的实验（L1 层只需 Go / Python，无特权）。
+- **自评**：每课练习先自己写，再展开参考答案对照评分维度。没有 AI 批改，也没有分数。
+
+<Aside type="note" title="关于本项目的边界">
+这是教学材料，不是厂商选型指南。所有实验为**教学级模型，非硬件行为等价**；
+机制类断言尽量给出公开可验证来源，见各课「参考资料」与[附录 B](appendix/b-references/)。
+</Aside>

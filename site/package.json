@@ -1,0 +1,20 @@
+{
+  "name": "aidc-observability-site",
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.42.9",
+    "astro": "^7.3.6",
+    "sharp": "^0.35.3"
+  },
+  "description": "智算网络可观测指南 · 文档站（Astro Starlight）",
+  "private": true
+}

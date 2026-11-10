@@ -1,46 +1,65 @@
 # site/ — Astro Starlight 文档站
 
-> 状态：**规划中**，v0.1 起初始化。当前目录为空。
+> 状态：**v0.1 试点中**（站点骨架已就绪，已迁移 1 课试点，其余 16 课待铺开）
 
-## 计划初始化
+## 本地运行
 
 ```bash
 cd site
-pnpm create astro@latest . --template starlight
-pnpm add -D @astrojs/starlight
-pnpm dev          # http://localhost:4321
+pnpm install
+pnpm dev        # http://localhost:4321/aidc-observability/
+pnpm build      # 产出 site/dist/
+pnpm preview    # 预览构建产物
 ```
+
+## 配置要点（`astro.config.mjs`）
+
+| 项 | 值 | 说明 |
+|---|---|---|
+| `site` / `base` | `https://lerixhe.github.io` + `/aidc-observability` | GitHub Pages 项目站，路径带仓库前缀 |
+| `locales.root` | `zh-CN` | 单语言站，英文站推迟到 v2 |
+| `sidebar` | 模块级手写 `label` + 模块内 `autogenerate` | **模块内新增课不用改配置**；新增模块才需要加一行 |
+| `editLink` | 指向 `main` 分支 `site/` 目录 | 页面底部「编辑此页」 |
+| `lastUpdated` | `true` | 依赖仓库 git 历史 |
+
+### ⚠️ 两个容易踩的坑
+
+1. **`autogenerate` 不能带 `label`**（Starlight ≥ 0.39 已移除该写法）。
+   正确写法是 `{ label: 'M1 · 范式转换', items: [{ autogenerate: { directory: '01-paradigm' } }] }`。
+2. **frontmatter 里的绝对路径链接不会自动加 `base`**（hero `actions.link` 也一样）。
+   站内链接请用**相对路径**：课程之间 `./03-rdma/`、`../02-lossless/05-pfc/`，首页用 `01-paradigm/02-why-different/`。
 
 ## 目录规划
 
 ```
-site/
-├── astro.config.mjs      # 站点配置，sidebar 用 autogenerate
-├── package.json
-├── tsconfig.json
-└── src/content/docs/
-    ├── index.mdx         # Splash 首页
-    ├── 00-intro/
-    │   ├── 00-about.md
-    │   └── 01-setup.md
-    ├── 01-paradigm/       # 02-04
-    ├── 02-lossless/       # 05-07
-    ├── 03-traffic-topo/   # 08-10
-    ├── 04-telemetry/      # 11-14
-    ├── 05-analysis/       # 15-19
-    ├── 06-selection/      # 20-22
-    └── appendix/          # 术语表 / 参考资料
+site/src/content/docs/
+├── index.mdx                    # Splash 首页
+├── 00-intro/                    # 课 00-01（v0.3 新写）
+├── 01-paradigm/                 # 课 02-04  ← 试点已落地 02
+├── 02-lossless/                 # 课 05-07
+├── 03-traffic-topo/             # 课 08-10
+├── 04-telemetry/                # 课 11-14
+├── 05-analysis/                 # 课 15-19
+├── 06-selection/                # 课 20-22
+└── appendix/                    # 术语表 / 参考资料
 ```
 
-## Starlight 约定（摘自 docs/PROJECT.md）
+- 目录数字前缀与文件名数字前缀都只影响侧边栏排序，**会出现在 URL 里**（`/01-paradigm/02-why-different/`）。
+- 空目录用 `.gitkeep` 占位；某个模块还没有内容时，先不要挂到 `sidebar` 里（否则侧边栏出现空分组）。
 
-- 侧边栏 `autogenerate` + 目录数字前缀，新增课不改配置
-- 经验映射用 `<Aside type="note" title="经验映射">`
-- 要点卡用 `<Aside type="tip" title="本课要点">`
-- 折叠答案保留 MDX 原生 `<details>`
-- 不用手写上下课导航（用内置 pagination）
+## 一课的内容语汇（已验证够用）
+
+| 需求 | 写法 |
+|---|---|
+| 经验映射 / 提示 / 警示 | `<Aside type="note\|tip\|caution" title="...">` |
+| 要点卡 | `<Aside type="tip" title="本课要点">` |
+| 折叠参考答案 | `<details><summary>参考答案与评分维度</summary>`（内部可正常写 Markdown） |
+| 双栏对比 | Markdown 表格（移动端 Starlight 自动横向滚动） |
+| 首页卡片 | `<CardGrid>` / `<Card>` / `<LinkCard>` |
+
+MDX 文件必须在 frontmatter 之后 `import { Aside } from '@astrojs/starlight/components';`。
 
 ## 部署
 
-GitHub Actions（`.github/workflows/deploy.yml`）用 `withastro/action@v3`
-构建 `site/` 并推送到 `gh-pages`。v0.1 落地时配置。
+`.github/workflows/deploy.yml`：push `main`（改动 `site/**`）→ `withastro/action@v3` 构建 → 推送 `gh-pages`。
+首次部署需在仓库 Settings → Pages 里把 Source 设为 **GitHub Actions**。

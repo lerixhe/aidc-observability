@@ -2,9 +2,10 @@
 
 > 从有损 IDC 到无损智算：机制、遥测与可运行的实验室。
 
-**状态：v0.1** —— 16 课内容已迁移上线，站点：<https://lerixhe.github.io/aidc-observability/>
+**状态：v0.2** —— 16 课内容已上线，L1 层 4 个实验可跑。
+站点：<https://lerixhe.github.io/aidc-observability/>
 
-> 可读（v0.1）已达成；「可跑」的实验（`labs/`）与新增课程在 v0.2 / v0.3 落地。
+> 可读（v0.1）与可跑（v0.2）已达成；新增 7 课在 v0.3，真实拓扑实验在 v0.4。
 
 ---
 
@@ -39,7 +40,7 @@ AI 训练网络（智算中心 / AIDC）把网络可观测的基本假设全部�
 │   ├── MIGRATION.md       原型迁移与去个人化/脱敏规则
 │   └── DECISIONS.md       关键决策记录（ADR）
 ├── site/                  Astro Starlight 文档站（v0.1 已上线，见 site/README.md）
-├── labs/                  Go / 容器化实验代码（v0.2 落地）
+├── labs/                  Go / 容器化实验代码（v0.2 已落地 4 个 L1 lab）
 ├── reference/             课程原型参考（本地用，不入库，见下）
 └── scripts/               迁移脚本、链接检查
 ```
@@ -49,8 +50,8 @@ AI 训练网络（智算中心 / AIDC）把网络可观测的基本假设全部�
 | 版本 | 内容 | 状态 |
 |---|---|---|
 | v0.0 | 立项：规划文档、目录骨架、原型归档 | 已完成 |
-| v0.1 | 内容上线：16 课迁移 MDX + Starlight 站点 + GitHub Pages | **当前** |
-| v0.2 | 可运行：L1 层 lab（无特权依赖）+ devcontainer | 待开始 |
+| v0.1 | 内容上线：16 课迁移 MDX + Starlight 站点 + GitHub Pages | 已完成 |
+| v0.2 | 可运行：L1 层 4 个 lab（无特权依赖）+ devcontainer + labs CI | **当前** |
 | v0.3 | 扩课：新增 7 课（导读、超节点、INT、遥测管道、指标体系、MTTR、端到端案例） | 待开始 |
 | v0.4 | 进阶 lab：containerlab 真实拓扑 + 故障注入 | 待开始 |
 | v1.0 | 打磨：附录、术语表、全站校验、双语 README | 待开始 |

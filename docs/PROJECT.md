@@ -127,7 +127,7 @@ labs/NN-<slug>/
 |---|---|---|
 | M0 v0.0 立项 | 定名、双许可、目录骨架、规划文档、原型归档 | 0.5-1 天（已完成） |
 | M1 v0.1 上线 | 17 课迁移 MDX + 去个人化 + Starlight 导航 + Pages 上线<br>（已完成：站点 ✅ / html2mdx.py ✅ / 16 课迁移 ✅ / Pages 上线 ✅） | 3-4 天（已完成） |
-| M2 v0.2 可跑 | L1 层 4 个 lab + `.devcontainer` + labs CI | 4-6 天 |
+| M2 v0.2 可跑 | L1 层 4 个 lab + `.devcontainer` + labs CI<br>（已完成：00-setup / 01-traffic-model / 02-pfc-sim / 04-nccl-trace ✅ / devcontainer ✅ / labs CI ✅） | 4-6 天（已完成） |
 | M3 v0.3 扩课 | 新增 7 课（导读、超节点、INT、遥测管道、指标体系、MTTR、端到端案例） | 5-6 天 |
 | M4 v0.4 进阶 | containerlab 拓扑 + 故障注入 + 端到端剧本 | 5-7 天 |
 | M5 v1.0 打磨 | 附录、术语表、链接检查、双语 README、宣传稿 | 2-3 天 |

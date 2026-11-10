@@ -1,0 +1,22 @@
+# ===== 依赖与构建 =====
+node_modules/
+dist/
+.astro/
+.pnpm-store/
+
+# ===== 课程原型参考（含个人化叙述与前雇主信息，禁止入库）=====
+reference/archive-aidc/
+
+# ===== lab 产物 =====
+labs/**/out/
+labs/**/data/
+*.log
+
+# ===== 系统与编辑器 =====
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# 本地敏感词表（不含模板）
+scripts/sensitive-words.txt

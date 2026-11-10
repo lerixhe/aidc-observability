@@ -1,0 +1,33 @@
+name: 内容纠错
+description: 指出课程中机制描述、数字或结论有误
+title: "[纠错] 课号 · 问题一句话"
+labels: ["content-fix"]
+body:
+  - type: input
+    id: lesson
+    attributes:
+      label: 涉及哪一课
+      placeholder: 例：07 无损网络四大典型故障 / 第 3 小节
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: 问题是什么
+      description: 引用原文并说明错在哪
+    validations:
+      required: true
+  - type: textarea
+    id: correct
+    attributes:
+      label: 正确的说法
+      description: 请给出你认为正确的表述
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: 依据来源
+      description: 链接或文献出处（RFC / 论文 / 官方文档 / 厂商白皮书）。无来源的纠错我们可能无法采纳
+    validations:
+      required: true

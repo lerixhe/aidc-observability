@@ -1,0 +1,29 @@
+name: Lab 运行问题
+description: lab 代码无法运行或结果与文档不符
+title: "[lab] lab 编号 · 现象一句话"
+labels: ["lab"]
+body:
+  - type: input
+    id: lab
+    attributes:
+      label: 哪个 lab
+      placeholder: 例：02-pfc-sim
+    validations:
+      required: true
+  - type: textarea
+    id: env
+    attributes:
+      label: 环境
+      description: OS / 架构 / Go 版本 / 是否 Docker、Codespaces
+      placeholder: |
+        macOS 15 arm64, Go 1.23, OrbStack
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: 复现步骤与输出
+      description: 命令 + 完整报错
+      render: shell
+    validations:
+      required: true

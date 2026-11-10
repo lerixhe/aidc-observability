@@ -1,0 +1,28 @@
+智算网络可观测指南（AIDC Observability）
+文字内容许可协议：Creative Commons Attribution-ShareAlike 4.0 International
+（知识共享 署名-相同方式共享 4.0 国际）
+
+Copyright (c) 2025 AIDC Observability contributors
+
+本仓库中的**文字、课程内容、图表与插图**（即 site/ 与 docs/ 下的内容）采用
+CC BY-SA 4.0 协议授权。协议全文见：
+https://creativecommons.org/licenses/by-sa/4.0/legalcode.zh-hans
+
+你可以自由地：
+  - 共享 — 以任何媒介或格式复制、发行本作品
+  - 演绎 — 修改、转换或以本作品为基础进行创作，甚至用于商业目的
+
+惟须遵守下列条件：
+  - 署名 — 必须给出适当的署名，提供指向本协议的链接，同时标明是否作出修改。
+  - 相同方式共享 — 若再混合、转换或基于本作品创作，必须基于与原先许可协议
+    相同的协议分发你的贡献作品。
+  - 不得增加额外限制 — 不得适用法律术语或技术措施从而限制他人
+    依协议所能做的任何事。
+
+本协议不授予商标权、专利权或形象权。
+作品按「原样」提供，不附带任何形式的明示或默示担保。
+
+---
+
+⚠️ 注意：本协议仅覆盖文字内容。labs/ 与 scripts/ 下的**代码**采用 MIT 协议，
+详见 LICENSE-CODE。使用代码时请以该文件为准。

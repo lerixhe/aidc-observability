@@ -1,0 +1,32 @@
+{
+  "name": "AIDC Observability · Labs",
+  "image": "mcr.microsoft.com/devcontainers/go:1-1.22-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "os-provided"
+    }
+  },
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "4gb"
+  },
+  "postCreateCommand": "cd labs/00-setup && go run .",
+  "postAttachCommand": "echo '环境就绪。先跑：cd labs/00-setup && make run'",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "golang.go",
+        "redhat.vscode-yaml"
+      ],
+      "settings": {
+        "go.testFlags": ["-count=1"],
+        "go.lintOnSave": "package",
+        "files.trimTrailingWhitespace": true
+      }
+    }
+  },
+  "remoteUser": "vscode"
+}

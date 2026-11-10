@@ -1,0 +1,34 @@
+name: Labs CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'labs/**'
+      - 'scripts/check-labs.sh'
+      - '.github/workflows/labs.yml'
+  pull_request:
+    paths:
+      - 'labs/**'
+      - 'scripts/check-labs.sh'
+      - '.github/workflows/labs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      # 每个 lab 跑 vet + test，再核对 expected/ 里的对照样本
+      - name: go vet / go test / 输出自校验
+        run: ./scripts/check-labs.sh

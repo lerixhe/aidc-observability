@@ -3,7 +3,7 @@
 > 本文件是项目的单一事实来源。清理上下文后、执行任何动作前，先读本文件，
 > 再读 [OUTLINE.md](OUTLINE.md)（课程结构）与 [DECISIONS.md](DECISIONS.md)（已定决策）。
 >
-> 最后更新：v0.4 进阶收口（23 课 + 附录 A/B；12 个 lab 全部落地，含 2 个 L2 真拓扑）。
+> 最后更新：v1.0 交付（23 课 + 附录 A/B 冻结；12 个 lab；链接体检 + Docs CI + 双语 README）。
 
 ---
 
@@ -16,8 +16,8 @@
 | 副标题 | 从有损 IDC 到无损智算：机制、遥测与可运行的实验室 |
 | 许可证 | 内容 CC BY-SA 4.0 / 代码 MIT（双许可） |
 | 站点框架 | Astro Starlight + GitHub Pages |
-| 默认语言 | 中文（英文站推迟到 v2，README 双语） |
-| 当前版本 | v0.4（23 课 + 附录 A/B；10 个 L1 lab + 2 个 L2 lab 全部落地） |
+| 默认语言 | 中文（英文站推迟到 v2，README 双语：`README.md` / `README.en.md`） |
+| 当前版本 | v1.0（课程结构冻结；10 个 L1 lab + 2 个 L2 lab；Docs CI 三道检查） |
 
 ### 一句话定位
 
@@ -134,7 +134,7 @@ labs/NN-<slug>/
 | M2 v0.2 可跑 | 首批 L1 lab + `.devcontainer` + labs CI<br>（已完成：00-setup / 01-traffic-model / 02-pfc-sim / 04-nccl-trace / 06-gnmi-mock / 10-rca ✅ / devcontainer ✅ / labs CI ✅） | 4-6 天（已完成） |
 | M3 v0.3 扩课 | 新增 8 篇（00 导读、01 环境、10 超节点、12 INT、14 管道、15 指标体系、19 MTTR、21 端到端）+ 3 个 L1 lab<br>（已完成：✅ 8 篇 / ✅ 07-int-path / ✅ 08-pipeline / ✅ 09-slo / ✅ 站点收口） | 5-6 天（已完成） |
 | M4 v0.4 进阶 | containerlab 拓扑 + 故障注入 + 端到端剧本<br>（已完成：✅ 03-fault-inject / ✅ 05-clos-topo / ✅ 11-case-study / ✅ 双模式与 CI 校验 / ✅ 课程入口接线） | 5-7 天（已完成） |
-| M5 v1.0 打磨 | 全站链接体检脚本、双语 README、宣传稿<br>（附录 A/B 已在 v0.3 提前落地） | 2-3 天 |
+| M5 v1.0 打磨 | 全站链接体检脚本、双语 README、宣传稿<br>（已完成：✅ check-links.py / ✅ Docs CI / ✅ README.en.md / ✅ docs/ANNOUNCE.md / ✅ 文风口径分档 D10 / ✅ 结构冻结 D9） | 2-3 天（已完成） |
 
 **发布策略：先发 v0.1 再补 lab。** 内容上线才有反馈；lab 是最重的部分，不要憋大招。
 v1.0 后冻结课程结构，只接受纠错类 PR。
@@ -145,7 +145,7 @@ v1.0 后冻结课程结构，只接受纠错类 PR。
 
 | 风险 | 严重度 | 应对 |
 |---|---|---|
-| Pagefind 中文分词弱，站内搜索差 | 中 | v0.1 先用 Pagefind；不满意则 v0.3 换 Algolia DocSearch（开源项目免费） |
+| Pagefind 中文分词弱，站内搜索差 | 中 | v0.1 起用 Pagefind，v1.0 保留；不满意再换 Algolia DocSearch（开源项目免费），待实测 |
 | containerlab 在 macOS 需特权 / 虚拟机 | 高 | 主推 Codespaces + `.devcontainer`；macOS 文档指向 Lima / OrbStack；L2 的默认模式零依赖，缺 Docker 只降级不阻塞 |
 | 软件仿真 PFC 的教学真实性受质疑 | 中 | 每个 lab 开头声明「非硬件等价」+ 给真机验证路径 |
 | 机制细节准确性 | 高 | 每课 `参考资料`；PR 模板要求标注来源；设 `content-fix` issue 模板 |
@@ -159,5 +159,10 @@ v1.0 后冻结课程结构，只接受纠错类 PR。
 - [x] 仓库名：`aidc-observability`（站点 `base` 已按此配置）
 - [x] GitHub 账号：`lerixhe`（`gh` 已登录，repo 权限可用）；远端仓库尚未创建
 - [x] L2 lab 是否接受「主推 GitHub Codespaces」：接受，但 L2 默认模式不依赖它（D8）
-- [ ] v1.0 是否同步出英文站
+- [ ] v1.0 是否同步出英文站：否，英文站推迟到 v2，v1.0 只做双语 README
 - [ ] 是否公开署名作者身份（影响脱敏尺度）
+- [ ] P4 搜索方案最终态：v1.0 保留 Pagefind，理由见下
+  - 取舍：Pagefind 零依赖、离线、随构建产出，换 DocSearch 要引入外部服务与密钥
+  - 已知短板：中文按字切分，长词精确度一般，「无损网络」这类查询召回偏高
+  - 触发换的条件：出现三次以上「搜不到某个具体名词」的读者反馈
+  - 换的成本：加 Algolia 账号 + CI 索引步骤 + `astro.config.mjs` 装配，约半天

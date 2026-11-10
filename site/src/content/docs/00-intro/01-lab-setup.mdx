@@ -70,7 +70,7 @@ go               1.22.5       ✅
 Docker           —            ❌      未安装，或不在 PATH 里
 python3          3.12.3       ✅
 
-lab 盘点（6 个已落地 / 共登记 9 个）
+lab 盘点（9 个已落地 / 共登记 12 个）
   目录                 层    需要工具                 对应课   可跑   说明
   00-setup           L1   go                   01      ✅    环境自检
   02-pfc-sim         L1   go                   05,06   ✅    PFC / ECN / DCQCN 参数化队列模型
@@ -111,6 +111,9 @@ make compare      # PFC / ECN / DCQCN 三种场景对照
 | `02-pfc-sim` | L1 | 05、06 | 水线阈值、pause 反压、ECN 降速的因果 |
 | `04-nccl-trace` | L1 | 08 | 从 NCCL 日志还原流量矩阵与 straggler |
 | `06-gnmi-mock` | L1 | 11 | SAMPLE 与 ON_CHANGE 的保真度差异 |
+| `07-int-path` | L1 | 12 | INT 逐跳元数据的编码，与采样率对微突发的捕获率 |
+| `08-pipeline` | L1 | 14 | 四档落盘能不能查出峰值，背压丢点落在哪 |
+| `09-slo` | L1 | 15 | 同一份数据三种口径的可用率差多少 |
 | `10-rca` | L1 | 16 | 告警收敛与图打分定位根因 |
 
 ### 为什么每个实验都有 expected/

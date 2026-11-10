@@ -17,7 +17,7 @@
 | 许可证 | 内容 CC BY-SA 4.0 / 代码 MIT（双许可） |
 | 站点框架 | Astro Starlight + GitHub Pages |
 | 默认语言 | 中文（英文站推迟到 v2，README 双语） |
-| 当前版本 | v0.3（23 课全部上线；L1 lab 6 个可跑，剩余 lab 排到 v0.4） |
+| 当前版本 | v0.3（23 课全部上线；L1 lab 9 个可跑，L2 三个排到 v0.4） |
 
 ### 一句话定位
 
@@ -127,8 +127,8 @@ labs/NN-<slug>/
 |---|---|---|
 | M0 v0.0 立项 | 定名、双许可、目录骨架、规划文档、原型归档 | 0.5-1 天（已完成） |
 | M1 v0.1 上线 | 17 课迁移 MDX + 去个人化 + Starlight 导航 + Pages 上线<br>（已完成：站点 ✅ / html2mdx.py ✅ / 16 课迁移 ✅ / Pages 上线 ✅） | 3-4 天（已完成） |
-| M2 v0.2 可跑 | L1 层 4 个 lab + `.devcontainer` + labs CI<br>（已完成：00-setup / 01-traffic-model / 02-pfc-sim / 04-nccl-trace ✅ / devcontainer ✅ / labs CI ✅） | 4-6 天（已完成） |
-| M3 v0.3 扩课 | 新增 8 篇（00 导读、01 环境、10 超节点、12 INT、14 管道、15 指标体系、19 MTTR、21 端到端）<br>（已完成：✅ 8 篇 + 站点收口） | 5-6 天（已完成） |
+| M2 v0.2 可跑 | 首批 L1 lab + `.devcontainer` + labs CI<br>（已完成：00-setup / 01-traffic-model / 02-pfc-sim / 04-nccl-trace / 06-gnmi-mock / 10-rca ✅ / devcontainer ✅ / labs CI ✅） | 4-6 天（已完成） |
+| M3 v0.3 扩课 | 新增 8 篇（00 导读、01 环境、10 超节点、12 INT、14 管道、15 指标体系、19 MTTR、21 端到端）+ 3 个 L1 lab<br>（已完成：✅ 8 篇 / ✅ 07-int-path / ✅ 08-pipeline / ✅ 09-slo / ✅ 站点收口） | 5-6 天（已完成） |
 | M4 v0.4 进阶 | containerlab 拓扑 + 故障注入 + 端到端剧本 | 5-7 天 |
 | M5 v1.0 打磨 | 附录、术语表、链接检查、双语 README、宣传稿 | 2-3 天 |
 

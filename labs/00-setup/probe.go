@@ -29,8 +29,11 @@ var knownLabs = []Lab{
 	{"03-fault-inject", "L2", []string{"go", "docker"}, "07", "tc/netem 复现 HoL 与 incast", false},
 	{"05-clos-topo", "L2", []string{"go", "docker", "containerlab"}, "09", "2 spine / 4 leaf 的 ECMP 极化", false},
 	{"06-gnmi-mock", "L1", []string{"go"}, "11", "OpenConfig 路径树 + 订阅策略保真度对照", true},
-	{"08-pipeline", "L1", []string{"go"}, "14", "秒级遥测落盘与查询保真度对比", false},
+	{"07-int-path", "L1", []string{"go"}, "12", "INT 逐跳元数据的编码与判读", true},
+	{"08-pipeline", "L1", []string{"go"}, "14", "秒级遥测落盘与查询保真度对比", true},
+	{"09-slo", "L1", []string{"go"}, "15", "三种 SLO 口径与错误预算对照", true},
 	{"10-rca", "L1", []string{"go"}, "16", "告警收敛 + 图打分做根因定位", true},
+	{"11-case-study", "L2", []string{"go", "docker"}, "21", "端到端排障剧本：从告警到定位到验证", false},
 }
 
 // Discovery 是一次环境探测的结果。

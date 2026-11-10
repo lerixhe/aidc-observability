@@ -3,7 +3,7 @@
 > 本文件是项目的单一事实来源。清理上下文后、执行任何动作前，先读本文件，
 > 再读 [OUTLINE.md](OUTLINE.md)（课程结构）与 [DECISIONS.md](DECISIONS.md)（已定决策）。
 >
-> 最后更新：v0.3 内容收口（23 课 + 附录 A/B 全部上线，9 个 L1 lab 可跑）。
+> 最后更新：v0.4 进阶收口（23 课 + 附录 A/B；12 个 lab 全部落地，含 2 个 L2 真拓扑）。
 
 ---
 
@@ -17,7 +17,7 @@
 | 许可证 | 内容 CC BY-SA 4.0 / 代码 MIT（双许可） |
 | 站点框架 | Astro Starlight + GitHub Pages |
 | 默认语言 | 中文（英文站推迟到 v2，README 双语） |
-| 当前版本 | v0.3（23 课 + 附录 A/B 上线；L1 lab 9 个可跑，L2 三个排到 v0.4） |
+| 当前版本 | v0.4（23 课 + 附录 A/B；10 个 L1 lab + 2 个 L2 lab 全部落地） |
 
 ### 一句话定位
 
@@ -104,8 +104,12 @@
 
 | 层 | 名称 | 技术要求 | 内容 |
 |---|---|---|---|
-| **L1 无门槛** | 数据面模拟 | 仅 Go / Python | `pfc-sim` 参数化模型生成 pause / ECN 时序；`gnmi-mock` 可订阅的 mock server；`pipeline` 本地落盘（DuckDB/SQLite）；`rca` 吃模拟告警跑图算法 |
-| **L2 进阶** | 真拓扑仿真 | Docker + Linux（推荐 Codespaces） | `clos-topo` containerlab + FRR 搭 2 spine / 4 leaf；`fault-inject` tc/netem + 伪造 pause 帧复现 HoL 与 incast；`case-study` 完整排障剧本 |
+| **L1 无门槛** | 数据面模拟 | 仅 Go / Python | `pfc-sim` 参数化模型生成 pause / ECN 时序；`gnmi-mock` 可订阅的 mock server；`pipeline` 本地落盘；`rca` 吃模拟告警跑图算法；`case-study` 端到端排障剧本与 MTTR 时间账 |
+| **L2 进阶** | 真拓扑仿真 | Docker + Linux（推荐 Codespaces） | `clos-topo` containerlab 搭 2 spine / 4 leaf 量 ECMP 极化；`fault-inject` tc/netem 复现四类故障并给遥测指纹判读器 |
+
+L2 的两个 lab 都是**双模式**（D8）：默认模式只生成剧本与模型结论，`go run` 即跑，
+产出锁进 `expected/`；`make deploy` 才需要 containerlab。这样 CI 能校验判据，
+读者也不会卡在第一条 `docker` 命令上。
 
 每个 lab 统一结构：
 
@@ -129,7 +133,7 @@ labs/NN-<slug>/
 | M1 v0.1 上线 | 17 课迁移 MDX + 去个人化 + Starlight 导航 + Pages 上线<br>（已完成：站点 ✅ / html2mdx.py ✅ / 16 课迁移 ✅ / Pages 上线 ✅） | 3-4 天（已完成） |
 | M2 v0.2 可跑 | 首批 L1 lab + `.devcontainer` + labs CI<br>（已完成：00-setup / 01-traffic-model / 02-pfc-sim / 04-nccl-trace / 06-gnmi-mock / 10-rca ✅ / devcontainer ✅ / labs CI ✅） | 4-6 天（已完成） |
 | M3 v0.3 扩课 | 新增 8 篇（00 导读、01 环境、10 超节点、12 INT、14 管道、15 指标体系、19 MTTR、21 端到端）+ 3 个 L1 lab<br>（已完成：✅ 8 篇 / ✅ 07-int-path / ✅ 08-pipeline / ✅ 09-slo / ✅ 站点收口） | 5-6 天（已完成） |
-| M4 v0.4 进阶 | containerlab 拓扑 + 故障注入 + 端到端剧本 | 5-7 天 |
+| M4 v0.4 进阶 | containerlab 拓扑 + 故障注入 + 端到端剧本<br>（已完成：✅ 03-fault-inject / ✅ 05-clos-topo / ✅ 11-case-study / ✅ 双模式与 CI 校验 / ✅ 课程入口接线） | 5-7 天（已完成） |
 | M5 v1.0 打磨 | 全站链接体检脚本、双语 README、宣传稿<br>（附录 A/B 已在 v0.3 提前落地） | 2-3 天 |
 
 **发布策略：先发 v0.1 再补 lab。** 内容上线才有反馈；lab 是最重的部分，不要憋大招。
@@ -142,7 +146,7 @@ v1.0 后冻结课程结构，只接受纠错类 PR。
 | 风险 | 严重度 | 应对 |
 |---|---|---|
 | Pagefind 中文分词弱，站内搜索差 | 中 | v0.1 先用 Pagefind；不满意则 v0.3 换 Algolia DocSearch（开源项目免费） |
-| containerlab 在 macOS 需特权 / 虚拟机 | 高 | 主推 Codespaces + `.devcontainer`；macOS 文档指向 Lima / OrbStack |
+| containerlab 在 macOS 需特权 / 虚拟机 | 高 | 主推 Codespaces + `.devcontainer`；macOS 文档指向 Lima / OrbStack；L2 的默认模式零依赖，缺 Docker 只降级不阻塞 |
 | 软件仿真 PFC 的教学真实性受质疑 | 中 | 每个 lab 开头声明「非硬件等价」+ 给真机验证路径 |
 | 机制细节准确性 | 高 | 每课 `参考资料`；PR 模板要求标注来源；设 `content-fix` issue 模板 |
 | **脱敏不彻底 → 前雇主合规风险** | **高** | 迁移后跑「专有信息扫描」（公司名 / 内部系统名 / 真实数字 grep 白名单），见 MIGRATION.md |
@@ -154,6 +158,6 @@ v1.0 后冻结课程结构，只接受纠错类 PR。
 
 - [x] 仓库名：`aidc-observability`（站点 `base` 已按此配置）
 - [x] GitHub 账号：`lerixhe`（`gh` 已登录，repo 权限可用）；远端仓库尚未创建
-- [ ] L2 lab 是否接受「主推 GitHub Codespaces」（引入免费额度依赖）
+- [x] L2 lab 是否接受「主推 GitHub Codespaces」：接受，但 L2 默认模式不依赖它（D8）
 - [ ] v1.0 是否同步出英文站
 - [ ] 是否公开署名作者身份（影响脱敏尺度）

@@ -136,6 +136,21 @@ show ip bgp summary
 
 判读要点：**同一个故障，在 Rail 维度上通常表现为“成组出现”**。某条 Rail 的多条路径同时劣化，几乎可以确定问题在该 Rail 或它的上联，而不是在若干互不相关的服务器上。
 
+### 实验入口：两条上行会用多少
+
+```bash
+cd labs/05-clos-topo
+make run        # 三个实验：流数 / hash 口径 / 同质大象流，不需要 Docker
+make topo       # 拓扑与地址表
+make deploy     # 真拓扑：2 spine / 4 leaf，需要 Docker + containerlab
+make collect    # 起流量、采上行计数、算真实分布
+```
+
+1:1 无收拢只保证有两条等价路径，不保证两条都在干活。
+实验一量的是流数：八条流时两条上行只用上一条，两千条才贴近均分。
+实验三量的是本课的核心论断：**5 元组一模一样的训练流量，任何 hash 都只选一条路**。
+这就是 rail-optimized 拓扑存在的理由。
+
 ## 练习
 
 **必答 Q1**：讲清“rail-optimized”。什么是 Rail？rail-aligned 的流量长什么样？它和 NCCL 环排序是什么关系？

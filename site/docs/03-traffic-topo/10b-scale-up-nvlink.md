@@ -1,5 +1,5 @@
 ---
-title: 柜内黑盒的隐性失速 —— NVLink、NVSwitch 错误与 PCIe 降速
+title: 第10讲附 · NVLink 链路故障
 description: 超节点把一半横向流量私有化到柜内，交换机监控完全失灵。本讲深入 NVLink、NVSwitch 链路重传、PCIe 带宽降级与 GPU XID 故障指纹。
 ---
 

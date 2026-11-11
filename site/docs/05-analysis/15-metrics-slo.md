@@ -1,5 +1,5 @@
 ---
-title: 先对齐口径，再谈告警 —— PFC、ECN 与水线的指标定义
+title: 第15讲 · 指标口径与 SLO
 description: 同一个 PFC 计数器，三种算法能得出三个结论。本课把 pause、ECN、水线的口径钉死，再讲 SLI 与 SLO 怎么写到能告警的程度。
 ---
 

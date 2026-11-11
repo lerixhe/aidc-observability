@@ -1,5 +1,5 @@
 ---
-title: 从 IB 走进以太网 —— RoCEv2 的封装、可路由与 DCB 三件套
+title: 第04讲 · RoCEv2 与 DCB
 description: RDMA 原生跑在 InfiniBand 上，为什么今天讨论的几乎都是 RoCEv2？报文里每层各管什么，以及把无损责任转嫁给以太网之后多出来的运维债。
 ---
 

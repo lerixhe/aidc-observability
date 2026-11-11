@@ -1,5 +1,5 @@
 ---
-title: 走向超以太网 —— UEC 规范、Credit 反压与直通无损
+title: 第20讲附 · UEC 超以太网
 description: RoCEv2 的尽力而为与补丁式无损已逼近工程极限。Ultra Ethernet 联盟如何重构传输层，用信用反压与原生乱序终结 PFC 的恶梦。
 ---
 

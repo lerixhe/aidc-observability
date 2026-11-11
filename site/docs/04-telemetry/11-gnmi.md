@@ -1,5 +1,5 @@
 ---
-title: 从轮询到订阅 —— gNMI 与 OpenConfig 的秒级遥测
+title: 第11讲 · gNMI 订阅遥测
 description: SNMP 轮询为什么撑不住智算网络，gNMI 的订阅式流遥测如何工作，OpenConfig 模型如何让"队列 0 的 pause 计数"全世界说同一种话。
 ---
 

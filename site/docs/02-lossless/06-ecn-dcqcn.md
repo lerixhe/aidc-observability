@@ -1,5 +1,5 @@
 ---
-title: 先标记，再降速 —— ECN 与 DCQCN 的端网协同
+title: 第06讲 · ECN 与 DCQCN
 description: PFC 是"快满了才喊停"的粗暴反压，副作用大。真正的设计哲学是尽量别走到 PFC 那一步——ECN 负责标记拥塞，DCQCN 负责端网协同降速。
 ---
 

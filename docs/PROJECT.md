@@ -95,7 +95,7 @@
 
 - 每课末尾必须有 `## 参考资料`，机制类断言需可验证来源（RFC 8926 RoCEv2、
   SIGCOMM'15 DCQCN、OpenConfig models、NCCL docs、厂商白皮书）
-- 每课固定结构见 OUTLINE.md 的「每课统一结构」，课标题统一为「主标题 —— 副标题」两段式（D13）
+- 每课固定结构见 OUTLINE.md 的「每课统一结构」，课标题统一为「第NN讲 · 名词条目」（D13，D17 修订）
 
 ---
 

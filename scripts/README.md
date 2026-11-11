@@ -4,6 +4,7 @@
 |---|---|---|
 | `check-labs.sh` | 可用（v0.2） | labs 统一检查：每个 lab 过 `go vet` + `go test`，再核对 `expected/` 与 `samples/` |
 | `check-links.py` | 可用（v1.0） | 链接体检：站内路由、相对路径、锚点；`--external` 加查外链 |
+| `check-stats.py` | 可用（v1.0） | 规模数字体检：门面文件里的几课 / 几个实验 / 几条，与文件系统实数比对 |
 | `style-check.py` | 可用（v0.2，v1.0 分档） | 文风体检：COURSE-STYLE 的硬项阻塞，观察项只打印 |
 | `check-sensitive.sh` | 可用 | 脱敏扫描：检查 `site/` 下是否混入敏感词 |
 | `html2mdx.py` | 可用（v0.1） | 解析原型 HTML，产出 Markdown 骨架（只做机械转换，语义改写人工完成） |
@@ -30,6 +31,10 @@ python3 scripts/check-links.py --external --verbose
 # 文风体检（硬项不达标退出码 1）
 python3 scripts/style-check.py
 python3 scripts/style-check.py --files
+
+# 规模数字体检（CI 也跑这个；--all 先看一遍实数）
+python3 scripts/check-stats.py
+python3 scripts/check-stats.py --all
 
 # 单课转换（原型 → Markdown 骨架，输出到 /tmp 校对后再手工重写）
 python3 scripts/html2mdx.py reference/archive-aidc/lesson-01.html -o /tmp/l1.md

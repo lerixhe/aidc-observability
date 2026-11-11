@@ -1,9 +1,10 @@
 name: Docs CI
 
-# 内容侧的守门员。三件事：
+# 内容侧的守门员。四件事：
 #   1. 链接体检 —— 目录改名、课时标题改动会让相对链接与锚点悄悄失效
 #   2. 文风体检 —— COURSE-STYLE 的硬项，不达标即红
 #   3. 脱敏扫描 —— 红线词不进站点
+#   4. 规模数字体检 —— 门面文件里写的几课 / 几个实验 / 几条，得跟文件系统实数对得上
 # 最后跑一次站点构建，确保 Markdown 与容器语法本身能编译。
 #
 # labs 的代码检查在 labs.yml，两边按路径分开触发，互不阻塞。
@@ -27,7 +28,7 @@ permissions:
 
 jobs:
   text:
-    name: 链接 / 文风 / 脱敏
+    name: 链接 / 文风 / 脱敏 / 数字
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -45,6 +46,9 @@ jobs:
 
       - name: 脱敏扫描
         run: ./scripts/check-sensitive.sh
+
+      - name: 规模数字体检（课程数 / 实验数 / 附录条数）
+        run: python3 scripts/check-stats.py
 
   build:
     name: 站点构建

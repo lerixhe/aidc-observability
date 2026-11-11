@@ -1,25 +1,17 @@
 ---
 title: 附录 B · 参考资料
-description: 全站 75 条外部引用的来源清单，按可信度分层组织，附核验结果与一条关于链接腐烂的经验。
+description: 全站 74 条外部引用的来源清单，按可信度分层组织，附一轮核验结果与链接腐烂的处置规则。
 ---
 
-这份清单有三个用途。核对某一课的机制断言出自哪里。判断一条说法值不值得信。找原始出处继续往下读。
+这份清单有三个用途：核对某一课的机制断言出自哪里，判断一条说法值不值得信，找原始出处继续往下读。
 
-它不负责把知识再过一遍。**引用相当于给坐标而不给结论。**
+它不负责把知识再过一遍。引用给的是坐标，不是结论。
 
-## 怎么用这份清单
-
-这份清单的使用规则有三条。
-
-第一条是先找一手来源。标准文本与官方文档能回答的，别去引二手的博客转述，因为转述最常见的错误是丢掉了适用条件。
-
-第二条是引用要细到可验证的粒度。写"RFC 3168 定义了 ECN"没用，写"RFC 3168 第 5 节定义了 CE 标记位"才能被人核对。
-
-第三条是厂商文档要给入口而不是深链。理由在末节，这一轮核验里已经有六个深链烂掉。
+三条使用规则：先找一手来源，标准文本与官方文档能回答的不要引二手转述，转述最常见的错误是丢掉适用条件；引用要细到可验证的粒度，写「RFC 3168 定义了 ECN」没用，写「RFC 3168 第 5 节定义了 CE 标记位」才有人能核对；厂商文档给入口而不给深链，理由在末节，这一轮核验里已经有六个深链烂掉。
 
 ## 一、标准与规范
 
-这一组全部属于一手来源，而且是其中可信度最高的一类文本。它们定义字段与行为，不定义实现的开销与默认值。
+这一组全部是一手来源，也是可信度最高的一类文本。它们定义字段与行为，不定义实现的开销与默认值。
 
 | 来源 | 覆盖什么 | 课 |
 |---|---|---|
@@ -35,17 +27,17 @@ description: 全站 75 条外部引用的来源清单，按可信度分层组织
 | [IEEE 802.1Qaz — Enhanced Transmission Selection](https://standards.ieee.org/ieee/802.1Qaz/5410/) | 优先级带宽分配，DCB 三件套之一 | 05 |
 | [IEEE 802.1Q — VLAN 与优先级标记](https://standards.ieee.org/ieee/802.1Q/6844/) | PCP 字段与优先级到队列的映射 | 04 |
 | [IEEE 802.3 — Ethernet](https://standards.ieee.org/ieee/802.3/7071/) | 以太网物理层与链路层，光层指标的定义依据 | 13 |
-| [IEEE 1588 — PTP](https://standards.ieee.org/ieee/1588/4355/) | 精密时间协议，微秒级校时的标准 | 11 |
+| [IEEE 1588 — PTP](https://standards.ieee.org/ieee/1588/4355/) | 精密时间协议，亚微秒级校时的标准 | 11 |
 | [IBTA 官网](https://www.infinibandta.org/) | InfiniBand 联盟的规范与生态入口 | 20 |
 | [IBTA 规范](https://www.infinibandta.org/ibta-specification/) | InfiniBand 架构与链路层，对比 RoCE 的基线 | 02、03、04、20 |
 | [SNIA SFF 规范](https://www.snia.org/technology-communities/sff/specifications) | 光模块管理接口（SFF-8636 / SFF-8472），DOM 字段来源 | 13、21 |
 | [IEEE 802.3 工作组](https://www.ieee802.org/3/) | 以太网标准的最新进展与草案入口 | 13 |
 | [UALink Consortium](https://www.ualinkconsortium.org/) | 开放 scale-up 互联规范 | 10 |
-| [Ultra Ethernet Consortium](https://ultraethernet.org/) | UEC 规范，面向 AI 与 HPC 的以太网增强 | 10 |
+| [Ultra Ethernet Consortium](https://ultraethernet.org/) | UEC 规范，面向 AI 与 HPC 的以太网增强 | 10、20b |
 
 ## 二、论文
 
-这一组是论文，同样属于一手来源，但适用范围要看清。论文结论绑定它当时的硬件与流量模型。
+这一组也是一手来源，但适用范围要看清。论文结论绑定它当时的硬件与流量模型。
 
 | 来源 | 覆盖什么 | 课 |
 |---|---|---|
@@ -54,7 +46,7 @@ description: 全站 75 条外部引用的来源清单，按可信度分层组织
 
 ## 三、厂商与开源项目官方文档
 
-这一组文档绑定具体实现，能回答这个产品支持什么，却答不出这个机制本身的原理。
+这一组绑定具体实现，能回答这个产品支持什么，答不出这个机制本身的原理。
 
 | 来源 | 覆盖什么 | 课 |
 |---|---|---|
@@ -68,7 +60,7 @@ description: 全站 75 条外部引用的来源清单，按可信度分层组织
 | [NVIDIA NVLink](https://www.nvidia.com/en-us/data-center/nvlink/) | NVLink 与 NVSwitch 的代际带宽 | 10 |
 | [NVIDIA DGX SuperPOD 文档](https://docs.nvidia.com/dgx-superpod/) | 整机组成与 fabric 设计 | 10 |
 | [Broadcom DLB 技术白皮书](https://www.broadcom.com/) | 动态自适应路由与出端口队列检测机制 | 04b |
-| [Ultra Ethernet Consortium](https://ultraethernet.org/) | UEC 规范、UET 传输层与 Credit 流控体系 | 20b |
+| [P4 规范](https://p4.org/specifications/) | P4 语言与 INT 数据面规范 | 12 |
 | [PCI Express Base Specification 5.0](https://pcisig.com/) | PCIe Gen5 链路协商、掉速与宽度自愈规范 | 10b |
 | [DGX SuperPOD H100 参考架构](https://docs.nvidia.com/dgx-superpod/reference-architecture-scalable-infrastructure-h100/latest/index.html) | 千卡级网络设计的公开参考 | 00、09 |
 | [NVIDIA GPUDirect RDMA](https://docs.nvidia.com/cuda/gpudirect-rdma/) | 网卡直读显存的机制与限制 | 03 |
@@ -77,20 +69,19 @@ description: 全站 75 条外部引用的来源清单，按可信度分层组织
 | [OpenConfig — public models](https://github.com/openconfig/public) | 厂商中立 YANG 模型集的全部内容 | 00、01、11、12、13、16、20、21、22 |
 | [OpenConfig — release/models](https://github.com/openconfig/public/tree/master/release/models) | 发布版模型目录，含 interfaces 与 network-instances | 02 |
 | [OpenConfig — `qos` model](https://github.com/openconfig/public/tree/master/release/models/qos) | 队列、PFC、ECN 计数器的字段定义 | 05、06、07、15 |
-| [gNMI 规范](https://github.com/openconfig/gnmi) | RPC 定义、`Subscribe` 三模式与路径语义 | 11 |
+| [gNMI 规范](https://github.com/openconfig/gnmi) | RPC 定义、`Subscribe` 三种取数方式与路径语义 | 11 |
 | [openconfig/gnmic](https://github.com/openconfig/gnmic) | 开源 gNMI 采集器，订阅管理可读源码 | 11 |
 | [gnmic 文档](https://gnmic.openconfig.net/) | 采集器的输出与缓冲配置 | 14 |
 | [SONiC 文档](https://sonic-net.github.io/SONiC/) | 白盒交换机侧遥测的部署方式 | 04、11 |
 | [Linux 内核 RDMA 子系统](https://docs.kernel.org/infiniband/index.html) | 内核侧 RDMA 栈的结构 | 03 |
 | [linux-rdma/rdma-core](https://github.com/linux-rdma/rdma-core) | 用户态 RDMA 驱动与工具源码 | 03 |
-| [P4 规范](https://p4.org/specifications/) | P4 语言与 INT 数据面规范 | 12 |
 | [PyTorch — Distributed](https://pytorch.org/docs/stable/distributed.html) | 训练框架侧对集合通信的调用方式 | 08 |
 | [Anthropic — Building Effective Agents](https://www.anthropic.com/research/building-effective-agents) | Agent 设计的模式与适用边界 | 18 |
 | [Anthropic — Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval) | 检索增强的上下文构造方法 | 18 |
 
 ## 四、工程实践与方法论
 
-这一组是二手材料，但其中多数已经算行业权威。它们给的是口径与流程，不是物理事实。
+这一组是二手材料，多数已经算行业权威。它们给的是口径与流程，不是物理事实。
 
 | 来源 | 覆盖什么 | 课 |
 |---|---|---|
@@ -106,7 +97,7 @@ description: 全站 75 条外部引用的来源清单，按可信度分层组织
 
 ## 五、数据与存储组件
 
-这一组是组件文档，它们回答这个系统怎么工作，不回答你的场景该选哪个。
+这一组是组件文档，回答这个系统怎么工作，不回答你的场景该选哪个。
 
 | 来源 | 覆盖什么 | 课 |
 |---|---|---|
@@ -134,7 +125,7 @@ description: 全站 75 条外部引用的来源清单，按可信度分层组织
 
 ## 七、可信度分级
 
-引用之前先判断来源层级，这相当于给来源定一个可信度档位。层级决定这句话能断言到什么程度。
+来源层级决定一句话能断言到什么程度。
 
 | 层级 | 来源类型 | 能断言什么 | 不能断言什么 |
 |---|---|---|---|
@@ -144,26 +135,21 @@ description: 全站 75 条外部引用的来源清单，按可信度分层组织
 | 4 | 工程实践与方法论（SRE、PagerDuty） | 口径定义、流程与度量方式 | 具体的阈值数字 |
 | 5 | 技术博客、演讲、二手转述 | 线索与经验 | 断言，尤其在没给条件时 |
 
-不够格的来源有三类。营销页把能力写成既成事实。二手转述会丢掉适用条件。没有日期的技术博客可能写于任何一年。
+不够格的来源有三类：营销页把能力写成既成事实；二手转述会丢掉适用条件；没有日期的技术博客可能写于任何一年。
 
-::: warning 厂商文档最容易踩的两个坑
-
-第一个坑来自版本绑定这一件事。同一份文档的 latest 与特定版本页内容可能不同，引用时要写清版本。CUDA、DCGM、NCCL 的路径都带版本或 `latest`。
-
-第二个坑来自能力与默认值混写。文档说支持 PFC 按优先级统计，这不等于默认开启。前者是能力，后者是配置，两者的工程含义差很远。
-:::
+厂商文档有两个坑。一是版本绑定，同一份文档的 latest 与特定版本页内容可能不同，引用要写清版本，CUDA、DCGM、NCCL 的路径都带版本或 `latest`。二是能力与默认值混写，文档说支持 PFC 按优先级统计，不等于默认开启，前者是能力，后者是配置，工程含义差很远。
 
 ## 八、核验记录
 
-本清单涉及的 75 条外部链接，在 2026-11-10 用脚本核验过一轮。方法很朴素，也就是对每条发 GET 请求，跟随重定向，15 秒超时。
+本清单涉及的 74 条外部链接，在 2026-11-10 用脚本核验过一轮。方法是对每条发 GET，跟随重定向，15 秒超时。
 
 | 结果 | 条数 | 说明 |
 |---|---|---|
-| 200 正常 | 63 | 直接可达 |
+| 200 正常 | 65 | 直接可达，其中 6 条是首轮 404 修复后复验通过 |
 | 403 拒绝脚本 | 9 | IEEE、ACM、DOI、NANOG 有反爬策略，浏览器可访问 |
-| 404 已失效 | 6 | 第一轮发现，已全部修复并复验 |
+| 合计 | 74 | — |
 
-六个 404 的修复方式值得记一笔。
+首轮发现 6 条 404，修复方式各不相同：
 
 | 原链接 | 问题 | 处理 |
 |---|---|---|
@@ -174,12 +160,12 @@ description: 全站 75 条外部引用的来源清单，按可信度分层组织
 | SRE Workbook 监控章节 | 章节路径调整 | 换成 `workbook/monitoring/` |
 | PagerDuty 度量页 | 文档重组 | 换成文档总入口 |
 
-## 九、一条坑
+## 九、链接会腐烂，而且腐烂得不均匀
 
-链接会腐烂，而且各个来源腐烂得不均匀。**RFC 编号是永久的，厂商文档的路径年年变。**
+**RFC 编号是永久的，厂商文档的路径年年变。**
 
-这一轮核验里六个失效链接全部来自厂商站、会议站与静态文件，RFC 一条没坏。这不是巧合，RFC 一条没坏也不是运气。标准组织把编号当契约，厂商把文档当产品页面。两个圈子的差别本质上就在这儿，前者拿稳定性当承诺，后者拿流量当目标。
+这一轮核验里六个失效链接全部来自厂商站、会议站与静态文件，RFC 一条没坏。标准组织把编号当契约，厂商把文档当产品页面，前者拿稳定性当承诺，后者随版本发布重排路径。
 
-所以引用规则按来源分两种。标准与论文给编号（RFC 7938、DOI 10.1145/2785956.2787484），编号本身就是坐标，而且永不变动。厂商文档给总入口加章节名，让读者自己去站内找当前路径。
+引用规则按来源分两种。标准与论文给编号（RFC 7938、DOI 10.1145/2785956.2787484），编号本身就是坐标，永不变动。厂商文档给总入口加章节名，让读者自己去站内找当前路径。
 
-把深链写进正文，就是把腐烂风险交给下一个维护者。**给入口，别给深链。**
+深链写进正文，就把腐烂风险移交给下一个维护者。给入口，别给深链。

@@ -1,5 +1,5 @@
 ---
-title: 时序存储选型
+title: 一周的秒级数据放哪儿 —— 时序存储的选型与口径差异
 description: ClickHouse、VictoriaMetrics、Prometheus、InfluxDB 在智算遥测场景下的口径差异、基数陷阱、降采样与双链路分工。选型不是比跑分，是比"谁能容忍你的数据形状"。
 ---
 

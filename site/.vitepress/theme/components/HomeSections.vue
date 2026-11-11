@@ -8,50 +8,50 @@ import { withBase } from 'vitepress'
 
 const modules = [
 	{
-		id: 'M0',
-		title: '导读与实验室环境',
+		id: '开篇',
+		title: '认识这门课',
 		count: '2 课',
 		desc: '核心问题、读者前置与三种读法，再加一条五分钟跑通的实验环境：三条路线，L1 只需要 Go。',
 		href: '/00-intro/00-what-problem',
 	},
 	{
-		id: 'M1',
-		title: '范式转换',
+		id: '第一篇',
+		title: '两套世界观',
 		count: '3 课',
 		desc: '流量模型、丢包语义、故障代价、遥测粒度——四个维度看清智算网络推翻了哪些默认假设。',
 		href: '/01-paradigm/02-why-different',
 	},
 	{
-		id: 'M2',
-		title: '无损网络机制与失败模式',
+		id: '第二篇',
+		title: '不丢包的代价',
 		count: '3 课',
 		desc: 'PFC 的逐跳反压、ECN + DCQCN 的端网协同，以及四大典型故障在现场长什么样。',
 		href: '/02-lossless/05-pfc',
 	},
 	{
-		id: 'M3',
-		title: '流量与拓扑',
+		id: '第三篇',
+		title: '流量与连线',
 		count: '3 课',
 		desc: 'AllReduce 把流量矩阵变成「已知量」，Clos 与多 Rail 决定拓扑必须进数据模型，超节点又把一半流量私有化。',
 		href: '/03-traffic-topo/08-nccl',
 	},
 	{
-		id: 'M4',
-		title: '遥测数据面',
+		id: '第四篇',
+		title: '把现场变成数据',
 		count: '4 课',
 		desc: 'gNMI 流式订阅、INT 路径级元数据、光模块劣化信号，以及从设备到可查询的那条数据管道。',
 		href: '/04-telemetry/11-gnmi',
 	},
 	{
-		id: 'M5',
-		title: '分析与自动化',
+		id: '第五篇',
+		title: '从数据到结论',
 		count: '5 课',
 		desc: '指标口径与 SLO、告警收敛与图计算 RCA、时序库选型、LLM 的边界，以及 MTTR 的四段拆解。',
 		href: '/05-analysis/15-metrics-slo',
 	},
 	{
-		id: 'M6',
-		title: '选型与收口',
+		id: '第六篇',
+		title: '路线与收口',
 		count: '3 课',
 		desc: 'IB 与 RoCE 的路线之争，一条端到端排障主线，最后落到一张能自己打分的能力自评表。',
 		href: '/06-selection/20-ib-vs-roce',
@@ -72,7 +72,7 @@ const facts = [
 	{
 		kicker: '怎么读',
 		title: '机制先行，再动手',
-		body: 'M1、M2 是地基，跳读会让后面的判读变成背书；标 lab 的课配有可跑实验，L1 层只需 Go / Python，无特权依赖。',
+		body: '第一篇与第二篇是地基，跳读会让后面的判读变成背书；标 lab 的课配有可跑实验，L1 层只需 Go / Python，无特权依赖。',
 	},
 ]
 </script>

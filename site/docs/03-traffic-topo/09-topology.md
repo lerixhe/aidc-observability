@@ -1,5 +1,5 @@
 ---
-title: 万卡集群拓扑
+title: 一根线都不能少 —— Clos、Rail 与双平面拓扑
 description: Clos 的无收拢承诺、GPU 服务器的多 Rail 面貌、双 ToR 双平面冗余，以及拓扑为什么必须成为监控数据模型里的一等公民。
 ---
 

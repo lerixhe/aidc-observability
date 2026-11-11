@@ -21,13 +21,13 @@ const stats = computeStats(DOCS_DIR, fileURLToPath(new URL('../../labs', import.
  * 只挂载已有内容的模块，避免侧边栏出现空分组。
  */
 const MODULES = [
-	{ dir: '00-intro', text: 'M0 · 导读与实验室环境' },
-	{ dir: '01-paradigm', text: 'M1 · 范式转换' },
-	{ dir: '02-lossless', text: 'M2 · 无损网络机制与失败模式' },
-	{ dir: '03-traffic-topo', text: 'M3 · 流量与拓扑' },
-	{ dir: '04-telemetry', text: 'M4 · 遥测数据面' },
-	{ dir: '05-analysis', text: 'M5 · 分析与自动化' },
-	{ dir: '06-selection', text: 'M6 · 选型与收口' },
+	{ dir: '00-intro', text: '开篇 · 认识这门课' },
+	{ dir: '01-paradigm', text: '第一篇 · 两套世界观' },
+	{ dir: '02-lossless', text: '第二篇 · 不丢包的代价' },
+	{ dir: '03-traffic-topo', text: '第三篇 · 流量与连线' },
+	{ dir: '04-telemetry', text: '第四篇 · 把现场变成数据' },
+	{ dir: '05-analysis', text: '第五篇 · 从数据到结论' },
+	{ dir: '06-selection', text: '第六篇 · 路线与收口' },
 	{ dir: 'appendix', text: '附录' },
 ]
 

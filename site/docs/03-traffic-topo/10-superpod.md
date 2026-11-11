@@ -1,5 +1,5 @@
 ---
-title: 超节点与 Scale-up 网络
+title: 半个机柜当一台机器 —— 超节点与 Scale-up 网络
 description: 超节点把一半横向流量私有化到柜内，PFC 与队列水线在那半边失效。本课讲清 scale-up 与 scale-out 的分界，以及域内故障该看什么信号。
 ---
 

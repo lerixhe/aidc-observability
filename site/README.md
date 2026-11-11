@@ -1,6 +1,6 @@
 # site/ — VitePress 文档站
 
-> 状态：**v0.3**（23 课 + 附录 A/B 上线，M0–M6 七个模块齐全）
+> 状态：**v1.0**（23 课 + 附录 A/B，M0–M6 七个模块齐全，12 个实验落地）
 
 ## 本地运行
 
@@ -80,7 +80,7 @@ VitePress 会把它编译成 `cleanUrls` 的干净 URL；写目录形式 `../02-
 |---|---|
 | `docs/index.md` | frontmatter：`layout: home`、hero 标题/tagline、两个 CTA；正文只挂 `<HomeSections />` |
 | `.vitepress/theme/components/HomeHeroBadge.vue` | hero 上方的版本徽章（挂 `home-hero-before` 插槽） |
-| `.vitepress/theme/components/HomeHeroMetrics.vue` | hero 下方的指标条（挂 `home-hero-after` 插槽，15 节课 / 6 模块…） |
+| `.vitepress/theme/components/HomeHeroMetrics.vue` | hero 下方的指标条（挂 `home-hero-after` 插槽，23 节课 / 7 模块 / 12 个实验 / 4 类典型故障） |
 | `.vitepress/theme/components/HomeSections.vue` | 学习路径 7 张模块卡、三段说明、收尾 CTA、边界声明 |
 | `.vitepress/theme/style.css` | 全站 `--lp-*` 设计变量（明暗两套）、hero 居中版式与光晕网格 |
 

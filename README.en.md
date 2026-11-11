@@ -2,10 +2,11 @@
 
 > From lossy IDC networks to lossless AI fabrics: mechanisms, telemetry, and runnable labs.
 
-**Status: v0.4** — 23 lessons + appendices A/B published, 12 labs shipped (10 L1 + 2 L2 real-topology).
+**Status: v1.0** — 23 lessons + appendices A/B published, 12 labs shipped (10 L1 + 2 L2 real-topology).
 Site: <https://lerixhe.github.io/aidc-observability/>
 
-> Readable (v0.1), runnable (v0.2), complete (v0.3), advanced (v0.4).
+> Readable (v0.1), runnable (v0.2), complete (v0.3), advanced (v0.4), deliverable (v1.0).
+> The course structure is frozen as of v1.0; only corrections are accepted (see [DECISIONS.md](docs/DECISIONS.md) D9).
 > The two L2 labs run in two modes: the default mode needs no Docker, only Go.
 > `make deploy` is the step that requires containerlab.
 
@@ -63,8 +64,8 @@ is what this project tries to fill.
 | v0.1 | 16 lessons as Markdown, docs site, GitHub Pages live | Done |
 | v0.2 | First 6 L1 labs (no privileged deps), devcontainer, labs CI | Done |
 | v0.3 | 8 new lessons (intro, environment, superpod, INT, pipeline, SLI/SLO, MTTR, end-to-end case) + 3 L1 labs + appendices A/B | Done |
-| v0.4 | Advanced labs: containerlab topology (05-clos-topo), fault injection (03-fault-inject), end-to-end runbook (11-case-study) | **Current** |
-| v1.0 | Polish: link checker, bilingual README, announcement | In progress |
+| v0.4 | Advanced labs: containerlab topology (05-clos-topo), fault injection (03-fault-inject), end-to-end runbook (11-case-study) | Done |
+| v1.0 | Polish: link checker + Docs CI, bilingual README, announcement, structure frozen | **Current** |
 
 See [docs/PROJECT.md](docs/PROJECT.md) for details (Chinese).
 
@@ -115,8 +116,8 @@ to [docs/MIGRATION.md](docs/MIGRATION.md) before it reaches `site/`.
 
 ## Contributing
 
-The project is at v1.0-dev; content is still under review. Corrections are welcome —
-please cite the lesson and a verifiable source:
+The project is at v1.0: the course structure is frozen and only corrections are accepted.
+Please cite the lesson and a verifiable source:
 
 - Mechanism claims need a checkable source (RFC / IEEE standard / paper / vendor docs)
 - De-identification red lines are in section 3 of [docs/MIGRATION.md](docs/MIGRATION.md);

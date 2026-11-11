@@ -5,10 +5,10 @@
  */
 
 const metrics = [
-	{ value: '15', label: '节课' },
-	{ value: '6', label: '个模块' },
+	{ value: '23', label: '节课' },
+	{ value: '7', label: '个模块' },
+	{ value: '12', label: '个实验' },
 	{ value: '4', label: '类典型故障' },
-	{ value: '0', label: '特权依赖' },
 ]
 </script>
 

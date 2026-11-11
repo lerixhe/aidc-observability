@@ -59,7 +59,7 @@ const sidebar = [
 
 export default defineConfig({
 	title: '智算网络可观测指南',
-	description: '从有损 IDC 到无损智算：机制、遥测与可运行的实验室',
+	description: '从有损 IDC 到无损智算：机制、遥测与可运行的实验室。也叫 AI 网络、AI Fabric 或高性能网络可观测',
 	lang: 'zh-CN',
 	base: BASE,
 	srcDir: './docs',

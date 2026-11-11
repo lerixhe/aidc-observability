@@ -4,7 +4,7 @@
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/lerixhe/aidc-observability)
 
-**状态：v2.0 推进中** —— 26 课 + 附录 A/B，12 个实验全部落地（10 个 L1 + 2 个 L2 真拓扑）。
+**状态：v2.0 已交付** —— 26 课 + 附录 A/B，12 个实验全部落地（10 个 L1 + 2 个 L2 真拓扑）。
 站点：<https://lerixhe.github.io/aidc-observability/> · [English README](README.en.md)
 
 > 可读（v0.1）、可跑（v0.2）、可讲全（v0.3）、可进阶（v0.4）、可交付（v1.0）。
@@ -59,7 +59,8 @@ AI 训练网络（智算中心、AIDC、AI Fabric，也有人叫高性能网络�
 | v0.2 | 可运行：首批 6 个 L1 lab（无特权依赖）+ devcontainer + labs CI | 已完成 |
 | v0.3 | 扩课：新增 8 篇（导读、环境、超节点、INT、管道、指标体系、MTTR、端到端案例）+ 3 个 L1 lab（07/08/09）+ 附录 A 术语表与 B 参考清单 | 已完成 |
 | v0.4 | 进阶 lab：containerlab 真实拓扑（05-clos-topo）+ 故障注入（03-fault-inject）+ 端到端剧本（11-case-study） | 已完成 |
-| v1.0 | 打磨：链接体检脚本 + Docs CI、双语 README、宣传稿、结构冻结 | **当前** |
+| v1.0 | 打磨：链接体检脚本 + Docs CI、双语 README、宣传稿、结构冻结 | 已完成 |
+| v2.0 | 工具箱化：3 篇前沿课（AR / Scale-Up / UEC）+ 遥测可视化栈 + 真实 0x8808 帧与 XDP 闸门 + Codespaces 预装 + CI 双保险 | **当前** |
 
 详见 [docs/PROJECT.md](docs/PROJECT.md)。
 

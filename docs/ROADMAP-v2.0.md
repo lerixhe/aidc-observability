@@ -2,6 +2,8 @@
 
 > 本文件是打破 v1.0 冻结期后的工程与演进蓝图。
 > 目标：将本项目从「教学大纲型知识库」升级为「可运行、可交付、覆盖下一代架构的智算网络工程工具箱」。
+>
+> **状态：四个阶段已全部落地（v2.0 完成）。** 各阶段的实际交付与验收命令见文末检查单。
 
 ---
 
@@ -102,9 +104,26 @@
 
 ## 排期与交付检查单
 
-| 里程碑 | 工期估算 | 交付产物 | 验收命令 |
+四个阶段已全部落地（v2.0）。下表是交付时的实际状态：
+
+| 里程碑 | 状态 | 交付产物 | 验收命令 |
 |---|---|---|---|
-| **M1: 脚本加固与工具修复** | 1 天 | 修复入参报错，统一递归扫描支持 | `python3 scripts/style-check.py site/docs` 退出码 0 |
-| **M2: 监控面板与 Exporter 闭环** | 3 天 | `06-gnmi-mock` Exporter、Grafana 仪表板模板 | `docker compose -f labs/docker-compose.telemetry.yml up -d` 见实时曲线 |
-| **M3: 3 篇核心进阶课落地** | 4 天 | 10b / 04b / 20b 课程正文与外部参考文献 | `python3 scripts/check-stats.py`（数字更新至 26 课） |
-| **M4: Codespaces 与 XDP 真帧仿真** | 3 天 | Devcontainer 预装环境，XDP pause 注入脚本 | `make deploy && make inject-pfc` 在抓包中见真实 pause 报文 |
+| **M1: 脚本加固与工具修复** | ✅ 完成 | `scripts/mdpaths.py` 统一入参；`check-sensitive.sh` 改 POSIX sh | `python3 scripts/style-check.py site/docs` 退出码 0 |
+| **M2: 监控面板与 Exporter 闭环** | ✅ 完成 | `06-gnmi-mock` 的 `/metrics`、`labs/docker-compose.telemetry.yml`、两份 Grafana 模板 | `docker compose -f labs/docker-compose.telemetry.yml up -d` 见实时曲线 |
+| **M3: 3 篇核心进阶课落地** | ✅ 完成 | 10b / 04b / 20b 正文，术语 120 条、参考 75 条 | `python3 scripts/check-stats.py`（26 课） |
+| **M4: Codespaces 与 XDP 真帧仿真** | ✅ 完成 | devcontainer 预装 containerlab；`inject_pfc_pause.py` 与 `xdp_pfc.c` | `make deploy && make inject-pfc` 在 `tcpdump -i eth1 ether proto 0x8808` 里见真实 pause 报文 |
+
+阶段一至四之外额外落地的一项：CI 补了构建产物锚点爬虫（`check-anchors-html.py`）
+与 Mermaid 语法体检（`check-mermaid.py`）。VitePress 只拦死路由，死锚点得靠产物侧兜底。
+
+## 阶段状态回填
+
+| 阶段 | 内容 | 状态 |
+|---|---|---|
+| 一 | 补齐前沿技术盲区（23 → 26 课） | ✅ 完成 |
+| 二 | 打通可观测闭环（Lab 输出对接真实看板） | ✅ 完成 |
+| 三 | 降低仿真门槛与提升真实度 | ✅ 完成 |
+| 四 | 脚本鲁棒性硬化与体检升级 | ✅ 完成 |
+
+决策记录见 `docs/DECISIONS.md`：D14（解除冻结，演进到 v2.0）、
+D15（Codespaces 与真实 0x8808 帧的边界）、D16（入参统一与两项新体检）。

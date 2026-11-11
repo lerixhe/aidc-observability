@@ -4,7 +4,7 @@
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/lerixhe/aidc-observability)
 
-**Status: v2.0 in progress** — 26 lessons + appendices A/B published, 12 labs shipped (10 L1 + 2 L2 real-topology).
+**Status: v2.0 shipped** — 26 lessons + appendices A/B published, 12 labs shipped (10 L1 + 2 L2 real-topology).
 Site: <https://lerixhe.github.io/aidc-observability/>
 
 The Codespaces image ships containerlab and Docker, so the L2 topology labs run
@@ -70,7 +70,8 @@ is what this project tries to fill.
 | v0.2 | First 6 L1 labs (no privileged deps), devcontainer, labs CI | Done |
 | v0.3 | 8 new lessons (intro, environment, superpod, INT, pipeline, SLI/SLO, MTTR, end-to-end case) + 3 L1 labs + appendices A/B | Done |
 | v0.4 | Advanced labs: containerlab topology (05-clos-topo), fault injection (03-fault-inject), end-to-end runbook (11-case-study) | Done |
-| v1.0 | Polish: link checker + Docs CI, bilingual README, announcement, structure frozen | **Current** |
+| v1.0 | Polish: link checker + Docs CI, bilingual README, announcement, structure frozen | Done |
+| v2.0 | Toolbox: 3 frontier lessons (AR / scale-up / UEC), telemetry stack, real 0x8808 frames + XDP gate, Codespaces preinstalled, dual CI guards | **Current** |
 
 See [docs/PROJECT.md](docs/PROJECT.md) for details (Chinese).
 

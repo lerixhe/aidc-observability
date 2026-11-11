@@ -21,7 +21,8 @@
 cd labs/10-rca
 make run     # 200 轮评估 + 一轮完整明细
 make topo    # 只看拓扑与下游集合
-make test    # 9 个单测
+make test    # 10 个单测
+go run . -format dot  # 导出带置信度标色的 Graphviz DOT 故障传播图
 ```
 
 ## 3. 结果长什么样

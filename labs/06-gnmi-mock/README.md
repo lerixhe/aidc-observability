@@ -10,6 +10,7 @@
 - `SAMPLE` 100 ms / 1 s / 5 s / 10 s
 - `ON_CHANGE`
 - 对三类数据分别测：累积计数器、瞬时水位、离散状态
+- 内置 Prometheus Exporter（`/metrics`），将设备指标直接对接到真实观测栈
 
 最后算出**保真度**：观测到的峰值 / 真实峰值。这张表就是「为什么分钟级轮询看不见 PFC 风暴」的量化版。
 
@@ -51,6 +52,7 @@ make test     # 11 个单测
 
 ```bash
 curl -s  'http://localhost:9339/capabilities'
+curl -s  'http://localhost:9339/metrics'
 curl -sg 'http://localhost:9339/get?path=/interfaces/interface[name=Ethernet0]/state/oper-status'
 curl -sgN 'http://localhost:9339/subscribe?path=/interfaces/.../state/counters/out-pfc-pause-frames&mode=sample&interval=1s&duration=20s'
 ```

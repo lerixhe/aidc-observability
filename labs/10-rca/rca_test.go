@@ -2,6 +2,7 @@ package main
 
 import (
 	"math/rand"
+	"strings"
 	"testing"
 	"time"
 )
@@ -178,5 +179,25 @@ func TestEvalDeterministic(t *testing.T) {
 	b := Run(30, 7, 150*time.Millisecond, 10*time.Second)
 	if a.Methods[2].Top1 != b.Methods[2].Top1 || a.Alerts != b.Alerts {
 		t.Errorf("同种子两次评估结果不一致：%v vs %v", a.Methods[2].Top1, b.Methods[2].Top1)
+	}
+}
+
+func TestReportDotOutput(t *testing.T) {
+	topo := BuildClos(2, 4, 2)
+	cands := []Candidate{
+		{Entity: "leaf1", Score: 0.88, Coverage: 0.94, Precision: 1.0},
+	}
+	truth := Truth{Entity: "leaf1"}
+	var b strings.Builder
+	ReportDot(&b, topo, cands, truth)
+	out := b.String()
+	if !strings.Contains(out, "digraph AIDC_RCA") {
+		t.Error("缺少 digraph 头部")
+	}
+	if !strings.Contains(out, "TRUTH ROOT") {
+		t.Error("缺少真值根因标记")
+	}
+	if !strings.Contains(out, "cluster_spine") {
+		t.Error("缺少层级聚类")
 	}
 }

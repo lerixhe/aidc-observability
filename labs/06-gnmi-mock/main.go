@@ -34,6 +34,7 @@ func main() {
 		fmt.Printf("mock 设备监听 %s · 加速 %.0f×\n", *addr, *speed)
 		fmt.Println("试一下：")
 		fmt.Printf("  curl 'http://localhost%s/capabilities'\n", *addr)
+		fmt.Printf("  curl 'http://localhost%s/metrics'\n", *addr)
 		fmt.Printf("  curl 'http://localhost%s/get?path=%s'\n", *addr, pathPause)
 		fmt.Printf("  curl -N 'http://localhost%s/subscribe?path=%s&mode=sample&interval=1s&duration=10s'\n", *addr, pathPause)
 		if err := http.ListenAndServe(*addr, NewServer(sig, *speed).Handler()); err != nil {

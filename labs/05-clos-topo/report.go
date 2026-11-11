@@ -110,6 +110,76 @@ func cell(r Result, leaf string) string {
 	return "-"
 }
 
+// ReportMermaid 生成链路负载着色的 Mermaid 图。
+func ReportMermaid(w io.Writer, res Result) {
+	fmt.Fprintln(w, "```mermaid")
+	fmt.Fprintln(w, "graph TD")
+	fmt.Fprintln(w, "    classDef spine fill:#2d3748,stroke:#cbd5e0,stroke-width:2px,color:#fff;")
+	fmt.Fprintln(w, "    classDef leaf fill:#4a5568,stroke:#cbd5e0,stroke-width:2px,color:#fff;")
+	fmt.Fprintln(w, "    classDef host fill:#718096,stroke:#e2e8f0,stroke-width:1px,color:#fff;")
+	fmt.Fprintln(w, "    classDef heavy stroke:#e53e3e,stroke-width:4px,color:#e53e3e;")
+	fmt.Fprintln(w, "    classDef light stroke:#48bb78,stroke-width:2px,color:#48bb78;")
+	fmt.Fprintln(w, "    classDef normal stroke:#a0aec0,stroke-width:1px;")
+	fmt.Fprintln(w)
+	fmt.Fprintln(w, "    subgraph Spines [Spine Layer]")
+	fmt.Fprintln(w, "        spine1[\"spine1<br/>10.12.0.0/16\"]:::spine")
+	fmt.Fprintln(w, "        spine2[\"spine2<br/>10.13.0.0/16\"]:::spine")
+	fmt.Fprintln(w, "    end")
+	fmt.Fprintln(w)
+	fmt.Fprintln(w, "    subgraph Leaves [Leaf Layer]")
+	for _, l := range Leaves() {
+		fmt.Fprintf(w, "        %s[\"%s\"]:::leaf\n", l, l)
+	}
+	fmt.Fprintln(w, "    end")
+	fmt.Fprintln(w)
+	fmt.Fprintln(w, "    subgraph Hosts [Compute Nodes]")
+	for _, h := range Hosts() {
+		fmt.Fprintf(w, "        %s[\"%s<br/>%s\"]:::host\n", h.Name, h.Name, ipString(h.IP))
+	}
+	fmt.Fprintln(w, "    end")
+	fmt.Fprintln(w)
+
+	// Leaf -> Host links
+	for _, h := range Hosts() {
+		fmt.Fprintf(w, "    %s --- %s\n", h.Leaf, h.Name)
+	}
+	fmt.Fprintln(w)
+
+	// Uplink stats map
+	linkMap := map[string]LinkStat{}
+	if len(res.Leaves) > 0 {
+		for _, ls := range res.Leaves {
+			for _, l := range ls.Links {
+				linkMap[l.Link] = l
+			}
+		}
+	}
+
+	linkIdx := 0
+	for _, u := range Uplinks() {
+		key := u.Leaf + "→" + u.Spine
+		label := u.Iface
+		styleClass := "normal"
+		if st, ok := linkMap[key]; ok {
+			label = fmt.Sprintf("%s<br/>%d flows (%.0f%%)", u.Iface, st.Flows, st.Share*100)
+			if st.Share >= 0.75 {
+				styleClass = "heavy"
+			} else if st.Share > 0 {
+				styleClass = "light"
+			}
+		}
+		fmt.Fprintf(w, "    %s -- \"%s\" --- %s\n", u.Leaf, label, u.Spine)
+		if styleClass != "normal" {
+			fmt.Fprintf(w, "    linkStyle %d stroke:%s,stroke-width:%s;\n",
+				8+linkIdx,
+				map[string]string{"heavy": "#e53e3e", "light": "#48bb78"}[styleClass],
+				map[string]string{"heavy": "4px", "light": "2px"}[styleClass])
+		}
+		linkIdx++
+	}
+	fmt.Fprintln(w, "```")
+}
+
 // maxShare 返回全局最大链路占比。
 func maxShare(r Result) float64 {
 	var m float64

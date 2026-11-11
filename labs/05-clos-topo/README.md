@@ -26,8 +26,10 @@ Clos 上联做到 1:1 无收拢，不代表两条上行会各吃一半。
 cd labs/05-clos-topo
 make run        # 三个实验，零依赖
 make topo       # 拓扑与地址表
-make test       # 8 个单测，守住散列与统计口径
+make test       # 9 个单测，守住散列与统计口径
 make run -scan 1,2,4,8,16   # 自定义流数序列（更极端的少量流）
+go run . -topo -format mermaid  # 输出基础 Mermaid 拓扑图
+go run . -exp 1 -flows 64 -format mermaid  # 输出链路负载着色的 Mermaid 图
 ```
 
 真拓扑需要 Docker：

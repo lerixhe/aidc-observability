@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strings"
 	"testing"
 	"time"
 )
@@ -172,6 +173,27 @@ func TestGetEndpoint(t *testing.T) {
 	}
 	if body.Updates[0].Value != "UP" {
 		t.Errorf("t=0 的状态是 %v，期望 UP", body.Updates[0].Value)
+	}
+}
+
+func TestMetricsEndpoint(t *testing.T) {
+	srv := newLocalServer(NewServer(DefaultSignal(), 1).Handler())
+	defer srv.Close()
+
+	// 抓取 t=11s（风暴期）的 Prometheus 指标
+	resp, err := httpGet(srv.URL + "/metrics?t=11s")
+	if err != nil {
+		t.Fatalf("Metrics 失败：%v", err)
+	}
+	text := string(resp)
+	if !strings.Contains(text, "aidc_interface_out_pfc_pause_frames_total") {
+		t.Errorf("缺少 PFC pause 指标：%s", text)
+	}
+	if !strings.Contains(text, "aidc_queue_watermark_bytes") {
+		t.Errorf("缺少队列水位指标：%s", text)
+	}
+	if !strings.Contains(text, "interface=\"Ethernet0\"") {
+		t.Errorf("缺少接口标签：%s", text)
 	}
 }
 

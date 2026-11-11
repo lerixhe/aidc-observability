@@ -17,6 +17,7 @@ import (
 type Server struct {
 	sig   *Signal
 	speed float64 // 虚拟时间相对真实时间的倍率，用于把 30 秒信号在 0.5 秒内跑完
+	start time.Time
 	mu    sync.Mutex
 	subs  int
 }
@@ -26,15 +27,16 @@ func NewServer(sig *Signal, speed float64) *Server {
 	if speed <= 0 {
 		speed = 1
 	}
-	return &Server{sig: sig, speed: speed}
+	return &Server{sig: sig, speed: speed, start: time.Now()}
 }
 
-// Handler 挂上能力查询、Get、Subscribe 三个端点。
+// Handler 挂上能力查询、Get、Subscribe、Metrics 端点。
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/capabilities", s.handleCapabilities)
 	mux.HandleFunc("/get", s.handleGet)
 	mux.HandleFunc("/subscribe", s.handleSubscribe)
+	mux.HandleFunc("/metrics", s.handleMetrics)
 	mux.HandleFunc("/", s.handleIndex)
 	return mux
 }
@@ -42,9 +44,32 @@ func (s *Server) Handler() http.Handler {
 func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, `{
   "target": "mock-leaf1",
-  "endpoints": ["/capabilities", "/get?path=...", "/subscribe?path=...&mode=sample|on_change&interval=1s&duration=30s"],
+  "endpoints": [
+    "/capabilities",
+    "/get?path=...",
+    "/subscribe?path=...&mode=sample|on_change&interval=1s&duration=30s",
+    "/metrics?t=... (Prometheus Exporter)"
+  ],
   "note": "HTTP+SSE 实现，语义对齐 gNMI Subscribe，不是 gRPC"
 }`)
+}
+
+func (s *Server) handleMetrics(w http.ResponseWriter, r *http.Request) {
+	tStr := r.URL.Query().Get("t")
+	var t time.Duration
+	if tStr != "" {
+		t = parseDuration(tStr, 0)
+	} else {
+		// 默认按当前运行时间步进
+		s.mu.Lock()
+		if s.start.IsZero() {
+			s.start = time.Now()
+		}
+		s.mu.Unlock()
+		t = virtualElapsed(s.start, s.speed)
+	}
+	w.Header().Set("Content-Type", "text/plain; version=0.0.4; charset=utf-8")
+	WritePrometheusMetrics(w, s.sig, t)
 }
 
 func (s *Server) handleCapabilities(w http.ResponseWriter, r *http.Request) {

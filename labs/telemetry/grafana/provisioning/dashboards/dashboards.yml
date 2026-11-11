@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: 'AIDC Dashboards'
+    orgId: 1
+    folder: 'AIDC Observability'
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards

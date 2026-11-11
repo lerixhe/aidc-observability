@@ -18,6 +18,7 @@ import (
 
 func main() {
 	topo := flag.Bool("topo", false, "只打印拓扑与地址表")
+	format := flag.String("format", "text", "输出格式：text / mermaid")
 	flows := flag.Int("flows", 64, "单次模拟的流数")
 	kind := flag.String("kind", "random", "流形态：random / elephant / sametuple")
 	policy := flag.String("policy", "l4", "hash 口径：l3 / l4")
@@ -27,6 +28,10 @@ func main() {
 	flag.Parse()
 
 	if *topo {
+		if *format == "mermaid" {
+			ReportMermaid(os.Stdout, Result{})
+			return
+		}
 		ReportTopology(os.Stdout)
 		fmt.Fprintln(os.Stdout, "真拓扑：make deploy   # containerlab deploy -t topo.clab.yml")
 		fmt.Fprintln(os.Stdout, "清理：  make destroy")
@@ -67,6 +72,12 @@ func main() {
 	}
 	work := Workload(*kind)
 	res := Simulate(Generate(work, *flows, *seed), p)
+
+	if *format == "mermaid" {
+		ReportMermaid(os.Stdout, res)
+		return
+	}
+
 	ReportDetail(os.Stdout, res, *kind)
 }
 

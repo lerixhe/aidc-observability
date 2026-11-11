@@ -2,6 +2,7 @@ package main
 
 import (
 	"math"
+	"strings"
 	"testing"
 )
 
@@ -131,5 +132,22 @@ func TestPolarizationMath(t *testing.T) {
 	}
 	if got := cv([]float64{0.75, 0.25}); math.Abs(got-0.5) > 1e-9 {
 		t.Errorf("75/25 分布的变异系数应为 0.5，实际 %.2f", got)
+	}
+}
+
+func TestMermaidOutput(t *testing.T) {
+	flows := Generate(WorkRandom, 64, 42)
+	res := Simulate(flows, PolicyL4)
+	var b strings.Builder
+	ReportMermaid(&b, res)
+	out := b.String()
+	if !strings.Contains(out, "graph TD") {
+		t.Error("Mermaid 图缺少 graph TD 头部")
+	}
+	if !strings.Contains(out, "spine1") || !strings.Contains(out, "leaf1") {
+		t.Error("Mermaid 图缺少节点定义")
+	}
+	if !strings.Contains(out, "linkStyle") {
+		t.Error("Mermaid 图缺少着色样式")
 	}
 }

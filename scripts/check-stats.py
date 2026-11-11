@@ -38,10 +38,13 @@ def count_lessons(module: Path) -> int:
     return sum(1 for f in module.glob("*.md") if f.name != "index.md")
 
 
+# 实验目录：两位数字前缀，如 00-setup
+LAB_DIR = re.compile(r"^\d{2}-")
+
 def lab_dirs():
     if not LABS.is_dir():
         return []
-    return [p for p in sorted(LABS.iterdir()) if p.is_dir()]
+    return [p for p in sorted(LABS.iterdir()) if p.is_dir() and LAB_DIR.match(p.name)]
 
 
 def count_glossary() -> int:

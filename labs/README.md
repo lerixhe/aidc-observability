@@ -57,6 +57,23 @@ L2 的两个 lab（`03-fault-inject`、`05-clos-topo`）是**双模式**：
 
 编号留空是给规划留位，不代表顺序执行。`00-setup` 建议先跑，其余互不依赖。
 
+## 遥测与可视化栈（Telemetry Stack）
+
+为了让 mock 与仿真输出直接闭环到生产级监控看板，项目提供了最小本地可观测栈：
+
+```bash
+docker compose -f labs/docker-compose.telemetry.yml up -d
+```
+
+- **Prometheus**：监听 `:9090`，以 1s 间隔拉取 `mock-leaf1:9339/metrics`
+- **Grafana**：监听 `:3000`（匿名免密登录），预置两份仪表盘：
+  - `AIDC Fabric Overview`：端口出向带宽、PFC Pause 速率、ECN 标记时序、端口 UP/DOWN 状态
+  - `PFC Storm Trace`：PFC 风暴扩散与队列实时水线堆积、死锁溢出丢包时序
+- **内存占用**：Prometheus + Grafana + Mock Leaf 编排启动总内存 ≤ 150MB。
+- **命令行拓扑图与因果图可视化**：
+  - `cd labs/05-clos-topo && go run . -exp 1 -flows 64 -format mermaid`：生成链路负载着色的 Mermaid 图
+  - `cd labs/10-rca && go run . -format dot`：生成带置信度标色与真值标记的 Graphviz DOT 故障因果传播图
+
 ## 统一结构
 
 ```

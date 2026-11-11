@@ -13,10 +13,15 @@ func main() {
 	gap := flag.Duration("gap", 150*time.Millisecond, "告警收敛的时间窗口")
 	window := flag.Duration("window", 10*time.Second, "告警流的时间跨度")
 	topo := flag.Bool("topo", false, "只打印拓扑，不跑评估")
+	format := flag.String("format", "text", "输出格式：text / dot")
 	flag.Parse()
 
 	if *topo {
 		t := BuildClos(2, 4, 2)
+		if *format == "dot" {
+			ReportDot(os.Stdout, t, nil, Truth{})
+			return
+		}
 		fmt.Println("节点与下游集合：")
 		for _, n := range t.Nodes {
 			fmt.Printf("  %-8s %-6s down=%v\n", n.Name, n.Tier, t.Down[n.Name])
@@ -30,6 +35,15 @@ func main() {
 	}
 
 	e := Run(*trials, *seed, *gap, *window)
+	if *format == "dot" {
+		t := BuildClos(2, 4, 2)
+		if e.Sample != nil {
+			ReportDot(os.Stdout, t, e.Sample.Graph, e.Sample.Truth)
+		} else {
+			ReportDot(os.Stdout, t, nil, Truth{})
+		}
+		return
+	}
 	Report(os.Stdout, e)
 
 	fmt.Println()

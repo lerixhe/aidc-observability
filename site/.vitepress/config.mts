@@ -5,6 +5,7 @@ import { defineConfig } from 'vitepress'
 
 // GitHub Pages：https://lerixhe.github.io/aidc-observability/
 const SITE = 'https://lerixhe.github.io'
+const BASE = '/aidc-observability/'
 const REPO = 'https://github.com/lerixhe/aidc-observability'
 
 const DOCS_DIR = fileURLToPath(new URL('../docs', import.meta.url))
@@ -60,14 +61,15 @@ export default defineConfig({
 	title: '智算网络可观测指南',
 	description: '从有损 IDC 到无损智算：机制、遥测与可运行的实验室',
 	lang: 'zh-CN',
-	base: '/aidc-observability/',
+	base: BASE,
 	srcDir: './docs',
 	cleanUrls: true,
 	lastUpdated: true,
-	sitemap: { hostname: SITE + '/aidc-observability/' },
+	sitemap: { hostname: SITE + BASE },
 
 	head: [
-		['link', { rel: 'icon', type: 'image/svg+xml', href: '/aidc-observability/favicon.svg' }],
+		// public/ 下的文件会落到 base 根，所以这里要自己拼上前缀
+		['link', { rel: 'icon', type: 'image/svg+xml', href: `${BASE}favicon.svg` }],
 		// 中文站：显式声明语言，利于搜索引擎与阅读器
 		['meta', { property: 'og:locale', content: 'zh_CN' }],
 	],

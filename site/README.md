@@ -98,3 +98,11 @@ VitePress 会把它编译成 `cleanUrls` 的干净 URL；写目录形式 `../02-
 
 `.github/workflows/deploy.yml`：push `main`（改动 `site/**`）→ `pnpm build` → `upload-pages-artifact` → `deploy-pages`。
 首次部署需在仓库 Settings → Pages 里把 Source 设为 **GitHub Actions**。
+
+两处与 Pages 相关的约定：
+
+- `docs/public/.nojekyll` 会被复制到产物根。走 Actions 部署其实不需要它（不经过 Jekyll），
+  但留着它能保证将来若改用 `gh-pages` 分支部署时，以下划线开头的资源不会被吞掉。
+- `cleanUrls: true` 依赖 GitHub Pages 的「无扩展名 URL → 同名 `.html`」回退。
+  若线上出现无后缀 URL 404（换托管方时可能发生），把它改成 `false`，
+  或者把每个页面改成 `foo/index.md` 的目录式布局。

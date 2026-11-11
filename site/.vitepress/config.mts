@@ -70,6 +70,9 @@ export default defineConfig({
 	head: [
 		// public/ 下的文件会落到 base 根，所以这里要自己拼上前缀
 		['link', { rel: 'icon', type: 'image/svg+xml', href: `${BASE}favicon.svg` }],
+		// 移动端地址栏配色，跟随系统明暗
+		['meta', { name: 'theme-color', content: '#0b0e14', media: '(prefers-color-scheme: dark)' }],
+		['meta', { name: 'theme-color', content: '#ffffff', media: '(prefers-color-scheme: light)' }],
 		// 中文站：显式声明语言，利于搜索引擎与阅读器
 		['meta', { property: 'og:locale', content: 'zh_CN' }],
 	],

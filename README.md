@@ -69,6 +69,9 @@ AI 训练网络（智算中心、AIDC、AI Fabric，也有人叫高性能网络�
 仅作本地迁移底本使用。公开内容一律按 [docs/MIGRATION.md](docs/MIGRATION.md)
 脱敏重写后才进入 `site/`。
 
+整个 `reference/` 目录都在忽略列表里，只放行目录自己的说明文件。目录下另有几份
+第三方书籍与讲义，仅作本地参考，入库有版权风险，不要提交。
+
 ## 许可
 
 - 文字与课程内容：[CC BY-SA 4.0](LICENSE)

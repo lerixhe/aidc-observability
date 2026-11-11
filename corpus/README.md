@@ -17,6 +17,7 @@ corpus/
 │   └── 2026-02-27-api-to-ui.md    《从API到UI：AI助力后端工程师全栈交付》
 └── style/                         提炼产物
     ├── COURSE-STYLE.md           ★ 课程文风规则（依据 v2 特征卡，十条硬指标 + 禁用清单 + 检查脚本）
+    ├── NARRATIVE-DIGEST-tcp-book.md  样本二：《深入理解 TCP 协议》前 3 篇的叙事手法拆解（管结构，不管句法）
     ├── STYLE.md                  v0.1 单篇样本稿（已被 v2 修正，仅作历史记录）
     └── LEXICON.md                口癖与用语词表（含课程禁用标记 ⛔）
 ```
@@ -30,6 +31,7 @@ corpus/
 | 上游：写作特征卡 | `/Users/Lerix/Projects/corpus/writing-profile.md`（v2，203 篇 / 118,099 汉字） | 唯一数据依据 |
 | 本库产出 | `style/COURSE-STYLE.md` | **写课程的唯一标准** |
 | 辅证 | `style/LEXICON.md` | 查词，按 ⛔ 过滤 |
+| 叙事参考 | `style/NARRATIVE-DIGEST-tcp-book.md` | 结构层手法（开头结尾同一句 / 先跑命令再讲理 / 跳过要说清楚），与 COURSE-STYLE 冲突时以后者为准 |
 | 历史 | `style/STYLE.md` | 已被 v2 推翻，归档用 |
 
 ## 怎么用

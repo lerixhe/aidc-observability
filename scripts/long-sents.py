@@ -2,14 +2,19 @@
 """列出超长句与含分号的行，便于逐课精修。
 
 用法：
+    python3 scripts/long-sents.py                                  # 全站
     python3 scripts/long-sents.py site/docs/01-paradigm/02-why-different.md
-    python3 scripts/long-sents.py --semi-only <file>   # 只列分号行
+    python3 scripts/long-sents.py site/docs/02-lossless             # 整个目录递归
+    python3 scripts/long-sents.py --semi-only site/docs/01-paradigm # 只列分号行
+
+入参规则与 style-check.py 完全一致，共用 scripts/mdpaths.py：
+单文件、目录、通配符都能传，不存在的路径直接报错退出（码 2）。
 """
 
-import glob
-import os
 import re
 import sys
+
+import mdpaths
 
 TRANS = ("也就是", "相当于", "等价于", "类比", "本质上")
 
@@ -28,26 +33,28 @@ def strip_md(s: str) -> str:
 
 
 def main() -> int:
-    args = [a for a in sys.argv[1:] if not a.startswith("-")]
+    files = mdpaths.collect_or_exit(sys.argv[1:], mdpaths.DEFAULT_DOCS, prog="long-sents.py")
     semi_only = "--semi-only" in sys.argv
-    files = []
-    for a in args:
-        if os.path.isdir(a):
-            files.extend(
-                f for f in sorted(glob.glob(f"{a}/**/*.md", recursive=True))
-                if not f.endswith("index.md")
-            )
-        elif os.path.isfile(a):
-            files.append(a)
+
+    total_hits = 0
     for path in files:
-        raw = open(path, encoding="utf8").read()
+        try:
+            raw = open(path, encoding="utf8").read()
+        except OSError as e:
+            print(f"long-sents.py：读不了 {path}：{e}", file=sys.stderr)
+            return 2
         body = clean(raw)
-        print(f"\n### {path.split('/')[-1]}")
+
         if semi_only:
-            for i, line in enumerate(raw.split("\n"), 1):
-                if "；" in line:
-                    print(f"{i:>4}| {line}")
+            lines = [(i, line) for i, line in enumerate(raw.split("\n"), 1) if "；" in line]
+            if not lines:
+                continue
+            print(f"\n### {path}")
+            for i, line in lines:
+                print(f"{i:>4}| {line}")
+                total_hits += 1
             continue
+
         hits = []
         for line in body.split("\n"):
             if not line.strip():
@@ -56,10 +63,18 @@ def main() -> int:
                 n = len(strip_md(s))
                 if n > 60:
                     hits.append((n, s.strip()))
+        tr = sum(body.count(w) for w in TRANS)
+        semi = body.count("；")
+        if not hits and not tr and not semi:
+            continue
+
+        print(f"\n### {path}")
         for n, s in sorted(hits, reverse=True):
             print(f"{n:>4}字| {s}")
-        tr = sum(body.count(w) for w in TRANS)
-        print(f"--- 翻译词 {tr} 处；分号正文 {body.count('；')} 处")
+        print(f"--- 翻译词 {tr} 处；分号正文 {semi} 处")
+        total_hits += len(hits) + tr + semi
+
+    print(f"\n共 {len(files)} 个文件，{total_hits} 处待看。")
     return 0
 
 

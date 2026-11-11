@@ -1,11 +1,12 @@
 name: Docs CI
 
-# 内容侧的守门员。四件事：
-#   1. 链接体检 —— 目录改名、课时标题改动会让相对链接与锚点悄悄失效
+# 内容侧的守门员。五件事：
+#   1. 链接体检 —— 目录改名、课时标题改动会让相对链接与锚点悄悄失效（读源码）
 #   2. 文风体检 —— COURSE-STYLE 的硬项，不达标即红
 #   3. 脱敏扫描 —— 红线词不进站点
 #   4. 规模数字体检 —— 门面文件里写的几课 / 几个实验 / 几条，得跟文件系统实数对得上
-# 最后跑一次站点构建，确保 Markdown 与容器语法本身能编译。
+#   5. Mermaid 语法体检 —— 图定义写坏了，GitHub 与 IDE 里就是一片报错
+# 构建之后再爬一遍产物：VitePress 只拦死路由，死锚点它不管，得靠 check-anchors-html.py。
 #
 # labs 的代码检查在 labs.yml，两边按路径分开触发，互不阻塞。
 
@@ -16,6 +17,7 @@ on:
     paths:
       - 'site/**'
       - 'labs/**/README.md'
+      - 'labs/**/*.go'
       - 'docs/**'
       - 'README.md'
       - 'README.en.md'
@@ -28,7 +30,7 @@ permissions:
 
 jobs:
   text:
-    name: 链接 / 文风 / 脱敏 / 数字
+    name: 链接 / 文风 / 脱敏 / 数字 / Mermaid
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,6 +38,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
 
       # 只查站内：外链会因对方反爬与网络抖动误报，留给本地 --external 手工跑
       - name: 链接体检（站内路由 / 相对路径 / 锚点）
@@ -50,8 +56,21 @@ jobs:
       - name: 规模数字体检（课程数 / 实验数 / 附录条数）
         run: python3 scripts/check-stats.py
 
+      # 静态校验：图类型、括号配对、linkStyle 越界
+      - name: Mermaid 语法体检（仓库内图块）
+        run: python3 scripts/check-mermaid.py
+
+      # 生成型图也要过一遍：05-clos-topo 的 -format mermaid 会算出 linkStyle 序号，
+      # 改统计口径时最容易在这里越界，而它不在任何 .md 文件里
+      - name: Mermaid 语法体检（05-clos-topo 生成图）
+        run: |
+          cd labs/05-clos-topo
+          go run . -exp 1 -flows 64 -format mermaid > /tmp/clos-mermaid.md
+          cd ../..
+          python3 scripts/check-mermaid.py /tmp/clos-mermaid.md
+
   build:
-    name: 站点构建
+    name: 站点构建 + 产物锚点
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -69,8 +88,17 @@ jobs:
           cache: pnpm
           cache-dependency-path: site/pnpm-lock.yaml
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
       - name: 安装依赖
         run: pnpm install --frozen-lockfile
 
+      # VitePress 自己会拦死路由，拦不住死锚点
       - name: 构建
         run: pnpm build
+
+      - name: 产物锚点爬虫（HTML id 存活）
+        working-directory: .
+        run: python3 scripts/check-anchors-html.py --verbose

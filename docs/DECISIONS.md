@@ -213,3 +213,29 @@
 - **代价**：多一套 Python + eBPF 工具链依赖；Codespaces 镜像初始化变慢。
 - **不做**：不声称「容器内复现了 PFC 硬件反压」。XDP 的 `XDP_DROP` 是丢包，不是暂停；
   真实停发仍需 DCB 网卡与交换机协商。
+
+## D16 · 入参统一交给共用模块，CI 补两项体检
+
+- **状态**：已定（v2.0 阶段四落地）
+- **背景**：`style-check.py` 与 `long-sents.py` 各写一份路径展开，规则已经开始漂
+  （一个跳过 `index.md`，一个不跳）。传不存在的路径不报错，而是在汇总处抛
+  `ZeroDivisionError`，报错位置离原因很远。`check-sensitive.sh` 声明自己是 bash，
+  实际用了 `[[`、`\s`、`paste`，用 `sh` 或 dash 跑会报 `[: not found`，
+  更糟的是词表被注释光时 pattern 变空，`grep -E ""` 命中每一行。
+  CI 也只跑了源码级链接检查，构建产物里的死锚点没人管。
+- **决策**：
+  - 新增 `scripts/mdpaths.py`，单文件 / 目录 / 通配符三种入参统一由它展开。
+    不存在的路径报错退出码 2；`index.md` 递归时跳过；重复参数去重。
+  - `check-sensitive.sh` 改写成 POSIX sh：`[ ]` 替 `[[ ]]`、`[[:space:]]` 替 `\s`、
+    缺 `paste` 时退回 `sed`、缺 `grep -I` 时自动降级、词表为空时退回内置最小集。
+  - 新增 `check-mermaid.py`：静态校验图类型、括号与引号配对、`linkStyle` 越界。
+    CI 同时校验仓库内的图块与 `05-clos-topo -format mermaid` 生成出来的图。
+  - 新增 `check-anchors-html.py`：在 VitePress 构建产物上验 `id="..."` 与站内 `href`。
+    VitePress 自己只拦死路由，死锚点它不管，这一层正是补那个缺口。
+  - `style-check.py --files` 之前被当成未知参数忽略，现在真的只输出每课一行，
+    且禁用句、分号、问句标题这类单课硬项在 `--files` 模式下仍然阻塞。
+- **理由**：脚本是这套内容工程的执行机构。它报错时报得准，比它多查一项更有价值。
+  锚点检查放产物侧，是因为 slug 规则由渲染器决定，源码侧的近似永远差一点。
+- **代价**：CI 多一次构建后的 Python 步骤；`--files` 语义变了，历史日志不可直接对比。
+- **不做**：不在 CI 里跑 `mmdc` 真渲染（拖 Chromium，几十秒起），也不查外链
+  （反爬与网络抖动会把信号淹掉）。

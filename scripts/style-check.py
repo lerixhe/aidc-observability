@@ -5,18 +5,22 @@
     python3 scripts/style-check.py                 # 汇总报表 + 逐课明细
     python3 scripts/style-check.py --files         # 只看每课一行
     python3 scripts/style-check.py path/to/xx.md   # 单文件
+    python3 scripts/style-check.py site/docs/01-paradigm site/docs/02-lossless  # 多目录
+    python3 scripts/style-check.py 'site/docs/**/*.md'   # 通配符
 
-退出码：0 全部达标；1 有指标标红（CI 可用）。
+退出码：0 全部达标；1 有指标标红（CI 可用）；2 入参有误（路径不存在等）。
+
+入参规则统一在 scripts/mdpaths.py，与 long-sents.py 共用一份。
 
 统计范围：已剔除 frontmatter、代码块、表格、import、参考资料 —— 只量正文。
 分句口径：逗号与句末之间的一段（同 COURSE-STYLE §4 规则一），顿号、冒号不切分。
 """
 
-import glob
-import os
 import re
 import statistics as st
 import sys
+
+import mdpaths
 
 DOCS = "site/docs"
 
@@ -148,27 +152,64 @@ def ok(key: str, val: float) -> bool:
     return lo <= val <= hi
 
 
+def flags_of(m: dict) -> list[str]:
+    """单课的观察标记。这些不进汇总红项，只提示哪里值得看一眼。"""
+    flags = []
+    if m["semicolon"] > 0.5:
+        flags.append(f"；{m['；']}个")
+    if m["sent_over60"] > 3:
+        flags.append(f"长句{m['sent_over60']:.0f}%")
+    if m["trans_word"] < 3:
+        flags.append(f"译词{m['trans_word']}")
+    if m["banned"]:
+        flags.append("/".join(f"{k}×{v}" for k, v in m["banned"].items()))
+    if m["bang"]:
+        flags.append(f"感叹号{m['！']}")
+    if m["ask_head"]:
+        flags.append(f"问句标题{m['ask_head']}")
+    if m["ask_body"] > 1:
+        flags.append(f"正文反问{m['ask_body']}")
+    if m["ni"] < m["wo"] * 3:
+        flags.append(f"人称你/我={m['ni']}/{m['wo']}")
+    # 分句均长按课看：单课超 16 不阻塞（汇总达标），但值得记一笔
+    if m["clause_mean"] > 16:
+        flags.append(f"分句偏长{m['clause_mean']:.1f}")
+    return flags
+
+
+def blocking_flags(m: dict) -> list[str]:
+    """单课里真正踩到硬项的那几条：分号、禁用句、感叹号、问句标题。
+
+    `--files` 模式只看这些：一句禁用句不应该被汇总平均掉。
+    """
+    out = []
+    if m["semicolon"] > 0.5:
+        out.append("分号")
+    if m["bang"]:
+        out.append("感叹号")
+    if m["banned"]:
+        out.append("禁用句")
+    if m["ask_head"]:
+        out.append("问句标题")
+    return out
+
+
 def main() -> int:
-    args = [a for a in sys.argv[1:] if not a.startswith("-")]
-    if not args:
-        files = [
-            f for f in sorted(glob.glob(f"{DOCS}/**/*.md", recursive=True))
-            if not f.endswith("index.md")           # 首页是 Hero 版式，不属课程正文
-        ]
-    else:
-        files = []
-        for a in args:
-            if os.path.isdir(a):
-                files.extend(
-                    f for f in sorted(glob.glob(f"{a}/**/*.md", recursive=True))
-                    if not f.endswith("index.md")
-                )
-            elif os.path.isfile(a):
-                files.append(a)
+    argv = sys.argv[1:]
+    only_files = "--files" in argv
+    files = mdpaths.collect_or_exit([a for a in argv if not a.startswith("-")], DOCS,
+                                    prog="style-check.py")
     per_file, red = {}, []
 
     for f in files:
-        m = measure(open(f, encoding="utf8").read())
+        try:
+            m = measure(open(f, encoding="utf8").read())
+        except OSError as e:
+            print(f"style-check.py：读不了 {f}：{e}", file=sys.stderr)
+            return 2
+        if not m["sents"]:
+            print(f"style-check.py：{f} 没有可统计的正文（全是代码块或表格？）", file=sys.stderr)
+            return 2
         per_file[f] = m
 
     # 汇总
@@ -187,6 +228,20 @@ def main() -> int:
     }
 
     print(f"课程文风体检 · {len(files)} 个文件 · 正文分句 {len(allc)} / 句 {len(alls)}\n")
+
+    if only_files:
+        # --files：只出每课一行，供 CI 日志快速过一眼；红项判定仍然生效
+        for f, m in per_file.items():
+            flags = flags_of(m)
+            name = f.split("/")[-1]
+            print(f"{name:<22}句均{m['sent_mean']:>5.1f} 分句{m['clause_mean']:>4.1f} "
+                  f"{'⚠ ' + ' '.join(flags) if flags else 'OK'}")
+            if blocking_flags(m):
+                red.append(f)
+        print(f"\n汇总红项：{len(red)} 项 {red if red else ''}")
+        if red:
+            print("改法见 COURSE-STYLE §10。")
+        return 1 if red else 0
     print(f"{'硬项（不达标即返工）':<18}{'实测':>8}{'目标':>12}  判定")
     print("-" * 46)
     for k, (lo, hi) in HARD.items():
@@ -208,26 +263,7 @@ def main() -> int:
     print("\n逐课明细（分号 / 超60字% / 翻译词 / 禁用句）")
     print("-" * 72)
     for f, m in per_file.items():
-        flags = []
-        if m["semicolon"] > 0.5:
-            flags.append(f"；{m['；']}个")
-        if m["sent_over60"] > 3:
-            flags.append(f"长句{m['sent_over60']:.0f}%")
-        if m["trans_word"] < 3:
-            flags.append(f"译词{m['trans_word']}")
-        if m["banned"]:
-            flags.append("/".join(f"{k}×{v}" for k, v in m["banned"].items()))
-        if m["bang"]:
-            flags.append(f"感叹号{m['！']}")
-        if m["ask_head"]:
-            flags.append(f"问句标题{m['ask_head']}")
-        if m["ask_body"] > 1:
-            flags.append(f"正文反问{m['ask_body']}")
-        if m["ni"] < m["wo"] * 3:
-            flags.append(f"人称你/我={m['ni']}/{m['wo']}")
-        # 分句均长按课看：单课超 16 不阻塞（汇总达标），但值得记一笔
-        if m["clause_mean"] > 16:
-            flags.append(f"分句偏长{m['clause_mean']:.1f}")
+        flags = flags_of(m)
         name = f.split("/")[-1]
         print(f"{name:<22}句均{m['sent_mean']:>5.1f} 分句{m['clause_mean']:>4.1f} "
               f"{'⚠ ' + ' '.join(flags) if flags else 'OK'}")

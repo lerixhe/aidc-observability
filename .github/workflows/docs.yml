@@ -50,6 +50,10 @@ jobs:
       - name: 文风体检（COURSE-STYLE 硬项）
         run: python3 scripts/style-check.py --files
 
+      # 标题制式见 COURSE-STYLE §2.3 / DECISIONS D17：讲次从文件名反推，防漂
+      - name: 标题制式体检（第NN讲 · 名词条目）
+        run: python3 scripts/check-titles.py
+
       - name: 脱敏扫描
         run: ./scripts/check-sensitive.sh
 

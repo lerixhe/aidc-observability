@@ -3,12 +3,17 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitepress'
 
+import { computeStats } from './stats.mts'
+
 // GitHub Pages：https://lerixhe.github.io/aidc-observability/
 const SITE = 'https://lerixhe.github.io'
 const BASE = '/aidc-observability/'
 const REPO = 'https://github.com/lerixhe/aidc-observability'
 
 const DOCS_DIR = fileURLToPath(new URL('../docs', import.meta.url))
+
+// 首页指标条的四个数字：课程数 / 模块数 / 实验数从文件系统数出来，不手写
+const stats = computeStats(DOCS_DIR, fileURLToPath(new URL('../../labs', import.meta.url)))
 
 /**
  * 侧边栏模块表：模块级手写 label，模块内自动生成。
@@ -78,6 +83,9 @@ export default defineConfig({
 	],
 
 	themeConfig: {
+		// 首页指标条读这个，不要在组件里再写死数字（见 stats.mts）
+		aidcStats: stats,
+
 		// 导航栏不显示站名，回首页入口下放到侧边栏首项
 		siteTitle: false,
 		outline: { level: [2, 3], label: '本页目录' },

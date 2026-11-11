@@ -2,14 +2,25 @@
 /**
  * 首页 hero 下方的指标条（挂到 default theme 的 home-hero-after 插槽）。
  * 四个数字只讲规模，不讲能力——用来给「这站有多大」一个即时量级。
+ *
+ * 数字取自 themeConfig.aidcStats，由 config.mts 在构建期扫描文件系统算出（见 stats.mts）。
+ * 这里不要写死任何数字，否则下一版又会跟正文对不上。
  */
 
-const metrics = [
-	{ value: '23', label: '节课' },
-	{ value: '7', label: '个模块' },
-	{ value: '12', label: '个实验' },
-	{ value: '4', label: '类典型故障' },
-]
+import { computed } from 'vue'
+import { useData } from 'vitepress'
+
+const { theme } = useData()
+
+const metrics = computed(() => {
+	const s = theme.value.aidcStats
+	return [
+		{ value: s.lessons, label: '节课' },
+		{ value: s.modules, label: '个模块' },
+		{ value: s.labs, label: '个实验' },
+		{ value: s.failureModes, label: '类典型故障' },
+	]
+})
 </script>
 
 <template>

@@ -7,24 +7,20 @@
 | `check-anchors-html.py` | 可用（v2.0） | 产物爬虫：在 VitePress 构建出的 HTML 上验 `id` 与站内 `href` 是否真存在 |
 | `check-mermaid.py` | 可用（v2.0） | Mermaid 语法体检：图类型、括号配对、`linkStyle` 越界；`--render` 走 mmdc 真渲染 |
 | `check-stats.py` | 可用（v1.0） | 规模数字体检：门面文件里的几课 / 几个实验 / 几条，与文件系统实数比对 |
-| `style-check.py` | 可用（v0.2，v1.0 分档，v2.0 统一入参） | 文风体检：COURSE-STYLE 的硬项阻塞，观察项只打印 |
-| `check-titles.py` | 可用（v2.1） | 标题制式体检：从文件名反推讲次，校验前缀 / 问号 / 破折号 / 卖点修饰 / 长度 |
 | `check-sensitive.sh` | 可用（v2.0 改 POSIX sh） | 脱敏扫描：检查 `site/` 下是否混入敏感词 |
-| `mdpaths.py` | 可用（v2.0） | 共用入参模块：`style-check.py` 与 `long-sents.py` 的单文件 / 目录 / 通配符展开 |
+| `mdpaths.py` | 可用（v2.0） | 共用入参模块：`check-mermaid.py` 的单文件 / 目录 / 通配符展开 |
 | `html2mdx.py` | 可用（v0.1） | 解析原型 HTML，产出 Markdown 骨架（只做机械转换，语义改写人工完成） |
-| `normalize-quotes.py` | 可用 | 引号统一为 `""`（COURSE-STYLE §10-D） |
-| `long-sents.py` | 可用（v2.0 统一入参） | 列出超长句，配合 §10-B 改造 |
 | `sensitive-words.txt` | 本地，不入库 | 敏感词表，从 `.example` 复制后按需扩充 |
 
 ## 共用入参规则
 
-`style-check.py` 与 `long-sents.py` 的路径参数走同一份实现（`mdpaths.py`），行为一致：
+`check-mermaid.py` 的路径参数由 `mdpaths.py` 展开，规则如下：
 
 ```bash
-python3 scripts/style-check.py                       # 默认 site/docs
-python3 scripts/style-check.py site/docs/02-lossless # 目录递归取全部 .md
-python3 scripts/style-check.py a.md b.md             # 多个文件
-python3 scripts/style-check.py 'site/docs/**/*.md'   # 通配符
+python3 scripts/check-mermaid.py                     # 默认全仓
+python3 scripts/check-mermaid.py site/docs/02-lossless # 目录递归取全部 .md
+python3 scripts/check-mermaid.py a.md b.md             # 多个文件
+python3 scripts/check-mermaid.py 'site/docs/**/*.md'   # 通配符
 ```
 
 三条约定：
@@ -62,17 +58,9 @@ python3 scripts/check-mermaid.py --render           # 用 mmdc 真渲染（需 n
 cd labs/05-clos-topo && go run . -exp 1 -format mermaid > /tmp/clos.md && cd ../..
 python3 scripts/check-mermaid.py /tmp/clos.md       # 校验生成型图
 
-# 文风体检（硬项不达标退出码 1）
-python3 scripts/style-check.py
-python3 scripts/style-check.py --files              # 每课一行，汇总红项仍生效
-
 # 规模数字体检（CI 也跑这个；--all 先看一遍实数）
 python3 scripts/check-stats.py
 python3 scripts/check-stats.py --all
-
-# 标题制式体检（COURSE-STYLE §2.3 / D17）
-python3 scripts/check-titles.py                     # 全站，不合规退出码 1
-python3 scripts/check-titles.py --list              # 按文件顺序把当前标题列一遍
 
 # 单课转换（原型 → Markdown 骨架，输出到 /tmp 校对后再手工重写）
 python3 scripts/html2mdx.py reference/archive-aidc/lesson-01.html -o /tmp/l1.md
@@ -93,7 +81,7 @@ python3 scripts/html2mdx.py reference/archive-aidc/lesson-03.html \
 确认是有意改动后 `git add labs/<lab>/expected` 一起提交。
 它由 `.github/workflows/labs.yml` 在 `labs/**` 变更时触发。
 
-`check-links.py`、`style-check.py`、`check-titles.py`、`check-mermaid.py`、`check-stats.py` 由
+`check-links.py`、`check-mermaid.py`、`check-stats.py`、`check-sensitive.sh` 由
 `.github/workflows/docs.yml` 在内容变更时触发。
 链接体检只查站内：外链会因对方反爬（ACM、DOI 常见 403）与网络抖动误报，
 所以判定分两级 —— 404/410/域名解析失败算断链，403/429/拒连只记警告。

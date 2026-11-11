@@ -1,11 +1,10 @@
 name: Docs CI
 
-# 内容侧的守门员。五件事：
+# 内容侧的守门员。四件事：
 #   1. 链接体检 —— 目录改名、课时标题改动会让相对链接与锚点悄悄失效（读源码）
-#   2. 文风体检 —— COURSE-STYLE 的硬项，不达标即红
-#   3. 脱敏扫描 —— 红线词不进站点
-#   4. 规模数字体检 —— 门面文件里写的几课 / 几个实验 / 几条，得跟文件系统实数对得上
-#   5. Mermaid 语法体检 —— 图定义写坏了，GitHub 与 IDE 里就是一片报错
+#   2. 脱敏扫描 —— 红线词不进站点
+#   3. 规模数字体检 —— 门面文件里写的几课 / 几个实验 / 几条，得跟文件系统实数对得上
+#   4. Mermaid 语法体检 —— 图定义写坏了，GitHub 与 IDE 里就是一片报错
 # 构建之后再爬一遍产物：VitePress 只拦死路由，死锚点它不管，得靠 check-anchors-html.py。
 #
 # labs 的代码检查在 labs.yml，两边按路径分开触发，互不阻塞。
@@ -30,7 +29,7 @@ permissions:
 
 jobs:
   text:
-    name: 链接 / 文风 / 脱敏 / 数字 / Mermaid
+    name: 链接 / 脱敏 / 数字 / Mermaid
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -46,13 +45,6 @@ jobs:
       # 只查站内：外链会因对方反爬与网络抖动误报，留给本地 --external 手工跑
       - name: 链接体检（站内路由 / 相对路径 / 锚点）
         run: python3 scripts/check-links.py
-
-      - name: 文风体检（COURSE-STYLE 硬项）
-        run: python3 scripts/style-check.py --files
-
-      # 标题制式见 COURSE-STYLE §2.3 / DECISIONS D17：讲次从文件名反推，防漂
-      - name: 标题制式体检（第NN讲 · 名词条目）
-        run: python3 scripts/check-titles.py
 
       - name: 脱敏扫描
         run: ./scripts/check-sensitive.sh

@@ -17,8 +17,8 @@ Site: <https://lerixhe.github.io/aidc-observability/>
 
 ## What problem this solves
 
-AI training fabrics (AIDC — AI data centers) overturn the assumptions behind
-traditional network observability:
+AI training fabrics (AIDC — AI data centers, also called AI fabric or high-performance networking)
+overturn the assumptions behind traditional network observability:
 
 | | Traditional IDC | AI fabric |
 |---|---|---|

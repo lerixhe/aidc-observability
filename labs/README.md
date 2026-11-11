@@ -32,6 +32,7 @@ L2 的两个 lab（`03-fault-inject`、`05-clos-topo`）是**双模式**：
 |---|---|---|---|
 | 默认 | `make run` / `make plan` | 仅 Go | 注入剧本、遥测指纹样本、散列分布结论 |
 | 真跑 | `make deploy` / `make collect` / `make inject` | Docker + containerlab | 真队列、真丢包、真计数器 |
+| 真帧 | `make inject-pfc` + `tcpdump` | Docker + containerlab + Python | 真实 `0x8808` PFC pause 帧，能在抓包里看见 |
 
 这个设计的理由是：判据与剧本能在 CI 里跑、能被 diff 住，而真实注入只能在有特权的机器上跑。
 两者分开，读者不会卡在第一条 `docker` 命令上。
@@ -46,7 +47,7 @@ L2 的两个 lab（`03-fault-inject`、`05-clos-topo`）是**双模式**：
 | `01-traffic-model` | L1 | 02 | IDC 小流 vs AllReduce 同步突发的到达率对照 | ✅ v0.2 |
 | `02-pfc-sim` | L1 | 05-06 | PFC / ECN / DCQCN 参数化队列模型，输出时序与场景对比 | ✅ v0.2 |
 | `04-nccl-trace` | L1 | 08 | 解析 NCCL 日志，还原流量矩阵、核算 busbw、定位 straggler | ✅ v0.2 |
-| `03-fault-inject` | L2 | 07 | 四大故障的注入剧本与遥测指纹判读器 | ✅ v0.4 |
+| `03-fault-inject` | L2 | 07 | 四大故障的注入剧本、遥测指纹判读器与真实 0x8808 pause 帧注入 | ✅ v0.5 |
 | `05-clos-topo` | L2 | 09 | 2 spine / 4 leaf，流数与 hash 口径决定 ECMP 极化 | ✅ v0.4 |
 | `06-gnmi-mock` | L1 | 11 | OpenConfig 路径树 + SAMPLE / ON_CHANGE 保真度对照 | ✅ v0.2 |
 | `07-int-path` | L1 | 12 | INT 逐跳元数据的编码/解析，含采样捕获率对照 | ✅ v0.3 |
@@ -122,13 +123,21 @@ cd labs/<lab> && make expected && git diff
 
 ## Codespaces
 
-仓库根有 `.devcontainer/`，Go 1.22 + Docker + Python 都装好。L2 拓扑实验
-在 macOS 上需要特权和虚拟机，Codespaces 比本机省事。
+仓库根有 `.devcontainer/`，Go 1.22 + Docker + Python 都装好，`post-create.sh` 还会把
+containerlab 一并装上。L2 拓扑实验在 macOS 上需要特权和虚拟机，Codespaces 比本机省事。
 
-要跑 `make deploy`，容器里得有 `containerlab`：
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/lerixhe/aidc-observability)
+
+容器里已经有了 containerlab，没有必要再手动装一遍。Docker 不可用时初始化脚本会跳过
+这一步，L1 实验照常能跑。
+
+真 PFC 帧也能在容器里造出来：
 
 ```bash
-bash -c "$(curl -sL https://get.containerlab.dev)"
+cd labs/03-fault-inject
+make deploy            # 起 6 节点拓扑
+make inject-pfc        # 向 leaf2 veth 注入真实 0x8808 PFC pause 帧
+docker exec clab-fault-inject-h3 tcpdump -i eth1 ether proto 0x8808 -c 3 -xx
 ```
 
 macOS 本机想要 L2，走 Lima 或 OrbStack 起一台 Linux 虚拟机，别无捷径 ——

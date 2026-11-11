@@ -192,3 +192,24 @@
   - 教学靶场需要对齐生产观测环境，形成闭环体验。
 - **代价**：需同步维护 `scripts/check-stats.py` 与文档索引，增加 Grafana 仪表盘模板与容器配置的维护面。
 
+
+## D15 · L2 环境降至 Codespaces 一键可用，并用真实 0x8808 帧补上硬件流控
+
+- **状态**：已定（v2.0 阶段三落地）
+- **背景**：`03-fault-inject` 此前明确声明「容器里造不出 pause 帧」，`pause_pct` 列全靠模型推演。
+  读者拿不到可抓包的证据，学到的判据与线上报文之间隔了一层。同时 macOS 用户要跑 L2
+  需要自建 Linux 虚拟机，摩擦高到多数人直接放弃。
+- **决策**：
+  - devcontainer 的 `post-create.sh` 预装 containerlab（v0.56+），Docker 不可用时跳过，
+    不影响 L1 实验；README 顶端加 Codespaces 徽章。
+  - `scripts/inject_pfc_pause.py` 用 `AF_PACKET` 原始套接字构造并向 veth 注入标准 PFC 帧
+    （目的 MAC `01:80:c2:00:00:01`、EtherType `0x8808`、OpCode `0x0101`、class-enable 位图、
+    8 个 quanta，填充到 60 字节）。
+  - `scripts/xdp_pfc.c` 提供最小 XDP 闸门（gate / dropped / pause_seen 三个 map），
+    在驱动层模拟「水线触顶后拦截后续数据帧」，把反压从模型搬进内核路径。
+  - `pfc_frame_test.go` 用 python 脚本产帧并断言字节布局，标准一变测试就红。
+- **理由**：协议报文可以做到逐字节可验证，硬件停发做不到。把两者拆开讲清楚，
+  比笼统说「模拟不了」有用得多。
+- **代价**：多一套 Python + eBPF 工具链依赖；Codespaces 镜像初始化变慢。
+- **不做**：不声称「容器内复现了 PFC 硬件反压」。XDP 的 `XDP_DROP` 是丢包，不是暂停；
+  真实停发仍需 DCB 网卡与交换机协商。

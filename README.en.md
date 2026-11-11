@@ -2,8 +2,13 @@
 
 > From lossy IDC networks to lossless AI fabrics: mechanisms, telemetry, and runnable labs.
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/lerixhe/aidc-observability)
+
 **Status: v2.0 in progress** — 26 lessons + appendices A/B published, 12 labs shipped (10 L1 + 2 L2 real-topology).
 Site: <https://lerixhe.github.io/aidc-observability/>
+
+The Codespaces image ships containerlab and Docker, so the L2 topology labs run
+without a local Linux VM.
 
 > Readable (v0.1), runnable (v0.2), complete (v0.3), advanced (v0.4), deliverable (v1.0).
 > The course structure is frozen as of v1.0; only corrections are accepted (see [DECISIONS.md](docs/DECISIONS.md) D9).

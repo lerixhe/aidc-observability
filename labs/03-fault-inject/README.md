@@ -17,11 +17,12 @@
 | incast | 非 0 | 是，与训练步同步 | 指向少数汇聚点 | 周期性尖刺 |
 | 队头阻塞 | 近似 0 | 否 | 集中在共享段 | 温和抬升 1.5–2.5 倍 |
 
-这个 lab 把这张表做成三件东西：
+这个 lab 把这张表做成四件东西：
 
 1. **注入剧本** —— 四个场景各自的命令序列，可以在容器拓扑里真跑，也给了真机做法
 2. **遥测指纹模型** —— 每类故障的计数器时序样本，落成 CSV，供你练习判读
 3. **判读器** —— 一份把上述判据写成代码的分类器。它的判据就是这张表
+4. **真实 PFC Pause 帧注入与抓包验证** —— 见下节与 `scripts/inject_pfc_pause.py`，突破传统虚拟网络无 `0x8808` 帧的局限
 
 对应课程：[07 无损网络四大典型故障](../../site/docs/02-lossless/07-fault-modes.md)。
 
@@ -32,14 +33,14 @@
 | 块 | 依赖 | 做什么 | 不能做什么 |
 |---|---|---|---|
 | **剧本与判读**（默认） | 仅 Go | 生成注入命令、生成指纹样本、给出判读 | 不碰网络 |
-| **容器注入**（`make deploy inject`） | Docker + containerlab | 真限速、真排队、真丢包、真时延 | **造不出 pause 帧** |
-| **真机验证**（README 第 6 节） | 交换机 DCB | 真 PFC、真 ECN、真 per-priority 计数 | 需要真实设备 |
+| **容器注入与抓包**（`make deploy` + `make inject-pfc`） | Docker + containerlab | 真限速、真排队、真丢包、真时延、**可抓到真实 `0x8808` Pause 帧** | 硬件级芯片反压停发（需真实交换机/DCB 网卡） |
+| **真机验证**（README 第 7 节） | 交换机 DCB | 真 PFC、真 ECN、真 per-priority 计数 | 需要真实设备 |
 
-容器里能造的：incast 的动手晚会（多打一导致汇聚口溢出）、队头阻塞的排队、
-死锁的停滞、风暴的「不丢包但时延飙升」。造不出的：`0x8808` 暂停帧本身、
-per-priority 的水线判定。
+在默认容器网络下，纯 veth 虚拟口无法通过常规协议栈生成硬件流控帧。本项目提供了专用底层工具：
+- `scripts/inject_pfc_pause.py`：通过底层原始套接字直接构造并注入符合 IEEE 802.3x / 802.1Qbb 规范的真实 PFC Pause 帧（`0x8808`，OpCode `0x0101`，优先级 3 掩码与 Quanta）。
+- 执行 `make deploy && make inject-pfc` 后，读者可以在对端容器中用真实 `tcpdump -i eth1 ether proto 0x8808 -xx -vv` 抓取并验证真实的优先流控暂停帧，打通虚拟实验与真实报文协议栈的隔阂。
 
-所以样本 CSV 里的 `pause_pct` 列是模型给的，不是你采到的。真机采集时这一列
+样本 CSV 里的 `pause_pct` 列仍由模型结合上述时序给出。真机采集时这一列
 来自交换机的 `priority-flow-control counters`。两边的列名一致，判读器不区分来源。
 
 > **注意：** README 里凡是「模型给的」都标了。把模型输出当真机读数引用，
@@ -53,8 +54,23 @@ make run        # 四个场景：计划 + 样本摘要 + 判读结论，全程�
 make plan       # 只看注入剧本
 make sim        # 生成 samples/model-*.csv
 make classify   # 判读 samples/ 下的样本
-make test       # 8 个单测，守住判读逻辑
+make test       # 12 个单测：判读逻辑 + 拓扑一致性 + PFC 帧字节布局
+
+# 以下需要 Docker + containerlab（推荐 Codespaces）
+make deploy      # 起 6 节点拓扑
+make inject-pfc  # 向 veth 注入真实 0x8808 PFC pause 帧
+make inject S=storm   # 按场景执行 tc 注入
+make destroy     # 清 qdisc 并拆除拓扑
 ```
+
+抓到真实 pause 帧的办法：
+
+```bash
+docker exec clab-fault-inject-h3 sh -lc 'tcpdump -i eth1 ether proto 0x8808 -c 3 -xx'
+```
+
+输出里 `0180 c200 0001` 是标准流控组播目的地址，`8808` 是 EtherType，
+其后 `0101` 是 PFC OpCode。整个帧 64 字节（含填充，不含 FCS）。
 
 `make run` 的输出结构，每个场景三段：
 
@@ -95,7 +111,69 @@ make test       # 8 个单测，守住判读逻辑
 
 容器版做法：leaf2 上行限 40mbit，38mbit 大象流 + 1mbit 无辜流走同一队列。
 
-## 5. 拓扑
+## 5. 真实 pause 帧与 XDP 反压闸门
+
+上面四个场景的容器做法都是「用限速与缓冲等效模拟反压」。这一节补上两样真实的东西。
+
+### 5.1 真帧：`0x8808` 抓得到
+
+`scripts/inject_pfc_pause.py` 用 `AF_PACKET` 原始套接字自己拼帧发出去，
+字段全部按标准来：
+
+| 字段 | 值 | 说明 |
+|---|---|---|
+| 目的 MAC | `01:80:c2:00:00:01` | IEEE 802.3x 流控组播地址 |
+| EtherType | `0x8808` | 链路层控制帧 |
+| OpCode | `0x0101` | PFC（802.1Qbb） |
+| class-enable | 位图，如 `0x0008` | 第 N 位对应优先级 N |
+| Quanta | 8 个 16 位值 | 每个优先级的暂停配额，512 bit-time 为单位 |
+
+帧填充到 60 字节（不含 FCS），驱动发出去后线上是 64 字节。
+
+```bash
+make deploy
+# 一个终端先抓包
+docker exec clab-fault-inject-h3 tcpdump -i eth1 ether proto 0x8808 -c 3 -xx
+# 另一个终端注入
+make inject-pfc NODE=leaf2 IF=eth1 PRIO=3 COUNT=10
+```
+
+注入脚本先在容器里找 `python3`；找不到就走第二条路，用宿主机 python3 配合
+`nsenter --net=/var/run/netns/clab-fault-inject-leaf2` 切进容器网络命名空间发帧。
+两条路径发的帧完全一样。
+
+抓包输出里能看到 `0180 c200 0001 0200 0000 0001 8808 0101 0008 ...`，
+这就是交换机真正在处理的那种帧。**协议层不再是模型，是真的。**
+
+### 5.2 闸门：XDP 在驱动层拦报文
+
+`scripts/xdp_pfc.c` 是不到 80 行的最小 XDP 程序，挂载在容器的 veth 入方向。
+它管三个 pinned map：
+
+| map | 作用 |
+|---|---|
+| `pfc_gate` | 1 表示拦掉后续数据帧（模拟 XOFF 之后对端停发），0 放行 |
+| `pfc_dropped` | 被拦掉的帧数 |
+| `pfc_pause_seen` | 收到的 `0x8808` 帧数，与注入端对账 |
+
+```bash
+make xdp-build                          # clang -target bpf 编出 xdp_pfc.o
+make xdp-attach NODE=leaf2 IF=eth1      # 挂到该节点 veth 入方向
+make xdp-close                          # 水线触顶：拦截后续数据帧
+make inject-pfc                         # 同时注入真实 pause 帧
+make xdp-stats                          # 看 dropped 与 pause_seen 两个计数
+make xdp-open                           # 水线回落：恢复放行
+make xdp-off NODE=leaf2 IF=eth1         # 卸载
+```
+
+veth 在节点的网络命名空间里，宿主机看不到，所以挂载与卸载经
+`nsenter --net=/var/run/netns/clab-fault-inject-<node>` 执行。三个 map 用
+`LIBBPF_PIN_BY_NAME` 自动 pin 到 `/sys/fs/bpf/pfc_*`，之后 `bpftool` 直接读写。
+
+一句话说清边界：**`XDP_DROP` 是丢弃，不是暂停。** 真停发要 DCB 网卡与交换机协商
+per-priority 流控。这里做到的是「线上有真帧、内核有真拦截」，硬件行为仍然不模拟。
+
+## 6. 拓扑
 
 ```text
 h1 ─┐                   ┌─ h3  慢目的地
@@ -108,7 +186,7 @@ h2 ─┘                   └─ h4  健康目的地
 
 接口与地址的对照表写在 [topo.clab.yml](topo.clab.yml) 开头，改动时先看那张表。
 
-## 6. 真机怎么验证
+## 7. 真机怎么验证
 
 容器里缺的那一层，真机补上：
 
@@ -130,7 +208,7 @@ go run . -classify -dir <你的样本目录>
 判读器不区分「模型给的样本」和「你真采的样本」。这是有意的：
 先把判据跑通，再上真机，比在真机上边调边猜省时间。
 
-## 7. 判读器怎么写的
+## 8. 判读器怎么写的
 
 打开 [classify.go](classify.go)，核心是判定顺序。顺序本身是知识：
 
@@ -155,7 +233,7 @@ go run . -classify -dir <你的样本目录>
 | `LatRatio` | 1.2 倍 | 探测本身有抖动，1.2 倍以内算噪声 |
 | `PeriodCV` | 0.5 | 尖刺间隔的变异系数，小于它才算周期性 |
 
-## 8. 样本从哪来
+## 9. 样本从哪来
 
 `samples/model-*.csv` 由 `make sim` 生成，是确定性产物：固定种子，跑两遍逐字节一致。
 CI 用 `make expected` 重跑一遍，比对 `samples/` 与 `expected/`，不一致就红。
@@ -166,7 +244,7 @@ CI 用 `make expected` 重跑一遍，比对 `samples/` 与 `expected/`，不一
 抖动幅度是乘性的，`-seed` 可改。判读结论不该随种子翻转 ——
 这正是 `TestVerdictStableAcrossSeeds` 守的东西：**判据贴着阈值走，说明它不值得信。**
 
-## 9. 思考题
+## 10. 思考题
 
 1. 把 `DefaultThresholds().PauseSevere` 从 5 改到 30，重跑 `make run`。
    哪个场景的结论先变？变了之后最可能被误判成什么？这解释了为什么口径要写死在文档里。
@@ -176,8 +254,10 @@ CI 用 `make expected` 重跑一遍，比对 `samples/` 与 `expected/`，不一
    说明什么？该往哪一层查？
 4. 用 `-sim` 生成样本后，把 `pause_pct` 列全改成 0，再跑 `make classify`。
    哪些结论变了、哪些没变？这告诉你 pause 计数在判读里到底承担多少权重。
+5. 跑一次 `make xdp-close` 再 `make xdp-stats`，`pfc_dropped` 在涨而 `pfc_pause_seen` 不动。
+   这两个计数各自证明了什么？如果换成真交换机，哪个计数会由硬件维护、哪个查不到？
 
-## 10. 模型边界
+## 11. 模型边界
 
 这个 lab 是**判读训练器**，不是网络仿真器。明确不做的事：
 
@@ -185,5 +265,10 @@ CI 用 `make expected` 重跑一遍，比对 `samples/` 与 `expected/`，不一
 - 不模拟 per-priority 队列。样本里一个端口只有一个 pause 读数
 - 不模拟 ECN 的三段水线与 DCQCN 的降速闭环。要看那个去 [02-pfc-sim](../02-pfc-sim/README.md)
 - 不模拟哈希与多路径。要看那个去 [05-clos-topo](../05-clos-topo/README.md)
+
+帧能造，反压停发造不了：`scripts/inject_pfc_pause.py` 注入的是**格式完全正确**、
+能被 `tcpdump` 与交换机解出来的 `0x8808` 帧；但它只是向线上发帧，不会真的让
+对端网卡停下来。真正的停发需要 DCB 硬件与协商好的 per-priority 流控。
+这两件事的区别，就是「协议报文可验证」与「硬件行为可复现」的区别。
 
 一句话：**这里练的是「看到什么读数判成什么故障」，不是「故障怎么发生」。**

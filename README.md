@@ -2,12 +2,15 @@
 
 > 从有损 IDC 到无损智算：机制、遥测与可运行的实验室。
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/lerixhe/aidc-observability)
+
 **状态：v2.0 推进中** —— 26 课 + 附录 A/B，12 个实验全部落地（10 个 L1 + 2 个 L2 真拓扑）。
 站点：<https://lerixhe.github.io/aidc-observability/> · [English README](README.en.md)
 
 > 可读（v0.1）、可跑（v0.2）、可讲全（v0.3）、可进阶（v0.4）、可交付（v1.0）。
 > v1.0 起课程结构冻结，只接受纠错类 PR（见 [DECISIONS.md](docs/DECISIONS.md) D9）。
 > L2 拓扑实验走双模式：默认零依赖出剧本与模型结论，`make deploy` 才需要 containerlab。
+> Codespaces 镜像已预装 containerlab，macOS 用户不必再折腾 Linux 虚拟机。
 
 ---
 
@@ -59,6 +62,22 @@ AI 训练网络（智算中心、AIDC、AI Fabric，也有人叫高性能网络�
 | v1.0 | 打磨：链接体检脚本 + Docs CI、双语 README、宣传稿、结构冻结 | **当前** |
 
 详见 [docs/PROJECT.md](docs/PROJECT.md)。
+
+## Codespaces 一键即开即跑
+
+macOS 上跑 L2 拓扑需要特权与 Linux 内核（建 veth、改网络命名空间），本机没有捷径。
+所以把这件事交给 Codespaces：上面那个徽章点进去，环境里已经装好 Go 1.22、Docker 与
+containerlab，克隆完就能直接跑真拓扑。
+
+```bash
+cd labs/03-fault-inject
+make deploy          # containerlab 起 6 节点拓扑
+make inject-pfc      # 向 veth 注入真实 0x8808 PFC pause 帧
+docker exec clab-fault-inject-h3 tcpdump -i eth1 ether proto 0x8808 -c 3 -xx
+```
+
+初始化脚本在 [.devcontainer/post-create.sh](.devcontainer/post-create.sh)，
+Docker 不可用时它会跳过 containerlab 安装，不影响 L1 实验。
 
 ## 关于 reference/
 

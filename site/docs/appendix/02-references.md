@@ -1,6 +1,6 @@
 ---
 title: 附录 B · 参考资料 —— 每条断言的出处
-description: 全站 72 条外部引用的来源清单，按可信度分层组织，附核验结果与一条关于链接腐烂的经验。
+description: 全站 75 条外部引用的来源清单，按可信度分层组织，附核验结果与一条关于链接腐烂的经验。
 ---
 
 这份清单有三个用途。核对某一课的机制断言出自哪里。判断一条说法值不值得信。找原始出处继续往下读。
@@ -67,6 +67,9 @@ description: 全站 72 条外部引用的来源清单，按可信度分层组织
 | [NVIDIA XID Errors](https://docs.nvidia.com/deploy/xid-errors/) | XID 错误码含义与处置建议 | 01、10 |
 | [NVIDIA NVLink](https://www.nvidia.com/en-us/data-center/nvlink/) | NVLink 与 NVSwitch 的代际带宽 | 10 |
 | [NVIDIA DGX SuperPOD 文档](https://docs.nvidia.com/dgx-superpod/) | 整机组成与 fabric 设计 | 10 |
+| [Broadcom DLB 技术白皮书](https://www.broadcom.com/) | 动态自适应路由与出端口队列检测机制 | 04b |
+| [Ultra Ethernet Consortium](https://ultraethernet.org/) | UEC 规范、UET 传输层与 Credit 流控体系 | 20b |
+| [PCI Express Base Specification 5.0](https://pcisig.com/) | PCIe Gen5 链路协商、掉速与宽度自愈规范 | 10b |
 | [DGX SuperPOD H100 参考架构](https://docs.nvidia.com/dgx-superpod/reference-architecture-scalable-infrastructure-h100/latest/index.html) | 千卡级网络设计的公开参考 | 00、09 |
 | [NVIDIA GPUDirect RDMA](https://docs.nvidia.com/cuda/gpudirect-rdma/) | 网卡直读显存的机制与限制 | 03 |
 | [NVIDIA Networking 文档](https://docs.nvidia.com/networking/) | 交换机与网卡文档总入口 | 04、05、06 |
@@ -152,7 +155,7 @@ description: 全站 72 条外部引用的来源清单，按可信度分层组织
 
 ## 八、核验记录
 
-本清单涉及的 72 条外部链接，在 2026-11-10 用脚本核验过一轮。方法很朴素，也就是对每条发 GET 请求，跟随重定向，15 秒超时。
+本清单涉及的 75 条外部链接，在 2026-11-10 用脚本核验过一轮。方法很朴素，也就是对每条发 GET 请求，跟随重定向，15 秒超时。
 
 | 结果 | 条数 | 说明 |
 |---|---|---|

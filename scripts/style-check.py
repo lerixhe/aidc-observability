@@ -13,6 +13,7 @@
 """
 
 import glob
+import os
 import re
 import statistics as st
 import sys
@@ -149,10 +150,21 @@ def ok(key: str, val: float) -> bool:
 
 def main() -> int:
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
-    files = args or [
-        f for f in sorted(glob.glob(f"{DOCS}/**/*.md", recursive=True))
-        if not f.endswith("index.md")           # 首页是 Hero 版式，不属课程正文
-    ]
+    if not args:
+        files = [
+            f for f in sorted(glob.glob(f"{DOCS}/**/*.md", recursive=True))
+            if not f.endswith("index.md")           # 首页是 Hero 版式，不属课程正文
+        ]
+    else:
+        files = []
+        for a in args:
+            if os.path.isdir(a):
+                files.extend(
+                    f for f in sorted(glob.glob(f"{a}/**/*.md", recursive=True))
+                    if not f.endswith("index.md")
+                )
+            elif os.path.isfile(a):
+                files.append(a)
     per_file, red = {}, []
 
     for f in files:

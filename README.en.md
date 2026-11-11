@@ -2,7 +2,7 @@
 
 > From lossy IDC networks to lossless AI fabrics: mechanisms, telemetry, and runnable labs.
 
-**Status: v1.0** — 23 lessons + appendices A/B published, 12 labs shipped (10 L1 + 2 L2 real-topology).
+**Status: v2.0 in progress** — 26 lessons + appendices A/B published, 12 labs shipped (10 L1 + 2 L2 real-topology).
 Site: <https://lerixhe.github.io/aidc-observability/>
 
 > Readable (v0.1), runnable (v0.2), complete (v0.3), advanced (v0.4), deliverable (v1.0).

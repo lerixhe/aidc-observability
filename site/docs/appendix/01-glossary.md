@@ -151,6 +151,19 @@ description: 一百来个术语的中英对照与一句话释义，按主题分�
 | NUMA | 非一致性内存访问，跨 socket 访存更慢 | 10 |
 | 带外管理（Out-of-Band Management） | 不依赖业务网络的独立管理通道 | 10 |
 | NTP / PTP | 网络时间协议与精密时间协议，后者精度更高 | 11 |
+| AR（Adaptive Routing） | 自适应路由，基于实时队列状态而非静态哈希动态选路 | 04b |
+| DLB（Dynamic Load Balancing） | 交换芯片硬件级动态负载均衡与自适应路由机制 | 04b |
+| Packet Spraying | 逐包喷洒，将同一条流的数据包按包分散到多条路径 | 04b |
+| Flowlet | 流内部突发切片，利用静默间隙在多径间切换选路 | 04b |
+| OOO（Out-of-Order） | 报文乱序到达与硬件乱序重排机制 | 04b |
+| Path Skew | 多路径时延偏差，多径时延不均打穿重组窗口的差值 | 04b |
+| Link Replay | NVLink 链路层硬件微重放，毫微秒级自动纠错重发 | 10b |
+| PCIe Gen / Width | PCIe 协商代际与通道宽度，发生降级直接腰斩网卡带宽 | 10b |
+| UEC（Ultra Ethernet Consortium） | 超以太网联盟，为 AI 智算重构以太网传输层的产业联盟 | 20b |
+| UET（Ultra Ethernet Transport） | UEC 传输层协议，替代 UDP 与 IB 传输头 | 20b |
+| Credit-Based 反压 | 基于接收端配额的端到端信用反压，彻底终结 PFC 逐跳暂停 | 20b |
+| Native OOO | 传输层原生允许乱序装配，免除全窗口回退惩罚 | 20b |
+| SACK（Selective ACK） | 单包选择性确认，精准修补丢包而不重发整个窗口 | 20b |
 
 ## 八、最容易混淆的六对
 

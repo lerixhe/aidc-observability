@@ -6,6 +6,8 @@
     python3 scripts/long-sents.py --semi-only <file>   # 只列分号行
 """
 
+import glob
+import os
 import re
 import sys
 
@@ -28,7 +30,16 @@ def strip_md(s: str) -> str:
 def main() -> int:
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     semi_only = "--semi-only" in sys.argv
-    for path in args:
+    files = []
+    for a in args:
+        if os.path.isdir(a):
+            files.extend(
+                f for f in sorted(glob.glob(f"{a}/**/*.md", recursive=True))
+                if not f.endswith("index.md")
+            )
+        elif os.path.isfile(a):
+            files.append(a)
+    for path in files:
         raw = open(path, encoding="utf8").read()
         body = clean(raw)
         print(f"\n### {path.split('/')[-1]}")

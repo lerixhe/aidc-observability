@@ -9,7 +9,7 @@
 | `check-stats.py` | 可用（v1.0） | 规模数字体检：门面文件里的几课 / 几个实验 / 几条，与文件系统实数比对 |
 | `check-sensitive.sh` | 可用（v2.1 改 POSIX sh） | 脱敏扫描：按本地词表查 `site/` 下是否混入前雇主与内部系统名 |
 | `mdpaths.py` | 可用（v2.0） | 共用入参模块：`check-mermaid.py` 的单文件 / 目录 / 通配符展开 |
-| `replace-self-reference.py` | 可用（v1.0） | 作者自称体检：把临摹留下的原书自称（老钱）换成「笔者」，跳过代码块与 `reference/` |
+| `replace-self-reference.py` | 可用（v1.0） | 作者自称体检：把临摹留下的原书自称（老钱）换成「笔者」，跳过代码块 |
 | `html2mdx.py` | 可用（v0.1） | 解析原型 HTML，产出 Markdown 骨架（只做机械转换，语义改写人工完成） |
 | `sensitive-words.txt` | 本地，不入库 | 敏感词表，从 `.example` 复制后按需扩充 |
 
@@ -69,10 +69,10 @@ python3 scripts/check-stats.py
 python3 scripts/check-stats.py --all
 
 # 单课转换（原型 → Markdown 骨架，输出到 /tmp 校对后再手工重写）
-python3 scripts/html2mdx.py reference/archive-aidc/lesson-01.html -o /tmp/l1.md
+python3 scripts/html2mdx.py <原型目录>/lesson-01.html -o /tmp/l1.md
 
 # 覆盖标题（传课时标题的规范写法）
-python3 scripts/html2mdx.py reference/archive-aidc/lesson-03.html \
+python3 scripts/html2mdx.py <原型目录>/lesson-03.html \
   --title "第04讲 · RoCEv2 与 DCB" -o /tmp/l3.md
 ```
 

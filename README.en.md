@@ -57,7 +57,6 @@ is what this project tries to fill.
 .
 ├── site/                  VitePress site (live since v0.1)
 ├── labs/                  Go / container labs (12: 10 L1 + 2 L2)
-├── reference/             Original prototype (local only, not committed)
 └── scripts/               Migration, link check, sensitive scan
 ```
 
@@ -103,15 +102,6 @@ diffs against, so any behavior change shows up as a diff instead of slipping thr
 The L2 labs declare their boundary up front: containers cannot emit real PFC pause
 frames, so those columns come from a model. Each README says which is which and how
 to verify on real hardware.
-
-## About reference/
-
-`reference/archive-aidc/` is an early private prototype (17 self-contained HTML lessons).
-The structure and pedagogy of this project grew out of it.
-
-That directory **contains personal narrative and former-employer information. It is
-excluded via `.gitignore` and never committed.** Public content is de-identified and
-rewritten before it reaches `site/`.
 
 ## License
 

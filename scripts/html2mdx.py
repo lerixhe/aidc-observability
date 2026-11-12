@@ -17,11 +17,11 @@
     <style> / <footer>       -> 丢弃
 
 用法：
-    python3 scripts/html2mdx.py reference/archive-aidc/lesson-01.html -o /tmp/l1.md
-    python3 scripts/html2mdx.py reference/archive-aidc/lesson-03.html -o ... --title "RoCEv2：把 RDMA 搬到以太网"
+    python3 scripts/html2mdx.py <原型目录>/lesson-01.html -o /tmp/l1.md
+    python3 scripts/html2mdx.py <原型目录>/lesson-03.html -o ... --title "RoCEv2：把 RDMA 搬到以太网"
 
-注意：原型目录含个人化叙述与前雇主信息（.gitignore 已排除），
-产出物在人工改写（去个人化、脱敏）前**不得入库**。
+注意：原型文件含个人化叙述与前雇主信息，产出物在人工改写（去个人化、脱敏）前
+**不得入库**。
 """
 
 from __future__ import annotations
@@ -429,7 +429,7 @@ def audit(md: str) -> list[str]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="原型 HTML → VitePress Markdown 骨架")
-    parser.add_argument("source", type=Path, help="原型 HTML 文件，如 reference/archive-aidc/lesson-01.html")
+    parser.add_argument("source", type=Path, help="原型 HTML 文件路径")
     parser.add_argument("-o", "--output", type=Path, help="输出 Markdown 路径（默认打印到 stdout）")
     parser.add_argument("--title", help="覆盖 frontmatter title（传课时标题的规范写法）")
     args = parser.parse_args(argv)

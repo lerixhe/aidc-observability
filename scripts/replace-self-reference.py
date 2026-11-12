@@ -9,7 +9,6 @@
 只改正文，不碰代码：
   * fenced 代码块（``` / ~~~）整段跳过 —— 里面有 `laoqian` 这类示例数据
   * 行内代码（`...`）跳过 —— 指标名、命令、字段名都在里面
-  * `reference/` 目录拒绝处理 —— 那是原书，一字不能动
 
 用法：
   python3 scripts/replace-self-reference.py                 # 预览，不写盘
@@ -36,8 +35,6 @@ DEFAULT_RULES: list[tuple[str, str]] = [
     ("老钱", "笔者"),
 ]
 
-# 这些地方一律不动
-PROTECTED_DIRS = ("reference",)
 CODE_FENCE = re.compile(r"^\s*(```|~~~)")
 INLINE_CODE = re.compile(r"`[^`]*`")
 
@@ -66,11 +63,6 @@ def iter_markdown(targets: list[str]) -> list[str]:
                 if name.endswith(".md"):
                     files.append(os.path.join(root, name))
     return sorted(set(files))
-
-
-def is_protected(path: str, root: str) -> bool:
-    rel = os.path.relpath(os.path.abspath(path), root)
-    return rel.split(os.sep)[0] in PROTECTED_DIRS
 
 
 def mask_inline_code(line: str) -> tuple[str, list[str]]:
@@ -169,12 +161,8 @@ def main(argv: list[str]) -> int:
 
     total_hits = 0
     changed_files = 0
-    skipped: list[str] = []
 
     for path in files:
-        if is_protected(path, root):
-            skipped.append(os.path.relpath(path, root))
-            continue
         with open(path, encoding="utf-8") as handle:
             text = handle.read()
         new_text, hits = rewrite(text, rules)
@@ -192,8 +180,6 @@ def main(argv: list[str]) -> int:
                 handle.write(new_text)
 
     print()
-    if skipped:
-        print(f"跳过受保护目录：{', '.join(skipped)}")
     if total_hits == 0:
         print("✅ 未发现需要替换的作者自称")
         return 0

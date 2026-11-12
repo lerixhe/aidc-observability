@@ -5,13 +5,6 @@ dist/
 .vitepress/dist/
 .vitepress/cache/
 
-# ===== 课程原型与第三方资料参考（禁止入库）=====
-# 整个 reference/ 排除，只放行 README.md：
-#   - archive-aidc/ 是含个人化叙述与前雇主信息的课程原型
-#   - 其余子目录多为第三方书籍 / 讲义，入库有版权风险
-reference/*
-!reference/README.md
-
 # ===== lab 产物 =====
 labs/**/out/
 labs/**/data/

@@ -45,7 +45,6 @@ AI 训练网络（智算中心、AIDC、AI Fabric，也有人叫高性能网络�
 .
 ├── site/                  VitePress 文档站（v0.1 已上线，见 site/README.md）
 ├── labs/                  Go / 容器化实验代码（12 个 lab：10 L1 + 2 L2）
-├── reference/             课程原型参考（本地用，不入库，见下）
 └── scripts/               迁移脚本、链接体检、脱敏扫描
 ```
 
@@ -76,17 +75,6 @@ docker exec clab-fault-inject-h3 tcpdump -i eth1 ether proto 0x8808 -c 3 -xx
 
 初始化脚本在 [.devcontainer/post-create.sh](.devcontainer/post-create.sh)，
 Docker 不可用时它会跳过 containerlab 安装，不影响 L1 实验。
-
-## 关于 reference/
-
-`reference/archive-aidc/` 是一套早期的私有课程原型（17 课自包含 HTML），
-本项目的结构与教学法由它演化而来。
-
-该目录**含个人化叙述与前雇主相关信息，已在 `.gitignore` 中排除，不纳入版本库**，
-仅作本地迁移底本使用。公开内容一律脱敏重写后才进入 `site/`。
-
-整个 `reference/` 目录都在忽略列表里，只放行目录自己的说明文件。目录下另有几份
-第三方书籍与讲义，仅作本地参考，入库有版权风险，不要提交。
 
 ## 许可
 

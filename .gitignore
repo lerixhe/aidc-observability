@@ -29,6 +29,9 @@ labs/**/data/
 # 本地敏感词表（不含模板）
 scripts/sensitive-words.txt
 
+# 本地写作笔记：逐篇临帖的仿写计划，只在自己机器上用
+REWRITE-PLAN.md
+
 # Python 缓存
 __pycache__/
 *.pyc

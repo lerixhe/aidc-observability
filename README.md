@@ -7,6 +7,10 @@
 **状态：v2.0 已交付** —— 26 课 + 附录 A/B，12 个实验全部落地（10 个 L1 + 2 个 L2 真拓扑）。
 站点：<https://lerixhe.github.io/aidc-observability/> · [English README](README.en.md)
 
+> 系列：**第二册**（本书）讲无损智算。第一册是
+> [IDC 网络可观测入门](https://github.com/lerixhe/idc-network-observability/)：采集、指标、判读与定位，
+> 写给从业务后端进入网络可观测的读者。出版顺序与阅读顺序相反，按顺序该先读第一册。
+
 > 可读（v0.1）、可跑（v0.2）、可讲全（v0.3）、可进阶（v0.4）、可交付（v1.0）。
 > v1.0 起课程结构冻结，只接受纠错类 PR。
 > L2 拓扑实验走双模式：默认零依赖出剧本与模型结论，`make deploy` 才需要 containerlab。

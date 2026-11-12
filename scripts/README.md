@@ -9,6 +9,7 @@
 | `check-stats.py` | 可用（v1.0） | 规模数字体检：门面文件里的几课 / 几个实验 / 几条，与文件系统实数比对 |
 | `check-sensitive.sh` | 可用（v2.1 改 POSIX sh） | 脱敏扫描：按本地词表查 `site/` 下是否混入前雇主与内部系统名 |
 | `mdpaths.py` | 可用（v2.0） | 共用入参模块：`check-mermaid.py` 的单文件 / 目录 / 通配符展开 |
+| `replace-self-reference.py` | 可用（v1.0） | 作者自称体检：把临摹留下的原书自称（老钱）换成「笔者」，跳过代码块与 `reference/` |
 | `html2mdx.py` | 可用（v0.1） | 解析原型 HTML，产出 Markdown 骨架（只做机械转换，语义改写人工完成） |
 | `sensitive-words.txt` | 本地，不入库 | 敏感词表，从 `.example` 复制后按需扩充 |
 
@@ -57,6 +58,11 @@ python3 scripts/check-mermaid.py --list             # 只列块与图类型
 python3 scripts/check-mermaid.py --render           # 用 mmdc 真渲染（需 npm i -g @mermaid-js/mermaid-cli）
 cd labs/05-clos-topo && go run . -exp 1 -format mermaid > /tmp/clos.md && cd ../..
 python3 scripts/check-mermaid.py /tmp/clos.md       # 校验生成型图
+
+# 作者自称体检（默认预览；--write 落盘，--check 供 CI）
+python3 scripts/replace-self-reference.py
+python3 scripts/replace-self-reference.py --write --map "虽然老钱已经=虽然本课程已经"
+python3 scripts/replace-self-reference.py --check
 
 # 规模数字体检（CI 也跑这个；--all 先看一遍实数）
 python3 scripts/check-stats.py

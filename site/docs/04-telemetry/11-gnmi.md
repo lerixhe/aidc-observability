@@ -70,7 +70,7 @@ description: SNMP 轮询为什么撑不住智算网络，gNMI 的订阅式流遥
 
 ## 传什么由模型定
 
-gNMI 只规定怎么传，传什么由数据模型规定。行业主流是 **OpenConfig**，Google 主导的一套厂商中立 YANG 模型。订阅时按路径指定：
+gNMI 只规定怎么传，传什么由数据模型规定，行业主流是 **OpenConfig**，Google 主导的一套厂商中立 YANG 模型，订阅时按路径指定：
 
 ```text
 /interfaces/interface[name=eth0]/state/counters/in-octets
@@ -79,9 +79,9 @@ gNMI 只规定怎么传，传什么由数据模型规定。行业主流是 **Ope
 /network-instances/network-instance[name=default]/afts/...   # 转发表与邻居，拓扑发现用
 ```
 
-路径本身就是维度：接口名、队列号、方向，每一层都是一个标签。时序库要的形状正是这个，`interfaces × queue × direction` 三列标签加一个数值。MIB 的平铺编号给不出这个形状，只能在采集端靠文本解析补齐。
+路径本身就是维度：接口名、队列号、方向，每一层都是一个标签，时序库要的形状正是这个，`interfaces × queue × direction` 三列标签加一个数值，MIB 的平铺编号给不出这个形状，只能在采集端靠文本解析补齐。
 
-端口 CRC、丢包计数、队列深度、PFC pause 收发（按优先级）、ECN 标记计数，都能在这棵树上找到位置，其中一部分落在厂商扩展里。第 07 讲讲的三类根因数据（按优先级的 pause 收发、队列水线、ECN 标记率）也都从这里取。
+端口 CRC、丢包计数、队列深度、PFC pause 收发（按优先级）、ECN 标记计数，都能在这棵树上找到位置，其中一部分落在厂商扩展里，第 07 讲讲的三类根因数据（按优先级的 pause 收发、队列水线、ECN 标记率）也都从这里取。
 
 OpenConfig 覆盖不到所有厂商特性。PFC pause 的按优先级细分、队列水线直方图、INT 相关计数，常落在厂商私有模型里，以 `openconfig-*` 之外的私有 path 提供。工程上有两件事要做：一是**模型映射层**，内部统一指标名对到各厂商 path，上层不被单家绑定；二是**启动时用 `Capabilities` 探一遍**，设备支持哪些 path 就订阅哪些，不支持的记一条降级日志。多厂商混部的真实工作量全在这两件事上。
 
@@ -91,7 +91,7 @@ OpenConfig 覆盖不到所有厂商特性。PFC pause 的按优先级细分、�
 
 | 块 | 有什么用 | 典型路径 | 现场那句人话 |
 |---|---|---|---|
-| 接口计数 | 流量、错包、丢弃 | `interfaces/interface/state/counters` | 这个口到底刂了多少包 |
+| 接口计数 | 流量、错包、丢弃 | `interfaces/interface/state/counters` | 这个口到底丢了多少包 |
 | 队列与 QoS | 每队列发送、丢弃、水线 | `qos/interfaces/interface/output/queues/queue/state` | 哪个队列在顶 |
 | ECN | 标记计数与阈值 | 部分在 `qos`，多数在厂商 path | 拥塞控制到底启没启动 |
 | PFC | 按优先级的 pause 收发与时长 | 厂商私有为主 | 谁在喊停、喊了多久 |

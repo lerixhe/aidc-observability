@@ -17,7 +17,6 @@ on:
       - 'site/**'
       - 'labs/**/README.md'
       - 'labs/**/*.go'
-      - 'docs/**'
       - 'README.md'
       - 'README.en.md'
       - 'scripts/**'

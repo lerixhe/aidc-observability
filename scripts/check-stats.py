@@ -8,8 +8,11 @@
 退出码：0 全部对得上；1 有声明与实数不符。
 
 为什么只查少数几处：正文里的「3 课」「07 课」「前 20 课」指的是模块课时或课号，
-不是规模总数，全文正则误报率高于收益。这里只锚定四个门面文件里的状态行，
-和附录里两条能被机器数出来的清单长度。数字真变了，改这几处就够。
+不是规模总数，全文正则误报率高于收益。这里只锚定 README / site / labs 的
+门面文件里的状态行，和附录里两条能被机器数出来的清单长度。数字真变了，改这几处就够。
+
+规划文档（原 docs/PROJECT.md、OUTLINE.md、ANNOUNCE.md）已随仓库整理移除，
+对应锚点一并删掉，不再检查。
 """
 
 import re
@@ -100,12 +103,6 @@ CHECKS = [
     ("site/README.md", r"(\d+) 个实验落地", "labs", "实验数"),
     ("labs/README.md", r"(\d+) 个 lab 全部落地", "labs", "实验数"),
     ("labs/README.md", r"L1 层 (\d+) 个", "l1", "L1 实验数"),
-    ("docs/PROJECT.md", r"(\d+) 个 L1 lab", "l1", "L1 实验数"),
-    ("docs/PROJECT.md", r"(\d+) 个 L2 lab", "l2", "L2 实验数"),
-    ("docs/OUTLINE.md", r"(\d+) 条中英对照", "glossary", "术语条数"),
-    ("docs/OUTLINE.md", r"(\d+) 条，按可信度分层", "references", "参考条数"),
-    ("docs/ANNOUNCE.md", r"(\d+) 条术语表", "glossary", "术语条数"),
-    ("docs/ANNOUNCE.md", r"(\d+) 条参考资料", "references", "参考条数"),
     ("site/docs/appendix/02-references.md", r"本清单涉及的 (\d+) 条外部链接", "references", "参考条数"),
 ]
 

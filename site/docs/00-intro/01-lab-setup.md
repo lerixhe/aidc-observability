@@ -18,7 +18,7 @@ description: 三条环境路线任选一条，跑通环境自检与第一个队�
 
 ## 三层依赖
 
-这门课的实验分两层。L1 层只依赖 Go，`go run .` 直接出结果，五分钟够。L2 层要真拓扑，得有 Docker、Linux 和 containerlab。**真正卡住人的是准备顺序，技术本身不难。**
+这门课的环境分三层。只读层什么都不用装，L1 层只依赖 Go，`go run .` 直接出结果，五分钟够。L2 层要真拓扑，得有 Docker、Linux 和 containerlab。**真正卡住人的是准备顺序，技术本身不难。**
 
 | 层 | 依赖 | 覆盖的实验 | 缺了会怎样 |
 |---|---|---|---|
@@ -36,12 +36,11 @@ L2 那两个 lab 都做成了双模式。默认模式只生成剧本与模型结
 
 ## 三条环境路线
 
-体验这门课的实验，L1 需要一个 Go；想跑 L2，再加 Docker 与 Linux 环境。主要路线有四种：
+体验这门课的实验，L1 需要一个 Go；想跑 L2，再加 Docker 与 Linux 环境。主要路线有三种：
 
 1. 本机直跑，装一个 Go。
 2. devcontainer，仓库自带配置，Go、Docker、Python 都在镜像里。
-3. GitHub Codespaces，网页上打开就有整套环境。
-4. 如果读者懒于安装操作，也可以用浏览器版的 Codespaces 直接体验，连仓库都不必克隆。
+3. 在浏览器里直接开 Codespaces，连仓库都不必克隆。
 
 具体操作如下。下面的命令块不带提示符，它是照抄就能粘进终端的形态，不是交互会话记录。
 
@@ -240,7 +239,7 @@ CI 报 `expected/` 不一致时，正确的第一反应是看差异内容，判�
 
 ## 小结
 
-依赖分三层。只读层什么都不用装，L1 只要一个 Go，L2 要 Docker 加 Linux 加 containerlab。环境四条路，本机直跑最省事，devcontainer 和 Codespaces 是给需要 L2 又不想折腾虚拟机的人。
+依赖分三层。只读层什么都不用装，L1 只要一个 Go，L2 要 Docker 加 Linux 加 containerlab。环境三条路，本机直跑最省事，devcontainer 和 Codespaces 是给需要 L2 又不想折腾虚拟机的人。
 
 体检报告看三个字段就够了：可跑、层、说明。冒烟检查加 `-try`，CI 用的就是这个开关。
 
@@ -251,7 +250,7 @@ CI 报 `expected/` 不一致时，正确的第一反应是看差异内容，判�
 **先跑 L1 那十个实验，L2 缺什么都不影响你读下去。**
 
 - 三层依赖：只读层无依赖、**L1 只要 Go**、L2 要 Docker 与 Linux
-- 四条路线：本机直跑、devcontainer、Codespaces、浏览器版 Codespaces。**先跑 L1，别一起准备**
+- 三条路线：本机直跑、devcontainer、Codespaces。**先跑 L1，别一起准备**
 - `labs/00-setup` 三段输出：工具体检、实验盘点、`-try` 冒烟检查
 - `expected/` 是外部契约，**先 diff 再决定是否更新样本**
 - 实验覆盖表在 `labs/README.md`，课与实验双向可查

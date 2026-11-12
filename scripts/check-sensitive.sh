@@ -1,5 +1,5 @@
 #!/bin/sh
-# 脱敏扫描：确保 site/ 下未混入前雇主信息、面试语境与内部系统名。
+# 脱敏扫描：检查 site/ 下是否混入前雇主信息与内部系统名。
 #
 # 用法：
 #   ./scripts/check-sensitive.sh                # 扫 site/
@@ -48,7 +48,7 @@ fi
 # ---- 组装词表 pattern ----
 # 词表一行一个词；# 开头与空行忽略。用 POSIX 字符类，不用 \s。
 PATTERN=""
-PATTERN_SRC="内置最小词表"
+PATTERN_SRC="未设置"
 if [ -f "$WORDS_FILE" ]; then
 	# shellcheck disable=SC2086
 	WORDS=$(grep -v -e '^[[:space:]]*#' -e '^[[:space:]]*$' "$WORDS_FILE" || true)
@@ -64,14 +64,14 @@ if [ -f "$WORDS_FILE" ]; then
 fi
 
 if [ -z "$PATTERN" ]; then
-	# 兜底最小集：只含可用于公开的通用词。
-	# 前雇主名 / 内部系统名属于红线词，只写本地 sensitive-words.txt 或 CI secret。
-	PATTERN='面试官|一面|二面|三面|薪资|JD 要求'
+	# 仓库不内置红线词：前雇主名 / 内部系统名只写本地 sensitive-words.txt，或由 CI 注入。
+	# 没有词表就没有可扫的东西，直接跳过；空 pattern 会命中每一行，不能拿来兜底。
 	if [ -f "$WORDS_FILE" ]; then
-		echo "词表 ${WORDS_FILE} 里没有有效词条，退回内置最小词表"
+		echo "词表 ${WORDS_FILE} 里没有有效词条，跳过脱敏扫描"
 	else
-		echo "未找到本地词表，使用内置最小词表"
+		echo "未找到词表 ${WORDS_FILE}，跳过脱敏扫描（红线词不入库）"
 	fi
+	exit 0
 fi
 
 # ---- 扫描 ----

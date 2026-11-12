@@ -11,7 +11,7 @@ The Codespaces image ships containerlab and Docker, so the L2 topology labs run
 without a local Linux VM.
 
 > Readable (v0.1), runnable (v0.2), complete (v0.3), advanced (v0.4), deliverable (v1.0).
-> The course structure is frozen as of v1.0; only corrections are accepted (see [DECISIONS.md](docs/DECISIONS.md) D9).
+> The course structure is frozen as of v1.0; only corrections are accepted.
 > The two L2 labs run in two modes: the default mode needs no Docker, only Go.
 > `make deploy` is the step that requires containerlab.
 
@@ -50,15 +50,10 @@ is what this project tries to fill.
 
 ```
 .
-├── docs/                  Planning and decisions (start with PROJECT.md)
-│   ├── PROJECT.md         Context: positioning, audience, stack, milestones, risks
-│   ├── OUTLINE.md         23-lesson outline + mapping to the original prototype
-│   ├── MIGRATION.md       Migration and de-identification rules
-│   └── DECISIONS.md       ADR log
 ├── site/                  VitePress site (live since v0.1)
 ├── labs/                  Go / container labs (12: 10 L1 + 2 L2)
 ├── reference/             Original prototype (local only, not committed)
-└── scripts/               Migration, link check, style check
+└── scripts/               Migration, link check, sensitive scan
 ```
 
 ## Roadmap
@@ -72,8 +67,6 @@ is what this project tries to fill.
 | v0.4 | Advanced labs: containerlab topology (05-clos-topo), fault injection (03-fault-inject), end-to-end runbook (11-case-study) | Done |
 | v1.0 | Polish: link checker + Docs CI, bilingual README, announcement, structure frozen | Done |
 | v2.0 | Toolbox: 3 frontier lessons (AR / scale-up / UEC), telemetry stack, real 0x8808 frames + XDP gate, Codespaces preinstalled, dual CI guards | **Current** |
-
-See [docs/PROJECT.md](docs/PROJECT.md) for details (Chinese).
 
 ## Labs at a glance
 
@@ -112,8 +105,8 @@ to verify on real hardware.
 The structure and pedagogy of this project grew out of it.
 
 That directory **contains personal narrative and former-employer information. It is
-excluded via `.gitignore` and never committed.** Public content is rewritten according
-to [docs/MIGRATION.md](docs/MIGRATION.md) before it reaches `site/`.
+excluded via `.gitignore` and never committed.** Public content is de-identified and
+rewritten before it reaches `site/`.
 
 ## License
 
@@ -126,6 +119,6 @@ The project is at v1.0: the course structure is frozen and only corrections are 
 Please cite the lesson and a verifiable source:
 
 - Mechanism claims need a checkable source (RFC / IEEE standard / paper / vendor docs)
-- De-identification red lines are in section 3 of [docs/MIGRATION.md](docs/MIGRATION.md);
-  changes involving internal information will not be merged
+- Changes involving internal information (system names, real architectures, capacity
+  numbers, undisclosed incident details) will not be merged
 - Local development: `cd site && pnpm install && pnpm dev`

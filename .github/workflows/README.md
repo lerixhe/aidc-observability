@@ -6,7 +6,7 @@
 |---|---|---|
 | `deploy.yml` | push `main` 且改动 `site/**`（可手动触发） | `pnpm build`（VitePress）构建 `site/` → `upload-pages-artifact` → `deploy-pages` |
 | `labs.yml` | `labs/**` 变更 | 跑 `scripts/check-labs.sh`：vet + test + `expected/` 自校验 |
-| `docs.yml` | PR 与 `site/**`、`docs/**`、`labs/**/README.md`、`scripts/**` 变更 | 链接体检 + 文风体检 + 脱敏扫描 + 站点构建 |
+| `docs.yml` | PR 与 `site/**`、`labs/**/README.md`、`scripts/**` 变更 | 链接体检 + 脱敏扫描 + 规模数字体检 + Mermaid 体检 + 站点构建 |
 
 三个 workflow 按路径分开触发，互不阻塞：改 lab 不会跑站点构建，改课程不会跑 Go 测试。
 
@@ -14,7 +14,8 @@
 
 - **链接体检**只查站内。外链会因反爬（ACM、DOI 常返回 403）与网络抖动误报，
   脚本把这类降级为警告，只有 404 / 410 / 域名解析失败才算断链
-- **脱敏扫描**在 CI 用内置最小词表，本地跑才用完整词表（词表不入库）
+- **脱敏扫描**只查前雇主与内部系统名，词表不入库：本地跑用 `scripts/sensitive-words.txt`，
+  CI 里得用 secret 把这个文件写出来，否则脚本会打印跳过并 `exit 0`（仓库不内置红线词）
 
 `deploy.yml` 骨架（已落地，实际文件含 pnpm 版本固定与 `workflow_dispatch`）：
 

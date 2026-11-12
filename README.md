@@ -8,7 +8,7 @@
 站点：<https://lerixhe.github.io/aidc-observability/> · [English README](README.en.md)
 
 > 可读（v0.1）、可跑（v0.2）、可讲全（v0.3）、可进阶（v0.4）、可交付（v1.0）。
-> v1.0 起课程结构冻结，只接受纠错类 PR（见 [DECISIONS.md](docs/DECISIONS.md) D9）。
+> v1.0 起课程结构冻结，只接受纠错类 PR。
 > L2 拓扑实验走双模式：默认零依赖出剧本与模型结论，`make deploy` 才需要 containerlab。
 > Codespaces 镜像已预装 containerlab，macOS 用户不必再折腾 Linux 虚拟机。
 
@@ -39,15 +39,10 @@ AI 训练网络（智算中心、AIDC、AI Fabric，也有人叫高性能网络�
 
 ```
 .
-├── docs/                  规划与决策文档（先读 PROJECT.md）
-│   ├── PROJECT.md         项目上下文：定位、读者、技术栈、里程碑、风险
-│   ├── OUTLINE.md         23 课大纲 + 与课程原型的映射关系
-│   ├── MIGRATION.md       原型迁移与去个人化/脱敏规则
-│   └── DECISIONS.md       关键决策记录（ADR）
 ├── site/                  VitePress 文档站（v0.1 已上线，见 site/README.md）
 ├── labs/                  Go / 容器化实验代码（12 个 lab：10 L1 + 2 L2）
 ├── reference/             课程原型参考（本地用，不入库，见下）
-└── scripts/               迁移脚本、链接体检、文风体检、脱敏扫描
+└── scripts/               迁移脚本、链接体检、脱敏扫描
 ```
 
 ## 路线图
@@ -61,8 +56,6 @@ AI 训练网络（智算中心、AIDC、AI Fabric，也有人叫高性能网络�
 | v0.4 | 进阶 lab：containerlab 真实拓扑（05-clos-topo）+ 故障注入（03-fault-inject）+ 端到端剧本（11-case-study） | 已完成 |
 | v1.0 | 打磨：链接体检脚本 + Docs CI、双语 README、宣传稿、结构冻结 | 已完成 |
 | v2.0 | 工具箱化：3 篇前沿课（AR / Scale-Up / UEC）+ 遥测可视化栈 + 真实 0x8808 帧与 XDP 闸门 + Codespaces 预装 + CI 双保险 | **当前** |
-
-详见 [docs/PROJECT.md](docs/PROJECT.md)。
 
 ## Codespaces 一键即开即跑
 
@@ -86,8 +79,7 @@ Docker 不可用时它会跳过 containerlab 安装，不影响 L1 实验。
 本项目的结构与教学法由它演化而来。
 
 该目录**含个人化叙述与前雇主相关信息，已在 `.gitignore` 中排除，不纳入版本库**，
-仅作本地迁移底本使用。公开内容一律按 [docs/MIGRATION.md](docs/MIGRATION.md)
-脱敏重写后才进入 `site/`。
+仅作本地迁移底本使用。公开内容一律脱敏重写后才进入 `site/`。
 
 整个 `reference/` 目录都在忽略列表里，只放行目录自己的说明文件。目录下另有几份
 第三方书籍与讲义，仅作本地参考，入库有版权风险，不要提交。
@@ -102,5 +94,5 @@ Docker 不可用时它会跳过 containerlab 安装，不影响 L1 实验。
 项目已到 v1.0，课程结构冻结。欢迎纠错类 Issue，请标注具体课程与来源依据：
 
 - 机制类断言请附可验证来源（RFC / IEEE 标准 / 论文 / 厂商公开文档）
-- 脱敏红线见 [docs/MIGRATION.md](docs/MIGRATION.md) 第三节，涉及内部信息的改动不会被合并
+- 涉及内部信息（系统名、真实架构、容量数字、未公开事故）的改动不会被合并
 - 本地开发：`cd site && pnpm install && pnpm dev`

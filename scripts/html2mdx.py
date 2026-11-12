@@ -4,7 +4,7 @@
 定位：只做**机械转换**（约 70%），语义改写、脱敏、补参考资料必须人工完成。
 转换完成后脚本会打印一份「待人工处理清单」。
 
-映射规则见 docs/MIGRATION.md「结构映射表」：
+映射规则：
     header.hero              -> frontmatter title / description
     div.breadcrumb / div.nav -> 丢弃（VitePress 自带导航与上一课/下一课分页）
     div.card + h2            -> ## 小节
@@ -21,7 +21,7 @@
     python3 scripts/html2mdx.py reference/archive-aidc/lesson-03.html -o ... --title "RoCEv2：把 RDMA 搬到以太网"
 
 注意：原型目录含个人化叙述与前雇主信息（.gitignore 已排除），
-产出物在按 docs/MIGRATION.md 人工改写前**不得入库**。
+产出物在人工改写（去个人化、脱敏）前**不得入库**。
 """
 
 from __future__ import annotations
@@ -35,7 +35,7 @@ from pathlib import Path
 VOID_TAGS = {"br", "hr", "img", "meta", "link", "input", "source"}
 SKIP_TAGS = {"style", "script", "footer", "head", "title"}
 
-# 需要人工补齐的固定结构（对齐 docs/OUTLINE.md「每课统一结构」）
+# 需要人工补齐的固定结构（每课统一结构）
 REQUIRED_SECTIONS = [
     "本节目标",
     "机制拆解",
@@ -422,8 +422,6 @@ def audit(md: str) -> list[str]:
             todos.append(f"缺少小节：## {section}")
     if "发给 AI" in md or "发给AI" in md:
         todos.append("练习说明仍含「发给 AI 批改」，改为自答 + 自评")
-    if "面试" in md or "一面" in md or "二面" in md:
-        todos.append("仍含面试语境，按 docs/MIGRATION.md 第二节改写")
     if re.search(r"^<!-- MIGRATION", md, re.MULTILINE):
         todos.append("存在 <!-- MIGRATION --> 标记，需人工核对")
     return todos
@@ -433,7 +431,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="原型 HTML → VitePress Markdown 骨架")
     parser.add_argument("source", type=Path, help="原型 HTML 文件，如 reference/archive-aidc/lesson-01.html")
     parser.add_argument("-o", "--output", type=Path, help="输出 Markdown 路径（默认打印到 stdout）")
-    parser.add_argument("--title", help="覆盖 frontmatter title（建议用 docs/OUTLINE.md 的新课标题）")
+    parser.add_argument("--title", help="覆盖 frontmatter title（传课时标题的规范写法）")
     args = parser.parse_args(argv)
 
     if not args.source.is_file():

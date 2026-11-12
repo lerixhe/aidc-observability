@@ -7,6 +7,11 @@
 **Status: v2.0 shipped** — 26 lessons + appendices A/B published, 12 labs shipped (10 L1 + 2 L2 real-topology).
 Site: <https://lerixhe.github.io/aidc-observability/>
 
+> Series: **Book 2** (this repo) covers lossless AI fabrics. **Book 1** is
+> [IDC Network Observability](https://github.com/lerixhe/idc-network-observability/):
+> collect, measure, read, locate — written for backend developers entering the field.
+> They were published in reverse order; a reader should start with Book 1.
+
 The Codespaces image ships containerlab and Docker, so the L2 topology labs run
 without a local Linux VM.
 

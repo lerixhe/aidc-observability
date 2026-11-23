@@ -1,4 +1,4 @@
-# 智算网络可观测指南 · AIDC Observability
+# 智算网络可观测入门 · AIDC Observability
 
 > 从有损 IDC 到无损智算：机制、遥测与可运行的实验室。
 
@@ -6,7 +6,7 @@
 
 **26 课 + 附录 A/B，12 个实验全部落地（10 个 L1 + 2 个 L2 真拓扑）。** 站点：<https://lerixhe.github.io/aidc-observability/> · [English README](README.en.md)
 
-本仓是系列第二册。第一册 [IDC 网络可观测入门](https://github.com/lerixhe/idc-network-observability/)
+本仓是系列第二册。第一册 [IDC 网络可观测指南](https://github.com/lerixhe/idc-network-observability/)
 讲有损网络里的采集、指标、判读与定位，写给从业务后端转进网络可观测的读者。按顺序先读那一册。
 
 ---

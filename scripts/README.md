@@ -7,10 +7,10 @@
 | `check-anchors-html.py` | 可用（v2.0） | 产物爬虫：在 VitePress 构建出的 HTML 上验 `id` 与站内 `href` 是否真存在 |
 | `check-mermaid.py` | 可用（v2.0） | Mermaid 语法体检：图类型、括号配对、`linkStyle` 越界；`--render` 走 mmdc 真渲染 |
 | `check-stats.py` | 可用（v1.0） | 规模数字体检：门面文件里的几课 / 几个实验 / 几条，与文件系统实数比对 |
-| `check-sensitive.sh` | 可用（v2.1 改 POSIX sh） | 脱敏扫描：按本地词表查 `site/` 下是否混入前雇主与内部系统名 |
+| `check-sensitive.sh` | 可用（POSIX sh） | 敏感词扫描：按本地词表查 `site/` 下是否出现不该公开的组织名与系统名 |
 | `mdpaths.py` | 可用（v2.0） | 共用入参模块：`check-mermaid.py` 的单文件 / 目录 / 通配符展开 |
-| `replace-self-reference.py` | 可用（v1.0） | 作者自称体检：把临摹留下的原书自称（老钱）换成「笔者」，跳过代码块 |
-| `html2mdx.py` | 可用（v0.1） | 解析原型 HTML，产出 Markdown 骨架（只做机械转换，语义改写人工完成） |
+| `replace-self-reference.py` | 可用 | 自称统一：把正文里混用的第一人称改成「笔者」，跳过代码块 |
+| `html2mdx.py` | 可用 | 解析 HTML 文档，产出 Markdown 骨架（只做机械转换，语义改写人工完成） |
 | `sensitive-words.txt` | 本地，不入库 | 敏感词表，从 `.example` 复制后按需扩充 |
 
 ## 共用入参规则
@@ -37,7 +37,7 @@ python3 scripts/check-mermaid.py 'site/docs/**/*.md'   # 通配符
 # 首次：准备词表
 cp scripts/sensitive-words.txt.example scripts/sensitive-words.txt
 
-# 迁移后扫描（POSIX sh，用 sh / dash 跑都成立）
+# 敏感词扫描（POSIX sh，用 sh / dash 跑都成立）
 ./scripts/check-sensitive.sh
 sh scripts/check-sensitive.sh site labs
 
@@ -59,35 +59,35 @@ python3 scripts/check-mermaid.py --render           # 用 mmdc 真渲染（需 n
 cd labs/05-clos-topo && go run . -exp 1 -format mermaid > /tmp/clos.md && cd ../..
 python3 scripts/check-mermaid.py /tmp/clos.md       # 校验生成型图
 
-# 作者自称体检（默认预览；--write 落盘，--check 供 CI）
+# 自称统一（默认预览；--write 落盘，--check 供 CI）
 python3 scripts/replace-self-reference.py
-python3 scripts/replace-self-reference.py --write --map "虽然老钱已经=虽然本课程已经"
+python3 scripts/replace-self-reference.py --write --map "旧自称已经=本课程已经"
 python3 scripts/replace-self-reference.py --check
 
 # 规模数字体检（CI 也跑这个；--all 先看一遍实数）
 python3 scripts/check-stats.py
 python3 scripts/check-stats.py --all
 
-# 单课转换（原型 → Markdown 骨架，输出到 /tmp 校对后再手工重写）
-python3 scripts/html2mdx.py <原型目录>/lesson-01.html -o /tmp/l1.md
+# HTML 转 Markdown 骨架（输出到 /tmp 校对后再手工重写）
+python3 scripts/html2mdx.py <源目录>/lesson-01.html -o /tmp/l1.md
 
-# 覆盖标题（传课时标题的规范写法）
-python3 scripts/html2mdx.py <原型目录>/lesson-03.html \
+# 覆盖标题（传讲次标题的规范写法）
+python3 scripts/html2mdx.py <源目录>/lesson-03.html \
   --title "第04讲 · RoCEv2 与 DCB" -o /tmp/l3.md
 ```
 
 `html2mdx.py` 的产出**不能直接入库**：
 
 - 只做结构映射（规则见脚本顶部注释的映射表）
-- 原型的 `div.compare` 双栏会转成表格，行语义需人工核对（产出里带 `<!-- MIGRATION -->` 标记）
-- 雇主名、内部系统名、个人履历原样保留 → 必须人工改写
-- 每课固定的 7 段结构（本节目标 / 机制拆解 / …）缺哪段，脚本会在「待人工处理」里列出来
+- 源文档的双栏 `div.compare` 会转成表格，行语义需人工核对（产出里带 `<!-- MIGRATION -->` 标记）
+- 组织名、系统名、个人记载不会被清洗 → 必须人工改写
+- 讲次模板要求的分段（本节目标 / 机制拆解 / …）缺哪段，脚本会在「待人工处理」里列出来
 
 `check-labs.sh` 会重新生成 `expected/` 再 `git diff`。改了模型就有 diff，
 确认是有意改动后 `git add labs/<lab>/expected` 一起提交。
 它由 `.github/workflows/labs.yml` 在 `labs/**` 变更时触发。
 
-`check-links.py`、`check-mermaid.py`、`check-stats.py`、`check-sensitive.sh` 由
+`check-links.py`、`check-mermaid.py`、`check-stats.py` 与 `check-sensitive.sh` 由
 `.github/workflows/docs.yml` 在内容变更时触发。
 链接体检只查站内：外链会因对方反爬（ACM、DOI 常见 403）与网络抖动误报，
 所以判定分两级 —— 404/410/域名解析失败算断链，403/429/拒连只记警告。

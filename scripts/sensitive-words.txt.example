@@ -1,9 +1,9 @@
-# 脱敏扫描词表模板：
+# 敏感词扫描词表模板：
 #   cp scripts/sensitive-words.txt.example scripts/sensitive-words.txt
-# sensitive-words.txt 已在 .gitignore 中排除，请把**真实的**前雇主名、内部系统名
+# sensitive-words.txt 已在 .gitignore 中排除，请把**真实的**组织名、系统名
 # 填进本地文件，不要写回本模板、不要提交。
 #
 # 一行一个，支持正则（grep -iE）。
-# --- 前雇主 / 内部系统 / 平台代号（本地自行补充）---
+# --- 组织名 / 系统名 / 平台代号（本地自行补充）---
 # 示例：公司A
-# 示例：内部系统X
+# 示例：某系统X

@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""自查脚本：把临摹留下的原书作者自称（老钱）换成第一人称「笔者」。
+"""自查脚本：把正文里混用的第三人称自称统一成第一人称「笔者」。
 
-背景：本课程的每一篇都对着原书的一段临帖写，落笔时难免把原作者的自称
-一起带过来（「以老钱的经验」「老钱表示」「老钱不推荐」）。课程正文里出现
-另一个人的名字，读者会以为这是转述而不是作者自己的判断，所以统一换成
-第一人称。
+背景：每一篇都是对着参考材料整理的，落笔时容易把别人的名字当成叙述者带进来
+（「以某某的经验」「某某表示」）。正文里出现另一个人的名字，读者会以为这是
+转述而不是作者自己的判断，所以统一换成第一人称。
 
 只改正文，不碰代码：
   * fenced 代码块（``` / ~~~）整段跳过 —— 里面有 `laoqian` 这类示例数据
@@ -15,7 +14,7 @@
   python3 scripts/replace-self-reference.py --write         # 真改
   python3 scripts/replace-self-reference.py --check         # CI：有命中即失败
   python3 scripts/replace-self-reference.py site/docs/05-analysis
-  python3 scripts/replace-self-reference.py --map 老钱式=笔者式
+  python3 scripts/replace-self-reference.py --map 某某式=笔者式
   python3 scripts/replace-self-reference.py --list-rules    # 看替换表
 
 退出码：0 通过；1 有命中（dry-run 或 --check）；2 参数/环境错误。
@@ -28,7 +27,7 @@ import os
 import re
 import sys
 
-# ---- 替换表：长词在前，避免「老钱式」被「老钱」先吃掉一半 ----
+# ---- 替换表：长词在前，避免长词被短词先吃掉一半 ----
 DEFAULT_RULES: list[tuple[str, str]] = [
     ("老钱的经验", "笔者的经验"),
     ("老钱式", "笔者式"),

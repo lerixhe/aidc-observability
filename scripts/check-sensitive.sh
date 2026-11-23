@@ -1,5 +1,5 @@
 #!/bin/sh
-# 脱敏扫描：检查 site/ 下是否混入前雇主信息与内部系统名。
+# 敏感词扫描：检查 site/ 下是否混入不宜公开的组织名与系统名。
 #
 # 用法：
 #   ./scripts/check-sensitive.sh                # 扫 site/
@@ -64,12 +64,12 @@ if [ -f "$WORDS_FILE" ]; then
 fi
 
 if [ -z "$PATTERN" ]; then
-	# 仓库不内置红线词：前雇主名 / 内部系统名只写本地 sensitive-words.txt，或由 CI 注入。
+	# 仓库不内置红线词：组织名 / 系统名只写本地 sensitive-words.txt，或由 CI 注入。
 	# 没有词表就没有可扫的东西，直接跳过；空 pattern 会命中每一行，不能拿来兜底。
 	if [ -f "$WORDS_FILE" ]; then
-		echo "词表 ${WORDS_FILE} 里没有有效词条，跳过脱敏扫描"
+		echo "词表 ${WORDS_FILE} 里没有有效词条，跳过敏感词扫描"
 	else
-		echo "未找到词表 ${WORDS_FILE}，跳过脱敏扫描（红线词不入库）"
+		echo "未找到词表 ${WORDS_FILE}，跳过敏感词扫描（红线词不入库）"
 	fi
 	exit 0
 fi
@@ -95,4 +95,4 @@ if [ -n "$HITS" ]; then
 	exit 1
 fi
 
-echo "✅ 脱敏扫描通过：${TARGETS}"
+echo "✅ 敏感词扫描通过：${TARGETS}"

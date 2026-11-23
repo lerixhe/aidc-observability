@@ -2,7 +2,7 @@ name: Docs CI
 
 # 内容侧的守门员。四件事：
 #   1. 链接体检 —— 目录改名、课时标题改动会让相对链接与锚点悄悄失效（读源码）
-#   2. 脱敏扫描 —— 红线词不进站点
+#   2. 敏感词扫描 —— 红线词不进站点
 #   3. 规模数字体检 —— 门面文件里写的几课 / 几个实验 / 几条，得跟文件系统实数对得上
 #   4. Mermaid 语法体检 —— 图定义写坏了，GitHub 与 IDE 里就是一片报错
 # 构建之后再爬一遍产物：VitePress 只拦死路由，死锚点它不管，得靠 check-anchors-html.py。
@@ -28,7 +28,7 @@ permissions:
 
 jobs:
   text:
-    name: 链接 / 脱敏 / 数字 / Mermaid
+    name: 链接 / 敏感词 / 数字 / Mermaid
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -45,7 +45,7 @@ jobs:
       - name: 链接体检（站内路由 / 相对路径 / 锚点）
         run: python3 scripts/check-links.py
 
-      - name: 脱敏扫描
+      - name: 敏感词扫描
         run: ./scripts/check-sensitive.sh
 
       - name: 规模数字体检（课程数 / 实验数 / 附录条数）

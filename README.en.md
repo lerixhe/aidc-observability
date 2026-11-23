@@ -4,25 +4,14 @@
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/lerixhe/aidc-observability)
 
-**Status: v2.0 shipped** — 26 lessons + appendices A/B published, 12 labs shipped (10 L1 + 2 L2 real-topology).
-Site: <https://lerixhe.github.io/aidc-observability/>
+**26 lessons + appendices A/B, 12 labs shipped (10 L1 + 2 L2 real topology).** Site: <https://lerixhe.github.io/aidc-observability/> · [中文 README](README.md)
 
-> Series: **Book 2** (this repo) covers lossless AI fabrics. **Book 1** is
-> [IDC Network Observability](https://github.com/lerixhe/idc-network-observability/):
-> collect, measure, read, locate — written for backend developers entering the field.
-> They were published in reverse order; a reader should start with Book 1.
+This is Book 2 of the series. Book 1 is [IDC Network Observability](https://github.com/lerixhe/idc-network-observability/):
+collection, metrics, reading curves, locating faults on lossy networks, written for backend
+developers entering the field. Read that one first.
 
-The Codespaces image ships containerlab and Docker, so the L2 topology labs run
-without a local Linux VM.
-
-> Readable (v0.1), runnable (v0.2), complete (v0.3), advanced (v0.4), deliverable (v1.0).
-> The course structure is frozen as of v1.0; only corrections are accepted.
-> The two L2 labs run in two modes: the default mode needs no Docker, only Go.
-> `make deploy` is the step that requires containerlab.
-
-> The course text is in Chinese — [中文 README](README.md). This English README exists so
-> that non-Chinese readers can evaluate the project quickly; the labs, their code and
-> their outputs are language-neutral.
+The course text is in Chinese. This English README exists so non-Chinese readers can evaluate the
+project quickly; the labs, their code and their outputs are language-neutral.
 
 ---
 
@@ -38,70 +27,79 @@ overturn the assumptions behind traditional network observability:
 | Cost of a fault | One server, one batch of requests | Hours × thousands of GPUs, 30-minute rollback |
 | Telemetry granularity | Minute-level SNMP polling | Second / sub-second streaming subscriptions |
 
-Copying an IDC dashboard over will fail. This project takes the new rules apart
-layer by layer: the RDMA / RoCEv2 causal chain, PFC / ECN mechanisms and their
-failure modes, gNMI / INT telemetry collection, metric definitions, and RCA automation.
+Copying an IDC dashboard over will fail. The course takes the new rules apart layer by layer:
+the RDMA / RoCEv2 causal chain, PFC / ECN mechanisms and their failure modes, gNMI / INT
+collection semantics, metric definitions, and RCA automation.
 
 ## What makes it different
 
-Plenty of material explains RoCE and PFC. Very little approaches the problem from
-the **observability** side, and almost nothing ships **hands-on labs that reproduce
-a PFC storm or incast in containers**.
+Plenty of material explains RoCE and PFC. Very little approaches the problem from the
+**observability** side, and almost nothing ships **hands-on labs that reproduce a PFC storm
+or incast in containers**. The course explains mechanisms; `labs/` gives you code that
+reproduces them.
 
-The course explains mechanisms; `labs/` gives you code that reproduces them — that gap
-is what this project tries to fill.
+## Course outline
+
+| Part | Lessons | Topic |
+|---|---|---|
+| Start | opening 00–01 | Metrics all green, job still slow; getting the labs running |
+| 1 · Paradigm shift | 02–04 | Why IDC habits fail, RDMA kernel bypass, RoCEv2 and DCB, adaptive routing and reordering |
+| 2 · Lossless mechanics | 05–07 | PFC hop-by-hop backpressure, ECN and DCQCN, PFC failure modes |
+| 3 · Traffic and topology | 08–10 | NCCL collectives, Clos and rail, superpods and scale-up, NVLink link faults |
+| 4 · Telemetry | 11–14 | gNMI subscriptions, INT, optical modules, the data pipeline |
+| 5 · Analysis and operations | 15–19 | Metric definitions and SLOs, AIOps root-cause, time-series storage, LLM-assisted ops, MTTR |
+| 6 · Selection | 20–22 | IB vs RoCE, UEC, an end-to-end incident case, self-assessment |
+| Appendices | A / B | Glossary, references |
+
+## Labs
+
+12 labs under `labs/`, in two tiers:
+
+| Tier | Requires | Count | Property |
+|---|---|---|---|
+| L1 data-plane model | Go only | 10 | `go run .`, no privileges, no Docker |
+| L2 real topology | Docker + containerlab | 2 | Real topology and fault injection; the default mode still needs nothing |
+
+`03-fault-inject` and `05-clos-topo` run in two modes: `make run` prints the injection plan and
+model conclusions, `make deploy` brings up containerlab. Real pause frames work too:
+
+```bash
+cd labs/03-fault-inject
+make deploy          # 6-node topology
+make inject-pfc      # inject genuine 0x8808 PFC pause frames onto a veth
+docker exec clab-fault-inject-h3 tcpdump -i eth1 ether proto 0x8808 -c 3 -xx
+```
+
+PFC and ECN are hardware behavior; a software model cannot be behaviorally equivalent. Every L1
+lab README states that boundary up front and gives a path to verify on real gear. `expected/`
+holds byte-stable samples that CI diffs against, so a behavior change shows up as a diff instead
+of slipping through.
 
 ## Repository layout
 
 ```
 .
-├── site/                  VitePress site (live since v0.1)
-├── labs/                  Go / container labs (12: 10 L1 + 2 L2)
-└── scripts/               Migration, link check, sensitive scan
+├── site/                  VitePress site (content under site/docs, one directory per part)
+├── labs/                  Go / container labs (12, one module each)
+└── scripts/               Link, anchor and Mermaid checks; lab self-verification
 ```
 
-## Roadmap
-
-| Version | Content | Status |
-|---|---|---|
-| v0.0 | Planning docs, directory skeleton, prototype archived | Done |
-| v0.1 | 16 lessons as Markdown, docs site, GitHub Pages live | Done |
-| v0.2 | First 6 L1 labs (no privileged deps), devcontainer, labs CI | Done |
-| v0.3 | 8 new lessons (intro, environment, superpod, INT, pipeline, SLI/SLO, MTTR, end-to-end case) + 3 L1 labs + appendices A/B | Done |
-| v0.4 | Advanced labs: containerlab topology (05-clos-topo), fault injection (03-fault-inject), end-to-end runbook (11-case-study) | Done |
-| v1.0 | Polish: link checker + Docs CI, bilingual README, announcement, structure frozen | Done |
-| v2.0 | Toolbox: 3 frontier lessons (AR / scale-up / UEC), telemetry stack, real 0x8808 frames + XDP gate, Codespaces preinstalled, dual CI guards | **Current** |
-
-## Labs at a glance
+## Run it
 
 ```bash
-cd labs/00-setup && make run          # which labs can this machine run?
-cd labs/02-pfc-sim && make compare    # PFC / ECN / DCQCN queue model
-cd labs/05-clos-topo && make run      # why ECMP polarizes at low flow counts
-cd labs/11-case-study && make run     # two runbook paths, 40 vs 79 minutes
+# Site
+cd site && pnpm install && pnpm dev
+
+# First lab (Go 1.22+)
+cd labs/00-setup && make run
+
+# Verify every lab
+./scripts/check-labs.sh
 ```
 
-Every lab reads and writes plain text; `expected/` holds byte-stable samples that CI
-diffs against, so any behavior change shows up as a diff instead of slipping through.
-
-| Lab | Layer | Lesson | What it shows |
-|---|---|---|---|
-| `00-setup` | L1 | 01 | Environment probe and lab inventory |
-| `01-traffic-model` | L1 | 02 | Mice flows vs synchronized AllReduce bursts |
-| `02-pfc-sim` | L1 | 05, 06 | Watermarks, pause propagation, DCQCN closed loop |
-| `03-fault-inject` | L2 | 07 | Four failure modes: injection plans, telemetry fingerprints, classifier |
-| `04-nccl-trace` | L1 | 08 | Rebuild the traffic matrix from NCCL logs, find stragglers |
-| `05-clos-topo` | L2 | 09 | Flow count and hash policy decide ECMP polarization |
-| `06-gnmi-mock` | L1 | 11 | SAMPLE vs ON_CHANGE fidelity |
-| `07-int-path` | L1 | 12 | INT hop-by-hop metadata, sampling capture rate |
-| `08-pipeline` | L1 | 14 | Telemetry pipeline: backpressure and query fidelity |
-| `09-slo` | L1 | 15 | Three availability definitions, error budgets, burn rate |
-| `10-rca` | L1 | 16 | Alert correlation and graph-based root cause scoring |
-| `11-case-study` | L1 | 21 | Ten-step runbook and an MTTR time budget |
-
-The L2 labs declare their boundary up front: containers cannot emit real PFC pause
-frames, so those columns come from a model. Each README says which is which and how
-to verify on real hardware.
+The L2 topology labs need to create veth pairs and move network namespaces, which macOS cannot do.
+Use Codespaces: the badge above leads to an environment with Go, Docker and containerlab already
+installed. When Docker is unavailable the setup script skips containerlab and L1 labs still run.
 
 ## License
 
@@ -110,10 +108,10 @@ to verify on real hardware.
 
 ## Contributing
 
-The project is at v1.0: the course structure is frozen and only corrections are accepted.
-Please cite the lesson and a verifiable source:
+The content is published in full; corrections are welcome as issues or pull requests. Name the
+lesson and attach a checkable source:
 
-- Mechanism claims need a checkable source (RFC / IEEE standard / paper / vendor docs)
-- Changes involving internal information (system names, real architectures, capacity
-  numbers, undisclosed incident details) will not be merged
+- Mechanism claims need a verifiable source (RFC / IEEE standard / paper / vendor docs)
+- Examples use RFC 5737 documentation addresses. Do not submit real device configurations,
+  internal addresses, or unpublished architecture details
 - Local development: `cd site && pnpm install && pnpm dev`

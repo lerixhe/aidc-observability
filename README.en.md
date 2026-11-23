@@ -1,4 +1,4 @@
-# AIDC Observability · 智算网络可观测入门
+# AIDC Observability · 智算网络可观测进阶
 
 > From lossy IDC networks to lossless AI fabrics: mechanisms, telemetry, and runnable labs.
 

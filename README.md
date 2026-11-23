@@ -1,4 +1,4 @@
-# 智算网络可观测入门 · AIDC Observability
+# 智算网络可观测进阶 · AIDC Observability
 
 > 从有损 IDC 到无损智算：机制、遥测与可运行的实验室。
 

@@ -15,7 +15,7 @@ const { theme } = useData()
 const metrics = computed(() => {
 	const s = theme.value.aidcStats
 	return [
-		{ value: s.lessons, label: '节课' },
+		{ value: s.lessons, label: '讲' },
 		{ value: s.modules, label: '个模块' },
 		{ value: s.labs, label: '个实验' },
 		{ value: s.failureModes, label: '类典型故障' },

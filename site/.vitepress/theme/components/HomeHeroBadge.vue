@@ -8,7 +8,7 @@
 <template>
 	<p class="lp-eyebrow">
 		<span class="lp-dot" aria-hidden="true" />
-		v1.0 · 课程结构已冻结
+		全文完结 · 实验随时可跑
 	</p>
 </template>
 

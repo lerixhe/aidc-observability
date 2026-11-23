@@ -79,7 +79,7 @@ VitePress 会把它编译成 `cleanUrls` 的干净 URL；写目录形式 `../02-
 | 文件 | 负责 |
 |---|---|
 | `docs/index.md` | frontmatter：`layout: home`、hero 标题/tagline、两个 CTA；正文只挂 `<HomeSections />` |
-| `.vitepress/theme/components/HomeHeroBadge.vue` | hero 上方的版本徽章（挂 `home-hero-before` 插槽） |
+| `.vitepress/theme/components/HomeHeroBadge.vue` | hero 上方的一句状态徽章（挂 `home-hero-before` 插槽） |
 | `.vitepress/theme/components/HomeHeroMetrics.vue` | hero 下方的指标条（挂 `home-hero-after` 插槽）；数字读 `themeConfig.aidcStats`，不写死 |
 | `.vitepress/theme/components/HomeSections.vue` | 学习路径 7 张模块卡、三段说明、收尾 CTA、边界声明 |
 | `.vitepress/theme/style.css` | 全站 `--lp-*` 设计变量（明暗两套）、hero 居中版式与光晕网格 |
@@ -92,7 +92,8 @@ VitePress 会把它编译成 `cleanUrls` 的干净 URL；写目录形式 `../02-
 首页那四个数字（几节课 / 几个模块 / 几个实验 / 几类故障）不在组件里写死：
 
 1. `config.mts` 在**构建期**调 `.vitepress/stats.mts` 的 `computeStats()`；
-2. 课程数、模块数从 `docs/` 下带两位数字前缀的目录实数，实验数数 `labs/` 的子目录数；
+2. 课程数、模块数从 `docs/` 下带两位数字前缀的目录实数，实验数同样只数 `labs/` 下带两位数字前缀的目录
+   （`labs/telemetry/` 是可视化栈的编排文件目录，不算实验）；
 3. 结果塞进 `themeConfig.aidcStats`，组件用 `useData().theme` 读，类型声明在 `theme/aidc-theme.d.ts`。
 
 所以加一节课、加一个 lab，首页数字自己就变了，**不需要改组件**。

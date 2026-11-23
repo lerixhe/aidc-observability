@@ -10,50 +10,43 @@ const modules = [
 	{
 		id: '开篇',
 		title: '认识这门课',
-		count: '2 课',
-		desc: '核心问题、读者前置与三种读法，再加一条五分钟跑通的实验环境：三条路线，L1 只需要 Go。',
+		desc: '从「指标全绿、任务却慢」的现场切入：这门课解决什么、要什么前置，再用五分钟把实验环境跑起来。',
 		href: '/00-intro/00-what-problem',
 	},
 	{
 		id: '第一篇',
 		title: '两套世界观',
-		count: '3 课',
-		desc: '流量模型、丢包语义、故障代价、遥测粒度——四个维度看清智算网络推翻了哪些默认假设。',
+		desc: '流量模型、丢包语义、故障代价、遥测粒度，四条默认假设全要换。再往下是 RDMA 的内核旁路、RoCEv2 与 DCB、自适应路由。',
 		href: '/01-paradigm/02-why-different',
 	},
 	{
 		id: '第二篇',
-		title: '不丢包的代价',
-		count: '3 课',
-		desc: 'PFC 的逐跳反压、ECN + DCQCN 的端网协同，以及四大典型故障在现场长什么样。',
+		title: '不丢包是买来的',
+		desc: 'PFC 用逐跳反压换不丢包，代价是队头阻塞与拥塞上游化；后面的账交给 ECN 和 DCQCN。最后看四种典型故障在现场长什么样。',
 		href: '/02-lossless/05-pfc',
 	},
 	{
 		id: '第三篇',
 		title: '流量与连线',
-		count: '3 课',
-		desc: 'AllReduce 把流量矩阵变成「已知量」，Clos 与多 Rail 决定拓扑必须进数据模型，超节点又把一半流量私有化。',
+		desc: 'AllReduce 把流量矩阵变成已知量；Clos 与多 Rail 决定拓扑必须进数据模型；超节点又把一半流量收回私有网络。',
 		href: '/03-traffic-topo/08-nccl',
 	},
 	{
 		id: '第四篇',
 		title: '把现场变成数据',
-		count: '4 课',
-		desc: 'gNMI 流式订阅、INT 路径级元数据、光模块劣化信号，以及从设备到可查询的那条数据管道。',
+		desc: 'gNMI 流式订阅、INT 逐跳元数据、光模块劣化的早期信号，以及从设备到可查询的那条数据管道。',
 		href: '/04-telemetry/11-gnmi',
 	},
 	{
 		id: '第五篇',
 		title: '从数据到结论',
-		count: '5 课',
-		desc: '指标口径与 SLO、告警收敛与图计算 RCA、时序库选型、LLM 的边界，以及 MTTR 的四段拆解。',
+		desc: '指标口径怎么定、SLO 怎么算、告警怎么收敛、时序库怎么选，一次故障的 MTTR 卡在哪一段。',
 		href: '/05-analysis/15-metrics-slo',
 	},
 	{
 		id: '第六篇',
 		title: '路线与收口',
-		count: '3 课',
-		desc: 'IB 与 RoCE 的路线之争，一条端到端排障主线，最后落到一张能自己打分的能力自评表。',
+		desc: 'IB 与 RoCE 的选择题，UEC 想改什么，一条端到端排障主线，最后一张能自己打分的能力表。',
 		href: '/06-selection/20-ib-vs-roce',
 	},
 ]
@@ -61,18 +54,18 @@ const modules = [
 const facts = [
 	{
 		kicker: '讲什么',
-		title: '只讲一条链路',
-		body: '不是 RoCE / PFC 的协议综述，而是「采集 → 指标 → 判读 → 定位」的完整因果链：每个机制都回答「它坏了会看到什么信号」。',
+		title: '机制后面总跟着一句信号',
+		body: '每个机制都要回答「它坏了会在哪个计数器、哪根曲线上留下痕迹」。回答不了这句的，不进正文。',
 	},
 	{
 		kicker: '适合谁',
 		title: '正在接手智算集群的人',
-		body: '有传统 IDC / 云网络背景的工程师、可观测与 AIOps 平台开发者、需要判断「无损体系到底怎么运转」的基础设施同学。',
+		body: '做过传统 IDC 或云网络的人、写可观测与 AIOps 平台的人，以及要判断这套无损体系到底怎么转的基础设施同学。',
 	},
 	{
 		kicker: '怎么读',
-		title: '机制先行，再动手',
-		body: '第一篇与第二篇是地基，跳读会让后面的判读变成背书；标 lab 的课配有可跑实验，L1 层只需 Go / Python，无特权依赖。',
+		title: '前两篇是地基',
+		body: '从第三篇起跳读，后面的判读会变成背结论。标了 lab 的讲可以边跑边看，L1 层只要 Go，不要特权。',
 	},
 ]
 </script>
@@ -83,7 +76,7 @@ const facts = [
 			<header class="lp-head">
 				<p class="lp-kicker">学习路径</p>
 				<h2 id="lp-path">七个模块，一条因果链</h2>
-				<p class="lp-lede">从「网络为什么变慢」到「哪颗光模块在劣化」，每一层都接着上一层的结论往下走。</p>
+				<p class="lp-lede">从「网络为什么变慢」问到「哪颗光模块在劣化」，每一层的结论都是下一层的起点。</p>
 			</header>
 
 			<ol class="lp-cards">
@@ -91,7 +84,6 @@ const facts = [
 					<a class="lp-card" :href="withBase(m.href)">
 						<span class="lp-card__top">
 							<span class="lp-card__id">{{ m.id }}</span>
-							<span class="lp-card__count">{{ m.count }}</span>
 						</span>
 						<span class="lp-card__title">{{ m.title }}</span>
 						<span class="lp-card__desc">{{ m.desc }}</span>
@@ -123,8 +115,8 @@ const facts = [
 
 		<section class="lp-cta" aria-labelledby="lp-start">
 			<div class="lp-cta__text">
-				<h2 id="lp-start">从导读开始</h2>
-				<p>先看清「这门课解决什么问题」与「环境怎么跑」，后面的每一课都建立在这两件事上。</p>
+				<h2 id="lp-start">先跑通环境，再谈判读</h2>
+				<p>第一讲讲清问题在哪，第二讲把实验环境跑起来。后面每一讲都默认这两件事已经成立。</p>
 			</div>
 			<a class="lp-cta__btn" :href="withBase('/00-intro/00-what-problem')">
 				进入第一课
@@ -142,7 +134,7 @@ const facts = [
 		</section>
 
 		<p class="lp-note">
-			教学材料，不是厂商选型指南。实验为教学级模型、非硬件行为等价；机制类断言尽量给出公开可验证来源，见各课「参考资料」。
+			实验是教学级模型，不和硬件行为等价，每个 lab 的 README 都写了边界与真机验证路径。机制类断言尽量给出公开可查的来源，见各讲末尾的资料清单。
 		</p>
 	</div>
 </template>
@@ -259,14 +251,6 @@ h2 {
 	color: var(--lp-accent);
 }
 
-.lp-card__count {
-	font-size: var(--sl-text-2xs);
-	color: var(--lp-muted);
-	padding: 0.1rem 0.5rem;
-	border: 1px solid var(--lp-border);
-	border-radius: 999px;
-}
-
 .lp-card__title {
 	font-size: var(--sl-text-lg);
 	font-weight: 650;
@@ -310,7 +294,7 @@ h2 {
 
 .lp-facts {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+	grid-template-columns: repeat(3, minmax(0, 1fr));
 	gap: clamp(1.5rem, 4vw, 2.5rem);
 	padding-block-start: clamp(1.5rem, 4vw, 2.25rem);
 	border-top: 1px solid var(--lp-border);
@@ -320,6 +304,13 @@ h2 {
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
+}
+
+/* 三项固定三列；窄屏堆成一列，别让第三项单独落到第二行 */
+@media (max-width: 48rem) {
+	.lp-facts {
+		grid-template-columns: 1fr;
+	}
 }
 
 .lp-facts h3 {

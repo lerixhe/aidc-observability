@@ -27,6 +27,9 @@ const FAILURE_MODES = 4
 /** 带两位数字前缀的目录才是一个模块；`appendix`、`public` 这类不算 */
 const MODULE_DIR = /^\d{2}-/
 
+/** 实验目录同样是两位数字前缀；`telemetry` 是可视化栈的编排文件目录，不算实验 */
+const LAB_DIR = /^\d{2}-/
+
 export function computeStats(docsDir: string, labsDir: string): AidcStats {
 	const modules = existsSync(docsDir)
 		? readdirSync(docsDir, { withFileTypes: true })
@@ -51,5 +54,5 @@ function countLessons(moduleDir: string): number {
 /** labs/ 下每个实验一个子目录，README.md 不算 */
 function countLabDirs(labsDir: string): number {
 	if (!existsSync(labsDir)) return 0
-	return readdirSync(labsDir, { withFileTypes: true }).filter((e) => e.isDirectory()).length
+	return readdirSync(labsDir, { withFileTypes: true }).filter((e) => e.isDirectory() && LAB_DIR.test(e.name)).length
 }
